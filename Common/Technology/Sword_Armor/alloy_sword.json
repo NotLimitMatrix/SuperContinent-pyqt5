@@ -1,0 +1,35 @@
+{
+  "alloy_sword_1": {
+    "cost": 1000,
+    "front": null,
+    "weight": 100
+  },
+  "alloy_sword_2": {
+    "cost": 1500,
+    "front": "alloy_sword_1",
+    "weight": 100
+  },
+  "alloy_sword_3": {
+    "cost": 2000,
+    "front": "alloy_sword_2",
+    "weight": 100
+  },
+  "alloy_sowrd_4": {
+    "cost": 2500,
+    "front": [
+      "alloy_sword_3",
+      "nano_technology"
+    ],
+    "weight": 100
+  },
+  "alloy_sword_5": {
+    "cost": 3000,
+    "front": "alloy_sword_4",
+    "weight": 100
+  },
+  "alloy_sword_x": {
+    "cost": 4000,
+    "front": "alloy_sword_5",
+    "weight": 30
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "energy_armor_1": {
+    "cost": 1000,
+    "front": null,
+    "weight": 100
+  },
+  "energy_armor_2": {
+    "cost": 1500,
+    "front": "energy_armor_1",
+    "weight": 100
+  },
+  "energy_armor_3": {
+    "cost": 2000,
+    "front": "energy_armor_2",
+    "weight": 100
+  },
+  "energy_armor_4": {
+    "cost": 2500,
+    "front": [
+      "energy_armor_3",
+      "dark_energy_technology"
+    ],
+    "weight": 100
+  },
+  "energy_armor_5": {
+    "cost": 3000,
+    "front": "energy_armor_4",
+    "weight": 100
+  },
+  "energy_armor_x": {
+    "cost": 4000,
+    "front": "energy_armor_5",
+    "weight": 30
+  }
+}
