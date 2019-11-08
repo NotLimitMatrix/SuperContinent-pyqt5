@@ -1,0 +1,22 @@
+{
+  "nano_technology": {
+    "cost": 2000,
+    "front": null,
+    "weight": 50
+  },
+  "dark_energy_technology": {
+    "cost": 2000,
+    "front": null,
+    "weight": 50
+  },
+  "psionic_theory": {
+    "cost": 4000,
+    "front": "dark_energy_technology",
+    "weight": 10
+  },
+  "substance_compression_technology": {
+    "cost": 4000,
+    "front": "nano_technology",
+    "weight": 10
+  }
+}
