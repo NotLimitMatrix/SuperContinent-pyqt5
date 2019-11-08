@@ -19,7 +19,7 @@ alloy_armor_4=中子护甲
 alloy_armor_5=再生护甲
 alloy_armor_x=X级物质压缩护甲
 
-energy_armor_1=偏导盾"
+energy_armor_1=偏导盾
 energy_armor_2=高能偏导盾
 energy_armor_3=反能偏导盾
 energy_armor_4=反能分解盾

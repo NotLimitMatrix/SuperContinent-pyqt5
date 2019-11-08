@@ -1,14 +1,24 @@
 import _pickle
 import time
+import json
 
-def all_technologists():
-    with open("Models/military_technology.pkl", 'rb') as military:
-        return _pickle.load(military)
+from os.path import join
+from os import listdir
 
 
-class CONST:
-    all_technologists = all_technologists()
-    all_keys = [k for k in all_technologists]
+def json_load(file):
+    with open(file, 'r', encoding='utf-8') as r:
+        return json.load(r)
+
+
+def pkl_load(file):
+    with open(file, 'rb') as bin:
+        return _pickle.load(bin)
+
+
+def pkl_dump(data, file):
+    with open(file, 'wb') as bin:
+        _pickle.dump(data, bin)
 
 
 def all_in(tested, within):
@@ -17,69 +27,41 @@ def all_in(tested, within):
             return False
     return True
 
-class Country:
-    finished_technologists = []
-    research_able = []
 
-    def __init__(self, name):
+class Resource:
+    def __init__(self, name, need=None, rate=None, _max=50000):
         self.name = name
-        self.update()
-
-    def technologist_update(self):
-        for k in CONST.all_keys:
-            if k in self.finished_technologists or k in self.research_able:
-                continue
-
-            if self.be_able_to_research(CONST.all_technologists[k]):
-                self.research_able.append(k)
-
-    def be_able_to_research(self, technology):
-        front = technology.front
-
-        if front:
-            if isinstance(front, list):
-                return all_in(front, self.finished_technologists)
-            else:
-                return front in self.finished_technologists
-        else:
-            return True
-
-    def finish_research(self, technology_key):
-        self.finished_technologists.append(technology_key)
-        self.research_able.remove(technology_key)
-        self.update()
-
-    def update(self):
-        self.technologist_update()
-
-class Researcher:
-    def __init__(self, produce, belong_country):
-        self.produce = produce
-        self.belong_country = belong_country
-        self.rate = 1
-        self.modifiers = []
-
-    def set_modifier(self, made, rate):
-        # del:False, add:True
-        if made:
-            self.modifiers.append(rate)
-        else:
-            self.modifiers.remove(rate)
-        self.update()
-
-    def update(self):
-        self.produce = self.produce * (self.rate + sum(self.modifiers))
-
-    def research(self, technology_key):
-        technology = CONST.all_technologists[technology_key]
-
-        while not technology.finish():
-            technology.current += self.produce
-            print(f"Research: {technology.name} {technology.current / technology.cost}%")
-            time.sleep(0.5)
-        else:
-            self.belong_country.finish_research(technology_key)
-            print(f"Research Finish: {technology.name}\n")
+        self.need = need
+        self.rate = rate
+        self._max = _max
 
     def __repr__(self):
-        return f"研究员： 生产 {self.produce}"
+        return f"<Resource: {self.name}>"
+
+
+class Technology:
+    def __init__(self, name, cost, front, weight, no, _type, loop):
+        self.name = name
+        self.cost = cost
+        self.front = front
+        self.weight = weight
+        self.no = no  # 如果研究了互斥的科技，则该科技不能被研究
+
+        self.type = _type  # 0: military, 1: civil, 2: beyond
+        self.current = 0
+        self.loop = loop
+
+    def finish(self):
+        return self.current >= self.cost
+
+    def __repr__(self):
+        return f"<Technology: {self.name}, cost:{self.cost}>"
+
+
+class SwordArmor(Technology):
+    def __init__(self, level, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.level = level
+
+        if 'X' in self.name:
+            self.name.replace('X', str(self.level))

@@ -1,127 +1,137 @@
-import json
-
-from os.path import join
-from os import listdir
-import _pickle as cPickle
+from static import *
 
 
-# import static
+class Localisation:
+    DIR = "Common/Localisation"
+
+    def __init__(self):
+        self.files = [
+            "Technology/beyond.txt",
+            "Technology/civil.txt",
+            "Technology/military.txt",
+            "jobs.txt",
+            "resources.txt"
+        ]
+
+        self._dict = self.localisation()
+
+    def localisation(self):
+        _dict = dict()
+        for file in self.files:
+            with open(join(self.DIR, file), 'r') as d:
+                for line in d:
+                    line = line.strip()
+                    if line:
+                        key, value = line.split('=')
+                        _dict[key] = value
+        return _dict
+
+    def __getitem__(self, item):
+        return self._dict.get(item)
 
 
-def json_load(file):
-    with open(file, 'r', encoding='utf-8') as r:
-        return json.load(r)
+class Transformer:
+    def __init__(self):
+        self._dict = dict()
+        self.output = None
+        self.localisation = Localisation()
+
+    def init(self, l):
+        pass
+
+    def gen_technologists(self, _dict):
+        for k, v in _dict.items():
+            yield k, v
+
+    def transform(self):
+        pkl_dump(self._dict, self.output)
 
 
-def pkl_load(file):
-    with open(file, 'rb') as bin:
-        return cPickle.load(bin)
+class ResourceTransformer(Transformer):
+    def init(self, l):
+        self.dir = "Common/resources.json"
+        self.output = "Models/resources.pkl"
+
+        for k, v in self.gen_technologists(json_load(self.dir)):
+            name = l[k]
+            if v is None:
+                self._dict[k] = Resource(name=name)
+            else:
+                self._dict[k] = Resource(name=name, need=v.get('need'), rate=v.get('rate'))
 
 
-def pkl_dump(data, file):
-    with open(file, 'wb') as bin:
-        cPickle.dump(data, bin)
+class TechnologyTransformer(Transformer):
+    def init(self, l):
+        self.dir = "Common/Technology"
+        self.files = [
+            "Common/Technology/military_technology.json",
+            "Common/Technology/beyond_technology.json",
+            "Common/Technology/civil_technology.json"
+        ]
+        self.output = "Models/technology.pkl"
 
+        self.transform_beyond_technology(l)
+        self.transform_sword_armor(l)
 
-class CONST:
-    common = "Common"
-    models = "Models"
+    def transform_beyond_technology(self, l):
+        Beyond = join(self.dir, "beyond_technology.json")
+        for k, v in self.gen_technologists(json_load(Beyond)):
+            self._dict[k] = Technology(
+                name=l[k],
+                cost=v.get('cost'),
+                front=v.get('front'),
+                weight=v.get('weight'),
+                _type=v.get('type'),
+                loop=False,
+                no=v.get('no')
+            )
 
+    def transform_sword_armor(self, l):
+        Sword_Armor = join(self.dir, "Sword_Armor")
+        for file in listdir(Sword_Armor):
+            for k, v in self.gen_technologists(json_load(join(Sword_Armor, file))):
 
-def technology_localisation():
-    _dir = "Common/Localisation/Technology"
-    files = ["beyond.txt", "civil.txt", "military.txt"]
-    _dict = dict()
-    for file in files:
-        with open(join(_dir, file), 'r') as d:
-            for line in d:
-                line = line.strip()
-                if line:
-                    key, value = line.split('=')
-                    _dict[key] = value
-    return _dict
+                *_, level = k.split('_')
+                if level == 'x':
+                    loop = True
+                    level = 6
+                else:
+                    loop = False
+                    level = int(level)
 
-
-def all_technology():
-    Tech = "Technology"
-    technology_list = [
-        join(CONST.common, Tech, "military_technology.json"),
-        join(CONST.common, Tech, "beyond_technology.json")
-    ]
-
-    Sword_Armor = join(CONST.common, Tech, "Sword_Armor")
-    for file in listdir(Sword_Armor):
-        technology_list.append(join(Sword_Armor, file))
-
-    return technology_list
-
-
-##########################################################################
-class Resource:
-    def __init__(self, name, need=None, rate=None, _max=50000):
-        self.name = name
-        self.need = need
-        self.rate = rate
-        self._max = _max
-
-    def __repr__(self):
-        return f"<Resource: {self.name}>"
-
-
-def transform_resources(s_file, b_file):
-    res = json_load(join(CONST.common, s_file))
-    for k, v in res.items():
-        if v is None:
-            res[k] = Resource(k)
-        else:
-            res[k] = Resource(k, need=v.get('need'), rate=v.get('rate'))
-    pkl_dump(res, join(CONST.models, b_file))
-
-
-##########################################################################
-class Technology:
-    def __init__(self, name, cost, front, weight, no=None):
-        self.name = name
-        self.cost = cost
-        self.front = front
-        self.weight = weight
-        self.no = None
-        self.current = 0
-
-    def finish(self):
-        return self.current >= self.cost
-
-    def __repr__(self):
-        return f"<Technology: {self.name}, cost:{self.cost}>"
-
-# transform military technology
-def transform_military_technology(s_files, b_file, name_directory):
-    name_directory = json_load(join(CONST.common, "Localisation/Technology", name_directory))
-    result = dict()
-    for s_file in s_files:
-        res = json_load(s_file)
-        for k, v in res.items():
-            res[k] = Technology(name_directory[k]['name'], v.get('cost'), v.get('front'), v.get('weight'),
-                                       v.get('no'))
-        result.update(res)
-    pkl_dump(result, join(CONST.models, b_file))
+                self._dict[k] = SwordArmor(
+                    name=l[k],
+                    cost=v.get('cost'),
+                    front=v.get('front'),
+                    weight=v.get('weight'),
+                    _type=v.get('type'),
+                    no=v.get('no'),
+                    loop=loop,
+                    level=level
+                )
 
 
 def main():
-    # transform_resources("resources.json", "resource.pkl")
-    transform_military_technology(all_technology(), "military_technology.pkl", "military.txt")
+    # localisation = Localisation()
+    #
+    # transform_resources = ResourceTransformer()
+    # transform_resources.init(localisation)
+    # transform_resources.transform()
+    #
+    # transform_technology = TechnologyTransformer()
+    # transform_technology.init(localisation)
+    # transform_technology.transform()
+
     pass
 
 
 def test(file):
-    res = pkl_load(join(CONST.models, file))
+    res = pkl_load(join("Models", file))
     for k, v in res.items():
-        print(k, v.front, v.weight, v.cost, v.no)
+        print(k, v.name, v.need, v.rate, v._max)
 
 
 if __name__ == '__main__':
     # main()
-    # test("military_technology.pkl")
-    for k, v in technology_localisation().items():
-        print(f"{k} = {v}")
+    # test("resources.pkl")
     pass
