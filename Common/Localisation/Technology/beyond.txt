@@ -1,0 +1,4 @@
+nano_technology=纳米科技
+dark_energy_technology=暗能科技
+psionic_theory=灵能理论
+substance_compression_technology=物质压缩技术

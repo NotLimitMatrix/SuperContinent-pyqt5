@@ -14,7 +14,7 @@
     "front": "alloy_sword_2",
     "weight": 100
   },
-  "alloy_sowrd_4": {
+  "alloy_sword_4": {
     "cost": 2500,
     "front": [
       "alloy_sword_3",
