@@ -1,18 +1,22 @@
 {
-    "time": null,
-    "energy": null,
-    "minerals": null,
-    "food": null,
-    "alloys": {
-        "need": "minerals",
-        "rate": 10
-    },
-    "consumer_goods": {
-        "need": "minerals",
-        "rate": 10
-    },
-    "research_point": {
-        "need": "consumer_goods",
-        "rate": 0.5
-    }
+  "time": {
+  },
+  "energy": {
+  },
+  "minerals": {
+  },
+  "food": {
+  },
+  "alloys": {
+    "need": "minerals",
+    "rate": 10
+  },
+  "consumer_goods": {
+    "need": "minerals",
+    "rate": 10
+  },
+  "research_point": {
+    "need": "consumer_goods",
+    "rate": 0.5
+  }
 }

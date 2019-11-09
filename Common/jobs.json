@@ -2,6 +2,7 @@
   "electrician": {
     "produce": {
       "energy": 10,
+      "material": null,
       "rate": 1
     },
     "consume": {
@@ -13,6 +14,7 @@
   "miner": {
     "produce": {
       "minerals": 10,
+      "material": null,
       "rate": 1
     },
     "consume": {
@@ -24,6 +26,7 @@
   "farmer": {
     "produce": {
       "food": 10,
+      "material": null,
       "rate": 1
     },
     "consume": {

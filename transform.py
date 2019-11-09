@@ -1,4 +1,4 @@
-from static import *
+from models import *
 
 
 class Localisation:
@@ -53,11 +53,35 @@ class ResourceTransformer(Transformer):
         self.output = "Models/resources.pkl"
 
         for k, v in self.gen_technologists(json_load(self.dir)):
+            self._dict[k] = Resource(name=l[k], need=v.get('need'), rate=v.get('rate'))
+            self._dict[f"dynamic_{k}"] = DynamicResource(name=l[k], monthly=5, store=300, rate=1)
+
+
+class JobTransformer(Transformer):
+    def init(self, l):
+        self.dir = "Common/jobs.json"
+        self.output = "Models/jobs.pkl"
+        for k, v in self.gen_technologists(json_load(self.dir)):
             name = l[k]
-            if v is None:
-                self._dict[k] = Resource(name=name)
-            else:
-                self._dict[k] = Resource(name=name, need=v.get('need'), rate=v.get('rate'))
+            produce_dict, consume_dict = v.get('produce'), v.get('consume')
+
+            # 生产物资， 生产所需， 生产效率
+            p_produce, p_material, p_rate = produce_dict.keys()
+            p_produce_number = produce_dict.get(p_produce)
+            p_material_key = produce_dict.get(p_material)
+            p_rate_number = produce_dict.get(p_rate)
+
+            producer = Product(material=p_produce, number=p_produce_number, rate=p_rate)
+
+            consume = {
+                "food": consume_dict.get("food"),
+                "consumer_goods": consume_dict.get("consumer_goods"),
+                p_material_key: (p_produce_number * p_rate_number) if p_material_key else 0
+            }
+
+            consumer = Consumption(materials=consume, rate=consume_dict.get('rate'))
+
+            self._dict[k] = Job(name, producer, consumer)
 
 
 class TechnologyTransformer(Transformer):
@@ -112,26 +136,25 @@ class TechnologyTransformer(Transformer):
 
 
 def main():
-    # localisation = Localisation()
-    #
-    # transform_resources = ResourceTransformer()
-    # transform_resources.init(localisation)
-    # transform_resources.transform()
-    #
-    # transform_technology = TechnologyTransformer()
-    # transform_technology.init(localisation)
-    # transform_technology.transform()
+    localisation = Localisation()
 
-    pass
+    transforms = [
+        ResourceTransformer(),
+        TechnologyTransformer(),
+        JobTransformer()
+    ]
 
+    for tf in transforms:
+        tf.init(localisation)
+        tf.transform()
 
 def test(file):
+    import pprint
     res = pkl_load(join("Models", file))
-    for k, v in res.items():
-        print(k, v.name, v.need, v.rate, v._max)
+    pprint.pprint(res)
 
 
 if __name__ == '__main__':
-    # main()
+    main()
     # test("resources.pkl")
     pass

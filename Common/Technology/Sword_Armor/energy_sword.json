@@ -34,7 +34,10 @@
   },
   "energy_sword_x": {
     "cost": 4000,
-    "front": "energy_sword_5",
+    "front": [
+      "energy_sword_5",
+      "psionic_theory"
+    ],
     "weight": 30,
     "type": 0
   }

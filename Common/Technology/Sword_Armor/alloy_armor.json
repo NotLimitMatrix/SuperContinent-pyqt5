@@ -34,7 +34,10 @@
   },
   "alloy_armor_x": {
     "cost": 4000,
-    "front": "alloy_armor_5",
+    "front": [
+      "alloy_armor_5",
+      "substance_compression_technology"
+    ],
     "weight": 30,
     "type": 0
   }
