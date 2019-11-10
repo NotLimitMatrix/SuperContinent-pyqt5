@@ -5,7 +5,6 @@ import json
 from os.path import join
 from os import listdir
 
-
 def json_load(file):
     with open(file, 'r', encoding='utf-8') as r:
         return json.load(r)
