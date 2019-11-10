@@ -37,16 +37,10 @@ class MainWindow(QtWidgets.QWidget):
         self.init_game_loop()
 
         self.ZONING_BUTTONS = list()
-        self.TECHNOLOGISTS_BUTTONS = {
-            'military': {'rate': None, 'T': None},
-            'civil': {'rate': None, 'T': None},
-            'beyond': {'rate': None, 'T': None}
-        }
-        self.TECHNOLOGISTS_LABELS = {
-            'military': None,
-            'civil': None,
-            'beyond': None
-        }
+
+        self.TECHNOLOGISTS_LABELS = list()
+        self.TECHNOLOGISTS_RATE_BUTTONS = list()
+        self.TECHNOLOGISTS_TRANSFORM_BUTTONS = list()
 
         self.textBrowser = QtWidgets.QTextBrowser(self)
         self.textBrowser.setGeometry(QtCore.QRect(850, 315, 148, 285))
@@ -85,37 +79,44 @@ class MainWindow(QtWidgets.QWidget):
                 b.setText('')
                 self.ZONING_BUTTONS.append(b)
 
-    def init_technologist_buttons(self):
-        X_base = 950
-        X_instance = 20
-        tech_buttons = [
-            (0, 250), (1, 250),
-            (0, 270), (1, 270),
-            (0, 290), (1, 290)
-        ]
-        keys = [val for val in self.TECHNOLOGISTS_BUTTONS.keys() for i in range(2)]
+    def init_technologist_rate_buttons(self):
+        x_base = 950
+        y_base = 250
+        b_size = 30
+        dy = 20
+        rates = [3, 3, 4]
 
-        for (x, y), key in zip(tech_buttons, keys):
+        for i in range(3):
             b = QtWidgets.QPushButton(self)
-            b.setGeometry(X_base + X_instance * x, y, 30, 30)
-            b.setText('T' if x else ('4' if y == 290 else '3'))
+            b.setGeometry(x_base, y_base + i * dy, b_size, b_size)
+            b.setText(str(rates[i]))
+            self.TECHNOLOGISTS_RATE_BUTTONS.append(b)
 
-            self.TECHNOLOGISTS_BUTTONS[key]['T' if x else 'rate'] = b
+    def init_technologist_transform_buttons(self):
+        x_base = 970
+        y_base = 250
+        b_size = 30
+        dy = 20
+
+        for i in range(3):
+            b = QtWidgets.QPushButton(self)
+            b.setGeometry(x_base, y_base + i * dy, b_size, b_size)
+            b.setText("T")
+            self.TECHNOLOGISTS_TRANSFORM_BUTTONS.append(b)
 
     def init_technologist_labels(self):
         X_base = 850
         Y_base = 256
-        Y = [Y_base + i * 20 for i in range(3)]
 
         style = "font: 10pt ;border-width: 1px;border-style: solid;border-color: rgb(0, 0, 0)"
 
-        for k, y in zip(self.TECHNOLOGISTS_LABELS.keys(), Y):
+        for i in range(3):
             label = QtWidgets.QLabel(self)
-            label.setGeometry(X_base, y, 100, 18)
+            label.setGeometry(X_base, Y_base+i*20, 100, 18)
             label.setStyleSheet(style)
-            label.setText(f"未选科技：{k}")
+            label.setText("没有研究")
+            self.TECHNOLOGISTS_LABELS.append(label)
 
-            self.TECHNOLOGISTS_LABELS[k] = label
 
     def gen_table(self, row, col, h_size, v_size):
         table = QtWidgets.QTableWidget(self)
@@ -177,8 +178,10 @@ class MainWindow(QtWidgets.QWidget):
         self.WAT_SELECT_LIST = listView
 
     def init_all_widget(self):
-        self.init_technologist_buttons()
         self.init_technologist_labels()
+        self.init_technologist_rate_buttons()
+        self.init_technologist_transform_buttons()
+
         self.init_wait_select_view()
         self.init_zoning_buttons()
         self.resource_table_view()
@@ -223,22 +226,21 @@ class Sender(QtCore.QObject):
                 store = int(s)
                 monthly = int(m)
                 store += monthly
-                return str(store), str(monthly)
+                if store < 0:
+                    store = 0
+                yield str(store), str(monthly)
 
         self.RESOURCES_PANEL = [i for i in g()]
 
     def update_technology_panel(self):
-        sum = 0
-        for s, m in self.RESOURCES_PANEL:
-            sum += int(s) + int(m) * 10
-            
+        *civil, military = self.RESOURCES_PANEL
 
+        self.TECHNOLOGIST_PANEL[0] = str(sum([int(i[0]) + 10 * int(i[1]) for i in civil]))
+        self.TECHNOLOGIST_PANEL[1] = str(int(military[0]) + 10 * int(military[1]))
 
-# def update(self, r=None, t=None):
-#     if r:
-#         self.RESOURCES_PANEL = r[:]
-#     if t:
-#         self.TECHNOLOGIST_PANEL = t[:]
+    def update(self):
+        self.update_resource_panel()
+        self.update_technology_panel()
 
 
 if __name__ == '__main__':
