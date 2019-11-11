@@ -16,6 +16,3 @@ class Person:
 
     def __repr__(self):
         return f"<Persion: {self.job}, product: {self.procude.material}/month>"
-
-
-Electrician = Person('electrician',)

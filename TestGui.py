@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QApplication, QDialog, QAbstractItemView
 
 SPEED = 2
 TIME_FLOW = 1 / SPEED
+from static import *
 
 
 class BackendThread(QtCore.QObject):
@@ -112,11 +113,24 @@ class MainWindow(QtWidgets.QWidget):
 
         for i in range(3):
             label = QtWidgets.QLabel(self)
-            label.setGeometry(X_base, Y_base+i*20, 100, 18)
+            label.setGeometry(X_base, Y_base + i * 20, 100, 18)
             label.setStyleSheet(style)
             label.setText("没有研究")
             self.TECHNOLOGISTS_LABELS.append(label)
 
+    def paintEvent(self, QPaintEvent):
+        start = 0
+        end = 600 + start
+        b_size = 20
+
+        p = QtGui.QPainter()
+        p.begin(self)
+
+        for i in range(31):
+            temp = start + i * b_size
+            p.drawLine(temp, start, temp, end)
+            p.drawLine(start, temp, end, temp)
+        p.end()
 
     def gen_table(self, row, col, h_size, v_size):
         table = QtWidgets.QTableWidget(self)
@@ -133,9 +147,13 @@ class MainWindow(QtWidgets.QWidget):
         table.verticalHeader().setDefaultSectionSize(v_size)
         table.verticalHeader().setHighlightSections(False)
 
+        font = QtGui.QFont()
+        font.setPixelSize(11)
+
         for r in range(row):
             for c, item in enumerate(QtWidgets.QTableWidgetItem() for _ in range(col)):
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
+                item.setFont(font)
                 table.setItem(r, c, item)
 
         return table
@@ -189,9 +207,14 @@ class MainWindow(QtWidgets.QWidget):
 
     def update_resource_panel(self, r_panel):
         for r in range(5):
-            for c in range(2):
-                text = r_panel[r][c]
-                self.RESOURCES_PANEL.item(r, c + 1).setText(text)
+            store, monthly = r_panel[r]
+            p_store = display_number(store)
+            neg = '+' if monthly > 0 else '-'
+            p_monthly = neg + display_number(abs(monthly))
+            print(p_store, p_monthly)
+
+            self.RESOURCES_PANEL.item(r,1).setText(p_store)
+            self.RESOURCES_PANEL.item(r,2).setText(p_monthly)
 
     def update_technolgoist_panel(self, c_panel):
         for r in range(3):
@@ -210,33 +233,31 @@ class MainWindow(QtWidgets.QWidget):
         self.thread = QtCore.QThread()
         self.backend.moveToThread(self.thread)
 
-        self.thread.started.connect(self.backend.run)
+        s = self.thread.started.connect(self.backend.run)
         self.thread.start()
 
 
 class Sender(QtCore.QObject):
     RESOURCES_PANEL = [
-        ("1000", "-200"), ("2000", "+312"), ("2000", "+100"), ("100000", "+30"), ("20000", "-10")
+        (1000, -200), (1000, +312), (2000, +100), (9999999, +999999), (10000, -10)
     ]
     TECHNOLOGIST_PANEL = [None, None, "1M"]
 
     def update_resource_panel(self):
         def g():
             for s, m in self.RESOURCES_PANEL:
-                store = int(s)
-                monthly = int(m)
-                store += monthly
-                if store < 0:
-                    store = 0
-                yield str(store), str(monthly)
+                s += m
+                if s < 0:
+                    s = 0
+                yield s, m
 
         self.RESOURCES_PANEL = [i for i in g()]
 
     def update_technology_panel(self):
         *civil, military = self.RESOURCES_PANEL
 
-        self.TECHNOLOGIST_PANEL[0] = str(sum([int(i[0]) + 10 * int(i[1]) for i in civil]))
-        self.TECHNOLOGIST_PANEL[1] = str(int(military[0]) + 10 * int(military[1]))
+        self.TECHNOLOGIST_PANEL[0] = display_number(sum([i[0] + 10 * i[1] for i in civil]))
+        self.TECHNOLOGIST_PANEL[1] = display_number(military[0] + 10 * military[1])
 
     def update(self):
         self.update_resource_panel()
