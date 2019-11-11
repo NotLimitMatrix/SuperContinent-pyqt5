@@ -9,15 +9,16 @@ from PyQt5.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QLabel,
-    QFrame,
     QVBoxLayout,
     QHBoxLayout,
+    QPushButton,
 )
 from PyQt5.QtCore import (
     QObject,
     pyqtSignal,
     Qt,
     QRect,
+    QSize,
 )
 from PyQt5.QtGui import (
     QPainter,
@@ -28,6 +29,33 @@ from PyQt5.QtGui import (
 )
 
 from static import *
+
+
+def get_wait_item_widget(name, cost, informations):
+    name_label = QLabel(name)
+    cost_label = QLabel(str(cost))
+    line_label = QLabel("----------------------")
+
+    if len(informations) > 2:
+        info_label = QLabel(f"{informations[0]}\n{informations[1]}\n......")
+    else:
+        info_label = QLabel('\n'.join(informations))
+
+    widget = QWidget()
+
+    main_layout = QVBoxLayout()
+    top_layout = QHBoxLayout()
+
+    top_layout.addWidget(name_label)
+    top_layout.addWidget(cost_label)
+
+    main_layout.addLayout(top_layout)
+    main_layout.addWidget(line_label)
+    main_layout.addWidget(info_label)
+
+    widget.setLayout(main_layout)
+    widget.setStyleSheet("background-color:rgb(176,196,222)")
+    return widget
 
 
 def generate_table(parent, row, col, h_size, v_size):
@@ -51,6 +79,7 @@ def generate_table(parent, row, col, h_size, v_size):
             table.setItem(r, c, item)
 
     return table
+
 
 # 1 把需要被更新的数据委托给子线程，由子线程完成游戏逻辑
 class GameLoop(QObject):
@@ -112,6 +141,11 @@ class MainGameGUI(QWidget):
 
         self.set_ui()
         self.show()
+
+    def clear(self):
+        self.DETAIL_TEXT = "Empty text"
+        self.WAIT_SELECT_LIST = []
+        self.update()
 
     # 2 绘制主界面
     def set_ui(self):
@@ -177,14 +211,19 @@ class MainGameGUI(QWidget):
         self.WAIT_SELECT_WIDGET = QListWidget(self)
         self.WAIT_SELECT_WIDGET.setGeometry(605, 245, 243, 350)
 
+        self.WAIT_SELECT_WIDGET.setStyleSheet("QListWidget{border:1px solid black; color:black; }"
+                                              "QListWidget::Item{padding-top:0px; padding-bottom:4px; }"
+                                              )
+        self.WAIT_SELECT_WIDGET.setSelectionMode(QAbstractItemView.NoSelection)
+
     def draw_wait_select_options(self):
         for item in self.WAIT_SELECT_LIST:
-            name, cost, color, informations = item
-
             option_item = QListWidgetItem()
-            option_item.setText(name)
+            option_item.setSizeHint(QSize(200, 120))
+
+            widget = get_wait_item_widget(*item)
             self.WAIT_SELECT_WIDGET.addItem(option_item)
-            # self.WAIT_SELECT_WIDGET.setItemWidget(item, ow)
+            self.WAIT_SELECT_WIDGET.setItemWidget(option_item, widget)
 
     # 3 任务委托
     def init_world(self):
@@ -208,7 +247,7 @@ class MainGameGUI(QWidget):
             self.ZONING_LIST.append((rect, 0))
 
     def init_wait_select_list(self):
-        opts = '灵能理论', 30000, "background-color: rgb(76, 143, 255);", ['帝国所有人口消耗 -20%', '帝国所有人口效率 +50%', '军队战斗力 +100%']
+        opts = '灵能理论', 30000, ['帝国所有人口消耗 -20%', '帝国所有人口效率 +50%', '军队战斗力 +100%']
         self.WAIT_SELECT_LIST = [opts for _ in range(30)]
 
     # 4 事件重载
