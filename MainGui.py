@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QPushButton,
+    QTextBrowser,
 )
 from PyQt5.QtCore import (
     QObject,
@@ -19,12 +20,10 @@ from PyQt5.QtCore import (
     Qt,
     QRect,
     QSize,
+    QThread,
 )
 from PyQt5.QtGui import (
     QPainter,
-    QPen,
-    QColor,
-    QBrush,
     QFont,
 )
 
@@ -83,7 +82,16 @@ def generate_table(parent, row, col, h_size, v_size):
 
 # 1 把需要被更新的数据委托给子线程，由子线程完成游戏逻辑
 class GameLoop(QObject):
-    pass
+    updater = pyqtSignal(int)
+
+    def __init__(self, main_process, *args, **kwargs):
+        self.main_process = main_process
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        while True:
+            self.updater.emit(1)
+            time.sleep(CONST.TIME_FLOW)
 
 
 # 2 测试子程序，临时验证用
@@ -96,10 +104,14 @@ class MainGameGUI(QWidget):
     def __init__(self, game_loop, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.title = CONST.WINDOW_TITLE
+
         self.WN = CONST.WORLD_NUMBER
         self.WS = CONST.WORLD_SQUARE_SIZE
         self.ZN = CONST.ZONING_NUMBER
         self.ZS = CONST.ZONING_SQUARE_SIZE
+
+        self.TIME_FLOW = 0
 
         # 主世界地块列表
         self.WORLD_LIST = []
@@ -112,7 +124,7 @@ class MainGameGUI(QWidget):
         # 综合实力列表
         self.POWER_LIST = [0, 0, 0]
         # 科研项目列表
-        self.TECHNOLOGY_LABELS = []
+        self.RESEARCH_LABELS = []
         # 科研点转化比例列表, Default = 3:3:4
         self.TECHNOLOGY_RATES = [3, 3, 4]
         # 选择按钮列表, 三个按钮对应触发三个科技的备选列表
@@ -124,22 +136,9 @@ class MainGameGUI(QWidget):
         # wait select list
         self.WAIT_SELECT_WIDGET = None
 
-        # 主世界更新器
-        self.WORLD_UPDATER = None
-        # 区划更新器
-        self.ZONING_UPDATER = None
-        # 备选列表更新器
-        self.WAITLIST_UPDATER = None
-        # 资源面板更新器
-        self.RESOURCE_PANEL_UPDATER = None
-        # 综合实力面板更新器
-        self.POWER_PANEL_UPDATER = None
-        # 科研面板更新器
-        self.TECHNOLOGY_UPDATER = None
-        # 详情面板更新器
-        self.DETAIL_PANEL_UPDATER = None
-
         self.set_ui()
+        self.init_game_loop()
+
         self.show()
 
     def clear(self):
@@ -155,16 +154,20 @@ class MainGameGUI(QWidget):
         self.resize(width, height)
         self.setFixedSize(width, height)
         self.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.MSWindowsFixedSizeDialogHint)
-        self.setWindowTitle(CONST.WINDOW_TITLE)
+        self.setWindowTitle(self.title)
 
         self.init_world()
         self.init_zoning()
         self.init_wait_select_list()
+        self.init_research_panel()
+        self.init_detail_text()
 
         self.draw_resource_panel()
         self.draw_power_panel()
         self.draw_wait_select_panel()
         self.draw_wait_select_options()
+        self.draw_research_panel()
+        self.draw_detail_text()
 
     def draw_world(self, painter: QPainter):
         for i in range(CONST.WORLD_NUMBER + 1):
@@ -189,7 +192,8 @@ class MainGameGUI(QWidget):
 
     def draw_resource_panel(self):
         table = generate_table(self, 5, 3, 48, 26)
-        table.setGeometry(850, 1, 148, 135)
+        table.setGeometry(CONST.RESOURCE_PANEL_START_X, CONST.RESOURCE_PANEL_START_Y,
+                          CONST.RESOURCE_PANEL_WIDTh, CONST.RESOURCE_PANEL_HEIGHT)
         for row in range(5):
             table.item(row, 0).setText(CONST.RESOURCE_PANELS[row])
             table.item(row, 1).setText(display_number(self.RESOURCE_LIST[row][0]))
@@ -200,7 +204,8 @@ class MainGameGUI(QWidget):
 
     def draw_power_panel(self):
         table = generate_table(self, 3, 2, 73, 36)
-        table.setGeometry(850, 131, 148, 110)
+        table.setGeometry(CONST.POWER_PANEL_START_X, CONST.POWER_PANEL_START_Y,
+                          CONST.POWER_PANEL_WIDTH, CONST.POWER_PANEL_HEIGHT)
         for row in range(3):
             table.item(row, 0).setText(CONST.POWER_PANELS[row])
 
@@ -209,7 +214,8 @@ class MainGameGUI(QWidget):
 
     def draw_wait_select_panel(self):
         self.WAIT_SELECT_WIDGET = QListWidget(self)
-        self.WAIT_SELECT_WIDGET.setGeometry(605, 245, 243, 350)
+        self.WAIT_SELECT_WIDGET.setGeometry(CONST.WAIT_PANEL_START_X, CONST.WAIT_PANEL_START_Y,
+                                            CONST.WAIT_PANEL_WIDTH, CONST.WAIT_PANEL_HEIGHT)
 
         self.WAIT_SELECT_WIDGET.setStyleSheet("QListWidget{border:1px solid black; color:black; }"
                                               "QListWidget::Item{padding-top:0px; padding-bottom:4px; }"
@@ -224,6 +230,41 @@ class MainGameGUI(QWidget):
             widget = get_wait_item_widget(*item)
             self.WAIT_SELECT_WIDGET.addItem(option_item)
             self.WAIT_SELECT_WIDGET.setItemWidget(option_item, widget)
+
+    def draw_research_panel(self):
+        for i in range(3):
+            label = QLabel(self)
+            label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + i * 20,
+                              100, 18)
+            label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
+            t = self.RESEARCH_LABELS[i]
+            label.setText(f"{t[0]} : {t[1]}%")
+
+            rate_button = QPushButton(self)
+            rate_button.setGeometry(CONST.RESEARCH_RATE_BUTTON_START_X, CONST.RESEARCH_RATE_BUTTON_START_Y + i * 20, 30,
+                                    30)
+            rate_button.setText(str(self.TECHNOLOGY_RATES[i]))
+
+            transform_button = QPushButton(self)
+            transform_button.setGeometry(CONST.RESEARCH_TRANSFORM_START_X, CONST.RESEARCH_TRANSFORM_START_Y + i * 20,
+                                         30, 30)
+            transform_button.setText('T')
+
+    def draw_detail_text(self):
+        textBrowser = QTextBrowser(self)
+        textBrowser.setGeometry(CONST.DETAIL_START_X, CONST.DETAIL_START_Y,
+                                CONST.DETAIL_WIDTH, CONST.DETAIL_HEIGHT)
+        font = QFont()
+        font.setPixelSize(12)
+
+        textBrowser.setFont(font)
+        textBrowser.setText(self.DETAIL_TEXT)
+
+    def draw_time_flow(self):
+        years, o = divmod(self.TIME_FLOW, 360)
+        months, days = divmod(o, 30)
+
+        self.setWindowTitle(f"{self.title} 【TIME: {years}-{months}-{days}】")
 
     # 3 任务委托
     def init_world(self):
@@ -250,6 +291,36 @@ class MainGameGUI(QWidget):
         opts = '灵能理论', 30000, ['帝国所有人口消耗 -20%', '帝国所有人口效率 +50%', '军队战斗力 +100%']
         self.WAIT_SELECT_LIST = [opts for _ in range(30)]
 
+    def init_research_panel(self):
+        self.RESEARCH_LABELS = [
+            ("导弹防御系统", 81),
+            ("研究中心", 23),
+            ("灵能理论", 67)
+        ]
+
+    def init_detail_text(self):
+        # 为保证显示效果，单行长度不超过20
+        self.DETAIL_TEXT = """地块：
+--------------------
+环境： 还行 50%
+--------------------
+人口： 934
+  电工： 40
+  矿工： 20
+  农民： 40
+  工人： 21
+  冶金师： 24
+  研究员： 80
+--------------------
+产出：
+  能量：80 (100 - 20)
+  矿物：40 (80 - 40)
+  食物：20 (24 - 4)
+  物资：24 (64 - 40)
+  合金：94 (94 - 0)
+  科研点： 24
+"""
+
     # 4 事件重载
     def paintEvent(self, QPaintEvent):
         p = QPainter()
@@ -258,7 +329,62 @@ class MainGameGUI(QWidget):
         self.draw_zoning(p)
         p.end()
 
-    # Other
+    # 对外接口
+
+    # 更新主世界
+    def update_world(self, world_list: list):
+        self.WORLD_LIST = world_list[:]
+
+    # 更新区划
+    def update_zoning(self, zoning_list: list):
+        self.ZONING_LIST = zoning_list[:]
+
+    # 更新备选列表
+    def update_wait_select_list(self, wait_list: list):
+        self.WAIT_SELECT_LIST = wait_list[:]
+
+    # 更新资源面板
+    def update_resource_panel(self, resource_list: list):
+        self.RESOURCE_LIST = resource_list[:]
+
+    # 更新综合实力面板
+    def update_power_panel(self, power_list: list):
+        self.POWER_LIST = power_list[:]
+
+    # 更新科研面板
+    def update_research_list(self, research_list: list):
+        self.RESEARCH_LABELS = research_list[:]
+
+    def update_research_rates(self, rate_list: list):
+        self.TECHNOLOGY_RATES = rate_list[:]
+
+    # 更新详情面板
+    def update_detail_text(self, text: str):
+        self.DETAIL_TEXT = text
+
+    # 更新时间轴
+    def update_title_time(self, number: int):
+        self.TIME_FLOW += number
+        self.draw_time_flow()
+        self.update()
+
+    # 游戏界面刷新
+    def update_game(self):
+        self.draw_wait_select_options()
+        self.draw_resource_panel()
+        self.draw_power_panel()
+        self.draw_research_panel()
+        self.draw_detail_text()
+        self.draw_time_flow()
+        self.update()
+
+    def init_game_loop(self):
+        self.COMMISSION = GameLoop(None)
+        self.COMMISSION.updater.connect(self.update_title_time)
+        self.thread = QThread()
+        self.COMMISSION.moveToThread(self.thread)
+        self.thread.started.connect(self.COMMISSION.run)
+        self.thread.start()
 
 
 if __name__ == '__main__':
