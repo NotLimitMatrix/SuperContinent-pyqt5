@@ -30,6 +30,17 @@ from PyQt5.QtGui import (
 from static import *
 
 
+def from_xy_to_position(x, y, size, lt_x, lt_y):
+    return lt_x + x * size, lt_y + y * size
+
+
+def from_index_to_positioin(index, n, size, lt_x, lt_y):
+    # lt_x : left_top_x
+    # lt_y : left_top_y
+    x, y = divmod(index, n)
+    return from_xy_to_position(x, y, size, lt_x, lt_y)
+
+
 def get_wait_item_widget(name, cost, informations):
     name_label = QLabel(name)
     cost_label = QLabel(str(cost))
@@ -82,7 +93,7 @@ def generate_table(parent, row, col, h_size, v_size):
 
 # 1 把需要被更新的数据委托给子线程，由子线程完成游戏逻辑
 class GameLoop(QObject):
-    updater = pyqtSignal(int)
+    updater = pyqtSignal(dict)
 
     def __init__(self, main_process, *args, **kwargs):
         self.main_process = main_process
@@ -90,7 +101,21 @@ class GameLoop(QObject):
 
     def run(self):
         while True:
-            self.updater.emit(1)
+            content = {
+                'time_flow': 1,
+                'resources_list': [[10, -1], [20, 3], [34, 9], [128, 23], [0, -12]],
+                'power_list': (992, 849, 223),
+                'wait_select_list': {
+                    'type': 'technology',
+                    'options': [
+                        ['灵能理论', 30000, ['帝国所有人口消耗 -20%', '帝国所有人口效率 +50%', '军队战斗力 +100%']],
+                        ['灵能工程', 60000, ['生产物资所需矿物 -30%', '生产合金所需矿物 -30%', '军队生命值 +100%']],
+                        ['基因编码实验', 30000, ['人口增长率 +20%', '人口消耗食物 -50%', '军队生命值 +200%']],
+                        ['基因改造工程', 60000, ['人口增长率 +30%', ' 帝国所有人口消耗 -10%', '帝国所有人口效率 +30%']]
+                    ]
+                }
+            }
+            self.updater.emit(content)
             time.sleep(CONST.TIME_FLOW)
 
 
@@ -136,6 +161,9 @@ class MainGameGUI(QWidget):
         # wait select list
         self.WAIT_SELECT_WIDGET = None
 
+        self.GUI_RESOURCE_PANEL = None
+        self.GUI_POWER_PANEL = None
+
         self.set_ui()
         self.init_game_loop()
 
@@ -158,6 +186,9 @@ class MainGameGUI(QWidget):
 
         self.init_world()
         self.init_zoning()
+
+        self.init_resource_panel()
+        self.init_power_panel()
         self.init_wait_select_list()
         self.init_research_panel()
         self.init_detail_text()
@@ -170,47 +201,53 @@ class MainGameGUI(QWidget):
         self.draw_detail_text()
 
     def draw_world(self, painter: QPainter):
-        for i in range(CONST.WORLD_NUMBER + 1):
-            temp = CONST.WORLD_POSITION_START + i * self.WS
-            painter.drawLine(temp, CONST.WORLD_POSITION_START, temp, CONST.WORLD_POSITION_END)
-            painter.drawLine(CONST.WORLD_POSITION_START, temp, CONST.WORLD_POSITION_END, temp)
-
-        for rect, text in self.WORLD_LIST:
-            text = str(text) if text else ''
-            painter.drawText(rect, Qt.AlignCenter, text)
+        for i in range(self.WN):
+            for j in range(self.WN):
+                x, y = from_xy_to_position(i, j, self.WS, CONST.WORLD_POSITION_START, CONST.WORLD_POSITION_START)
+                painter.drawRect(x, y, self.WS, self.WS)
+        # for rect, text in self.WORLD_LIST:
+        #     text = str(text) if text else ''
+        #     painter.drawText(rect, Qt.AlignCenter, text)
 
     def draw_zoning(self, painter: QPainter):
-        for i in range(CONST.ZONING_NUMBER + 1):
-            temp_x = CONST.ZONING_POSITION_START_X + i * self.ZS
-            temp_y = CONST.ZONING_POSITION_START_Y + i * self.ZS
-            painter.drawLine(temp_x, CONST.ZONING_POSITION_START_Y, temp_x, CONST.ZONING_POSITION_END_Y)
-            painter.drawLine(CONST.ZONING_POSITION_START_X, temp_y, CONST.ZONING_POSITION_END_X, temp_y)
+        for i in range(self.ZN):
+            for j in range(self.ZN):
+                x, y = from_xy_to_position(i, j, self.ZS, CONST.ZONING_POSITION_START_X, CONST.ZONING_POSITION_START_Y)
+                painter.drawRect(x, y, self.ZS, self.ZS)
 
-        for rect, text in self.ZONING_LIST:
-            text = str(text) if text else ''
-            painter.drawText(rect, Qt.AlignCenter, text)
+        # for rect, text in self.ZONING_LIST:
+        #     text = str(text) if text else ''
+        #     painter.drawText(rect, Qt.AlignCenter, text)
 
-    def draw_resource_panel(self):
+    def init_resource_panel(self):
         table = generate_table(self, 5, 3, 48, 26)
         table.setGeometry(CONST.RESOURCE_PANEL_START_X, CONST.RESOURCE_PANEL_START_Y,
                           CONST.RESOURCE_PANEL_WIDTh, CONST.RESOURCE_PANEL_HEIGHT)
+
+        self.GUI_RESOURCE_PANEL = table
+
+    def draw_resource_panel(self):
         for row in range(5):
-            table.item(row, 0).setText(CONST.RESOURCE_PANELS[row])
-            table.item(row, 1).setText(display_number(self.RESOURCE_LIST[row][0]))
+            self.GUI_RESOURCE_PANEL.item(row, 0).setText(CONST.RESOURCE_PANELS[row])
+            self.GUI_RESOURCE_PANEL.item(row, 1).setText(display_number(self.RESOURCE_LIST[row][0]))
 
             n = self.RESOURCE_LIST[row][1]
             neg = '+' if n >= 0 else '-'
-            table.item(row, 2).setText(neg + display_number(abs(n)))
+            self.GUI_RESOURCE_PANEL.item(row, 2).setText(neg + display_number(abs(n)))
 
-    def draw_power_panel(self):
+    def init_power_panel(self):
         table = generate_table(self, 3, 2, 73, 36)
         table.setGeometry(CONST.POWER_PANEL_START_X, CONST.POWER_PANEL_START_Y,
                           CONST.POWER_PANEL_WIDTH, CONST.POWER_PANEL_HEIGHT)
+
+        self.GUI_POWER_PANEL = table
+
+    def draw_power_panel(self):
         for row in range(3):
-            table.item(row, 0).setText(CONST.POWER_PANELS[row])
+            self.GUI_POWER_PANEL.item(row, 0).setText(CONST.POWER_PANELS[row])
 
             n = self.POWER_LIST[row]
-            table.item(row, 1).setText('0' if n <= 0 else display_number(n))
+            self.GUI_POWER_PANEL.item(row, 1).setText('0' if n <= 0 else display_number(n))
 
     def draw_wait_select_panel(self):
         self.WAIT_SELECT_WIDGET = QListWidget(self)
@@ -223,10 +260,13 @@ class MainGameGUI(QWidget):
         self.WAIT_SELECT_WIDGET.setSelectionMode(QAbstractItemView.NoSelection)
 
     def draw_wait_select_options(self):
+        self.WAIT_SELECT_WIDGET.clear()
+        if self.WAIT_SELECT_LIST is None:
+            return
+
         for item in self.WAIT_SELECT_LIST:
             option_item = QListWidgetItem()
             option_item.setSizeHint(QSize(200, 120))
-
             widget = get_wait_item_widget(*item)
             self.WAIT_SELECT_WIDGET.addItem(option_item)
             self.WAIT_SELECT_WIDGET.setItemWidget(option_item, widget)
@@ -268,28 +308,29 @@ class MainGameGUI(QWidget):
 
     # 3 任务委托
     def init_world(self):
-        for i in range(self.WN * self.WN):
-            x, y = divmod(i, self.WN)
-
-            x1 = CONST.WORLD_POSITION_START + x * self.WS
-            y1 = CONST.WORLD_POSITION_START + y * self.WS
-
-            rect = QRect(x1, y1, self.WS, self.WS)
-            self.WORLD_LIST.append((rect, 0))
+        pass
+        # for i in range(self.WN * self.WN):
+        #     x, y = divmod(i, self.WN)
+        #
+        #     x1 = CONST.WORLD_POSITION_START + x * self.WS
+        #     y1 = CONST.WORLD_POSITION_START + y * self.WS
+        #
+        #     rect = QRect(x1, y1, self.WS, self.WS)
+        #     self.WORLD_LIST.append((rect, 0))
 
     def init_zoning(self):
-        for i in range(self.ZN * self.ZN):
-            x, y = divmod(i, self.ZN)
-
-            x1 = CONST.ZONING_POSITION_START_X + x * self.ZS
-            y1 = CONST.ZONING_POSITION_START_Y + y * self.ZS
-
-            rect = QRect(x1, y1, self.ZS, self.ZS)
-            self.ZONING_LIST.append((rect, 0))
+        pass
+        # for i in range(self.ZN * self.ZN):
+        #     x, y = divmod(i, self.ZN)
+        #
+        #     x1 = CONST.ZONING_POSITION_START_X + x * self.ZS
+        #     y1 = CONST.ZONING_POSITION_START_Y + y * self.ZS
+        #
+        #     rect = QRect(x1, y1, self.ZS, self.ZS)
+        #     self.ZONING_LIST.append((rect, 0))
 
     def init_wait_select_list(self):
-        opts = '灵能理论', 30000, ['帝国所有人口消耗 -20%', '帝国所有人口效率 +50%', '军队战斗力 +100%']
-        self.WAIT_SELECT_LIST = [opts for _ in range(30)]
+        self.WAIT_SELECT_LIST = None
 
     def init_research_panel(self):
         self.RESEARCH_LABELS = [
@@ -363,24 +404,38 @@ class MainGameGUI(QWidget):
         self.DETAIL_TEXT = text
 
     # 更新时间轴
-    def update_title_time(self, number: int):
-        self.TIME_FLOW += number
+    def update_game(self, content: dict):
+        self.TIME_FLOW += content.get('time_flow')
         self.draw_time_flow()
+
+        self.RESOURCE_LIST = content.get('resources_list')[:]
+        self.draw_resource_panel()
+
+        self.POWER_LIST = content.get('power_list')[:]
+        self.draw_power_panel()
+
+        wsl = content['wait_select_list']['options']
+        if wsl == self.WAIT_SELECT_LIST:
+            pass
+        else:
+            self.WAIT_SELECT_LIST = wsl[:]
+            self.draw_wait_select_options()
+
         self.update()
 
     # 游戏界面刷新
-    def update_game(self):
-        self.draw_wait_select_options()
-        self.draw_resource_panel()
-        self.draw_power_panel()
-        self.draw_research_panel()
-        self.draw_detail_text()
-        self.draw_time_flow()
-        self.update()
+    # def update_game(self):
+    #     self.draw_wait_select_options()
+    #     self.draw_resource_panel()
+    #     self.draw_power_panel()
+    #     self.draw_research_panel()
+    #     self.draw_detail_text()
+    #     self.draw_time_flow()
+    #     self.update()
 
     def init_game_loop(self):
         self.COMMISSION = GameLoop(None)
-        self.COMMISSION.updater.connect(self.update_title_time)
+        self.COMMISSION.updater.connect(self.update_game)
         self.thread = QThread()
         self.COMMISSION.moveToThread(self.thread)
         self.thread.started.connect(self.COMMISSION.run)

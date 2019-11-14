@@ -2,7 +2,7 @@ from models import *
 
 
 class CONST:
-    WORLD_NUMBER = 10
+    WORLD_NUMBER = 20
     ZONING_NUMBER = 5
 
     WINDOW_WIDTH = 1000
