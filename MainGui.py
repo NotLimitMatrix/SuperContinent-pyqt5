@@ -113,7 +113,33 @@ class GameLoop(QObject):
                         ['基因编码实验', 30000, ['人口增长率 +20%', '人口消耗食物 -50%', '军队生命值 +200%']],
                         ['基因改造工程', 60000, ['人口增长率 +30%', ' 帝国所有人口消耗 -10%', '帝国所有人口效率 +30%']]
                     ]
-                }
+                },
+                'research_label_list': [
+                    ("导弹防御系统", 81),
+                    ("研究中心", 23),
+                    ("灵能理论", 67)
+                ],
+                'detail_text': """地块：
+--------------------
+环境： 还行 50%
+--------------------
+人口： 934
+  电工： 40
+  矿工： 20
+  农民： 40
+  工人： 21
+  冶金师： 24
+  研究员： 80
+--------------------
+产出：
+  能量：80 (100 - 20)
+  矿物：40 (80 - 40)
+  食物：20 (24 - 4)
+  物资：24 (64 - 40)
+  合金：94 (94 - 0)
+  科研点： 24
+"""
+
             }
             self.updater.emit(content)
             time.sleep(CONST.TIME_FLOW)
@@ -163,6 +189,9 @@ class MainGameGUI(QWidget):
 
         self.GUI_RESOURCE_PANEL = None
         self.GUI_POWER_PANEL = None
+        self.GUI_RATE_BUTTON_LIST = list()
+        self.GUI_TRANSFORM_BUTTON_LIST = list()
+        self.GUI_DETAIL_TEXT = None
 
         self.set_ui()
         self.init_game_loop()
@@ -186,18 +215,25 @@ class MainGameGUI(QWidget):
 
         self.init_world()
         self.init_zoning()
+        self.init_transform_button()
 
         self.init_resource_panel()
-        self.init_power_panel()
-        self.init_wait_select_list()
-        self.init_research_panel()
-        self.init_detail_text()
-
         self.draw_resource_panel()
+
+        self.init_power_panel()
         self.draw_power_panel()
+
+        self.init_wait_select_list()
         self.draw_wait_select_panel()
         self.draw_wait_select_options()
+
+        self.init_research_panel()
         self.draw_research_panel()
+
+        self.init_rate_button()
+        self.draw_rate_button()
+
+        self.init_detail_text()
         self.draw_detail_text()
 
     def draw_world(self, painter: QPainter):
@@ -272,33 +308,45 @@ class MainGameGUI(QWidget):
             self.WAIT_SELECT_WIDGET.setItemWidget(option_item, widget)
 
     def draw_research_panel(self):
+        not_empty = bool(self.RESEARCH_LABELS)
+
         for i in range(3):
             label = QLabel(self)
             label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + i * 20,
                               100, 18)
             label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
-            t = self.RESEARCH_LABELS[i]
-            label.setText(f"{t[0]} : {t[1]}%")
+            if not_empty:
+                t = self.RESEARCH_LABELS[i]
+                label.setText(f"{t[0]} : {t[1]}%")
+            else:
+                label.setText('没有研究')
 
+    def init_rate_button(self):
+        for i in range(3):
             rate_button = QPushButton(self)
             rate_button.setGeometry(CONST.RESEARCH_RATE_BUTTON_START_X, CONST.RESEARCH_RATE_BUTTON_START_Y + i * 20, 30,
                                     30)
-            rate_button.setText(str(self.TECHNOLOGY_RATES[i]))
+            rate_button.setText('')
+            self.GUI_RATE_BUTTON_LIST.append(rate_button)
 
+    def draw_rate_button(self):
+        for i in range(3):
+            btn = self.GUI_RATE_BUTTON_LIST[i]
+            btn.setText(str(self.TECHNOLOGY_RATES[i]))
+
+    def init_transform_button(self):
+        for i in range(3):
             transform_button = QPushButton(self)
             transform_button.setGeometry(CONST.RESEARCH_TRANSFORM_START_X, CONST.RESEARCH_TRANSFORM_START_Y + i * 20,
                                          30, 30)
             transform_button.setText('T')
+            self.GUI_TRANSFORM_BUTTON_LIST.append(transform_button)
 
     def draw_detail_text(self):
-        textBrowser = QTextBrowser(self)
-        textBrowser.setGeometry(CONST.DETAIL_START_X, CONST.DETAIL_START_Y,
-                                CONST.DETAIL_WIDTH, CONST.DETAIL_HEIGHT)
-        font = QFont()
-        font.setPixelSize(12)
-
-        textBrowser.setFont(font)
-        textBrowser.setText(self.DETAIL_TEXT)
+        if self.DETAIL_TEXT is None:
+            self.GUI_DETAIL_TEXT.setText('暂无消息')
+        else:
+            self.GUI_DETAIL_TEXT.setText(self.DETAIL_TEXT)
 
     def draw_time_flow(self):
         years, o = divmod(self.TIME_FLOW, 360)
@@ -309,58 +357,27 @@ class MainGameGUI(QWidget):
     # 3 任务委托
     def init_world(self):
         pass
-        # for i in range(self.WN * self.WN):
-        #     x, y = divmod(i, self.WN)
-        #
-        #     x1 = CONST.WORLD_POSITION_START + x * self.WS
-        #     y1 = CONST.WORLD_POSITION_START + y * self.WS
-        #
-        #     rect = QRect(x1, y1, self.WS, self.WS)
-        #     self.WORLD_LIST.append((rect, 0))
 
     def init_zoning(self):
         pass
-        # for i in range(self.ZN * self.ZN):
-        #     x, y = divmod(i, self.ZN)
-        #
-        #     x1 = CONST.ZONING_POSITION_START_X + x * self.ZS
-        #     y1 = CONST.ZONING_POSITION_START_Y + y * self.ZS
-        #
-        #     rect = QRect(x1, y1, self.ZS, self.ZS)
-        #     self.ZONING_LIST.append((rect, 0))
 
     def init_wait_select_list(self):
         self.WAIT_SELECT_LIST = None
 
     def init_research_panel(self):
-        self.RESEARCH_LABELS = [
-            ("导弹防御系统", 81),
-            ("研究中心", 23),
-            ("灵能理论", 67)
-        ]
+        self.RESEARCH_LABELS = None
 
     def init_detail_text(self):
         # 为保证显示效果，单行长度不超过20
-        self.DETAIL_TEXT = """地块：
---------------------
-环境： 还行 50%
---------------------
-人口： 934
-  电工： 40
-  矿工： 20
-  农民： 40
-  工人： 21
-  冶金师： 24
-  研究员： 80
---------------------
-产出：
-  能量：80 (100 - 20)
-  矿物：40 (80 - 40)
-  食物：20 (24 - 4)
-  物资：24 (64 - 40)
-  合金：94 (94 - 0)
-  科研点： 24
-"""
+        textBrowser = QTextBrowser(self)
+        textBrowser.setGeometry(CONST.DETAIL_START_X, CONST.DETAIL_START_Y,
+                                CONST.DETAIL_WIDTH, CONST.DETAIL_HEIGHT)
+        font = QFont()
+        font.setPixelSize(12)
+
+        textBrowser.setFont(font)
+        self.GUI_DETAIL_TEXT = textBrowser
+        self.DETAIL_TEXT = None
 
     # 4 事件重载
     def paintEvent(self, QPaintEvent):
@@ -421,17 +438,15 @@ class MainGameGUI(QWidget):
             self.WAIT_SELECT_LIST = wsl[:]
             self.draw_wait_select_options()
 
+        detail_text = content.get('detail_text')
+        if detail_text == self.DETAIL_TEXT: \
+                pass
+        else:
+            self.DETAIL_TEXT = detail_text
+            self.draw_detail_text()
+
         self.update()
 
-    # 游戏界面刷新
-    # def update_game(self):
-    #     self.draw_wait_select_options()
-    #     self.draw_resource_panel()
-    #     self.draw_power_panel()
-    #     self.draw_research_panel()
-    #     self.draw_detail_text()
-    #     self.draw_time_flow()
-    #     self.update()
 
     def init_game_loop(self):
         self.COMMISSION = GameLoop(None)
