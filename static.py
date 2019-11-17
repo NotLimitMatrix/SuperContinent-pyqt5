@@ -73,17 +73,18 @@ def index_to_coordinate(index, size):
     return divmod(index, size)
 
 
-def display_number(number):
-    if number < 0:
-        quit(0)
-    elif number > 1000000000:
-        return "1G"
+def display_number(n):
+    number = abs(n)
+    neg = '-' if n < 0 else '+'
+    if number > 1000000000:
+        result = "1G"
     elif number > 999999:
-        return f"{number // 1000000}M"
+        result = f"{number // 1000000}M"
     elif number > 999:
-        return f"{number // 1000}K"
+        result = f"{number // 1000}K"
     else:
-        return str(number)
+        result = str(number)
+    return f"{neg}{result}"
 
 
 ALL_TECHNOLOGISTS = pkl_load("Models/technology.pkl")

@@ -46,10 +46,9 @@ def get_wait_item_widget(name, cost, informations):
     cost_label = QLabel(str(cost))
     line_label = QLabel("----------------------")
 
-    if len(informations) > 2:
-        info_label = QLabel(f"{informations[0]}\n{informations[1]}\n......")
-    else:
-        info_label = QLabel('\n'.join(informations))
+    if len(informations) > 3:
+        quit(0)
+    info_label = QLabel('\n'.join(informations))
 
     widget = QWidget()
 
@@ -101,46 +100,7 @@ class GameLoop(QObject):
 
     def run(self):
         while True:
-            content = {
-                'time_flow': 1,
-                'resources_list': [[10, -1], [20, 3], [34, 9], [128, 23], [0, -12]],
-                'power_list': (992, 849, 223),
-                'wait_select_list': {
-                    'type': 'technology',
-                    'options': [
-                        ['灵能理论', 30000, ['帝国所有人口消耗 -20%', '帝国所有人口效率 +50%', '军队战斗力 +100%']],
-                        ['灵能工程', 60000, ['生产物资所需矿物 -30%', '生产合金所需矿物 -30%', '军队生命值 +100%']],
-                        ['基因编码实验', 30000, ['人口增长率 +20%', '人口消耗食物 -50%', '军队生命值 +200%']],
-                        ['基因改造工程', 60000, ['人口增长率 +30%', ' 帝国所有人口消耗 -10%', '帝国所有人口效率 +30%']]
-                    ]
-                },
-                'research_label_list': [
-                    ("导弹防御系统", 81),
-                    ("研究中心", 23),
-                    ("灵能理论", 67)
-                ],
-                'detail_text': """地块：
---------------------
-环境： 还行 50%
---------------------
-人口： 934
-  电工： 40
-  矿工： 20
-  农民： 40
-  工人： 21
-  冶金师： 24
-  研究员： 80
---------------------
-产出：
-  能量：80 (100 - 20)
-  矿物：40 (80 - 40)
-  食物：20 (24 - 4)
-  物资：24 (64 - 40)
-  合金：94 (94 - 0)
-  科研点： 24
-"""
-
-            }
+            content = self.main_process.display()
             self.updater.emit(content)
             time.sleep(CONST.TIME_FLOW)
 
@@ -171,7 +131,7 @@ class MainGameGUI(QWidget):
         # 备选列表
         self.WAIT_SELECT_LIST = []
         # 资源列表
-        self.RESOURCE_LIST = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
+        self.RESOURCE_LIST = [('0', '0')] * 5
         # 综合实力列表
         self.POWER_LIST = [0, 0, 0]
         # 科研项目列表
@@ -184,6 +144,7 @@ class MainGameGUI(QWidget):
         self.DETAIL_TEXT = "Empty text"
         # 委托给外部对象
         self.COMMISSION = None
+        self.GAME_LOOP = game_loop
         # wait select list
         self.WAIT_SELECT_WIDGET = None
 
@@ -265,11 +226,13 @@ class MainGameGUI(QWidget):
     def draw_resource_panel(self):
         for row in range(5):
             self.GUI_RESOURCE_PANEL.item(row, 0).setText(CONST.RESOURCE_PANELS[row])
-            self.GUI_RESOURCE_PANEL.item(row, 1).setText(display_number(self.RESOURCE_LIST[row][0]))
-
-            n = self.RESOURCE_LIST[row][1]
-            neg = '+' if n >= 0 else '-'
-            self.GUI_RESOURCE_PANEL.item(row, 2).setText(neg + display_number(abs(n)))
+            self.GUI_RESOURCE_PANEL.item(row, 1).setText(self.RESOURCE_LIST[row][0])
+            self.GUI_RESOURCE_PANEL.item(row, 2).setText(self.RESOURCE_LIST[row][1])
+            # self.GUI_RESOURCE_PANEL.item(row, 1).setText(display_number(self.RESOURCE_LIST[row][0]))
+            #
+            # n = self.RESOURCE_LIST[row][1]
+            # neg = '+' if n >= 0 else '-'
+            # self.GUI_RESOURCE_PANEL.item(row, 2).setText(neg + display_number(abs(n)))
 
     def init_power_panel(self):
         table = generate_table(self, 3, 2, 73, 36)
@@ -387,39 +350,6 @@ class MainGameGUI(QWidget):
         self.draw_zoning(p)
         p.end()
 
-    # 对外接口
-
-    # 更新主世界
-    def update_world(self, world_list: list):
-        self.WORLD_LIST = world_list[:]
-
-    # 更新区划
-    def update_zoning(self, zoning_list: list):
-        self.ZONING_LIST = zoning_list[:]
-
-    # 更新备选列表
-    def update_wait_select_list(self, wait_list: list):
-        self.WAIT_SELECT_LIST = wait_list[:]
-
-    # 更新资源面板
-    def update_resource_panel(self, resource_list: list):
-        self.RESOURCE_LIST = resource_list[:]
-
-    # 更新综合实力面板
-    def update_power_panel(self, power_list: list):
-        self.POWER_LIST = power_list[:]
-
-    # 更新科研面板
-    def update_research_list(self, research_list: list):
-        self.RESEARCH_LABELS = research_list[:]
-
-    def update_research_rates(self, rate_list: list):
-        self.TECHNOLOGY_RATES = rate_list[:]
-
-    # 更新详情面板
-    def update_detail_text(self, text: str):
-        self.DETAIL_TEXT = text
-
     # 更新时间轴
     def update_game(self, content: dict):
         self.TIME_FLOW += content.get('time_flow')
@@ -447,9 +377,8 @@ class MainGameGUI(QWidget):
 
         self.update()
 
-
     def init_game_loop(self):
-        self.COMMISSION = GameLoop(None)
+        self.COMMISSION = GameLoop(self.GAME_LOOP)
         self.COMMISSION.updater.connect(self.update_game)
         self.thread = QThread()
         self.COMMISSION.moveToThread(self.thread)
