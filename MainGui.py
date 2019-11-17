@@ -133,7 +133,7 @@ class MainGameGUI(QWidget):
         # 资源列表
         self.RESOURCE_LIST = [('0', '0')] * 5
         # 综合实力列表
-        self.POWER_LIST = [0, 0, 0]
+        self.POWER_LIST = ['0'] * 3
         # 科研项目列表
         self.RESEARCH_LABELS = []
         # 科研点转化比例列表, Default = 3:3:4
@@ -244,9 +244,7 @@ class MainGameGUI(QWidget):
     def draw_power_panel(self):
         for row in range(3):
             self.GUI_POWER_PANEL.item(row, 0).setText(CONST.POWER_PANELS[row])
-
-            n = self.POWER_LIST[row]
-            self.GUI_POWER_PANEL.item(row, 1).setText('0' if n <= 0 else display_number(n))
+            self.GUI_POWER_PANEL.item(row, 1).setText(self.POWER_LIST[row])
 
     def draw_wait_select_panel(self):
         self.WAIT_SELECT_WIDGET = QListWidget(self)

@@ -64,6 +64,8 @@ class CONST:
     SPEED = 2
     TIME_FLOW = 1 / SPEED
 
+    RESOURCE_WEIGHT = [(1, 5), (1, 5), (1, 5), (3, 10), (3, 10)]
+
 
 def coordinate_to_index(i, j, size):
     return i * size + j
@@ -73,18 +75,24 @@ def index_to_coordinate(index, size):
     return divmod(index, size)
 
 
-def display_number(n):
-    number = abs(n)
-    neg = '-' if n < 0 else '+'
+def format_number(number):
     if number > 1000000000:
-        result = "1G"
+        return "1G"
     elif number > 999999:
-        result = f"{number // 1000000}M"
+        return f"{number // 1000000}M"
     elif number > 999:
-        result = f"{number // 1000}K"
+        return f"{number // 1000}K"
     else:
-        result = str(number)
-    return f"{neg}{result}"
+        return str(number)
+
+
+def display_number(n, have_neg=True):
+    if have_neg:
+        number = abs(n)
+        neg = '-' if n < 0 else '+'
+        return f"{neg}{format_number(number)}"
+    else:
+        return format_number(n) if n > 0 else '0'
 
 
 ALL_TECHNOLOGISTS = pkl_load("Models/technology.pkl")

@@ -4,7 +4,7 @@ import transform
 
 from MainGui import MainGameGUI, QApplication, sys
 
-from ResourcePanel import ResourcePanel
+from Panel import Panel
 
 
 class Tester:
@@ -61,17 +61,16 @@ class Tester:
 
 
 class TestGui:
-    def __init__(self, rpl):
-        self.RESOURCE_PANEL = rpl
-
-    def update_resource_panel(self):
-        return self.RESOURCE_PANEL.display()
+    def __init__(self, panel):
+        self.PANEL = panel
 
     def display(self):
+        panel_display = self.PANEL.display()
+
         return {
             'time_flow': 1,
-            'resources_list': self.update_resource_panel(),
-            'power_list': (992, 849, 223),
+            'resources_list': panel_display.get('resource'),
+            'power_list': panel_display.get('power'),
             'wait_select_list': {
                 'type': 'technology',
                 'options': [
@@ -116,8 +115,10 @@ def main():
     # tester = Tester(researcher, country)
     # tester.run()
     app = QApplication(sys.argv)
-    rpl = ResourcePanel()
-    game = MainGameGUI(TestGui(rpl))
+
+    panel = Panel()
+
+    game = MainGameGUI(TestGui(panel))
     sys.exit(app.exec_())
 
 
