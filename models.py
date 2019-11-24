@@ -56,11 +56,10 @@ class DynamicResource:
 
 
 class Technology:
-    def __init__(self, name, cost, front, weight, no, _type, loop):
+    def __init__(self, name, cost, front, no, _type, loop):
         self.name = name
         self.cost = cost
         self.front = front
-        self.weight = weight
         self.no = no  # 如果研究了互斥的科技，则该科技不能被研究
 
         self.type = _type  # 0: military, 1: civil, 2: beyond

@@ -67,10 +67,13 @@ class TestGui:
     def display(self):
         panel_display = self.PANEL.display()
 
+        resources_list = panel_display.get('resource')
+        power_list = panel_display.get('power')
+
         return {
             'time_flow': 1,
-            'resources_list': panel_display.get('resource'),
-            'power_list': panel_display.get('power'),
+            'resources_list': resources_list,
+            'power_list': power_list,
             'wait_select_list': {
                 'type': 'technology',
                 'options': [

@@ -104,7 +104,6 @@ class TechnologyTransformer(Transformer):
                 name=l[k],
                 cost=v.get('cost'),
                 front=v.get('front'),
-                weight=v.get('weight'),
                 _type=v.get('type'),
                 loop=False,
                 no=v.get('no')
@@ -127,7 +126,6 @@ class TechnologyTransformer(Transformer):
                     name=l[k],
                     cost=v.get('cost'),
                     front=v.get('front'),
-                    weight=v.get('weight'),
                     _type=v.get('type'),
                     no=v.get('no'),
                     loop=loop,

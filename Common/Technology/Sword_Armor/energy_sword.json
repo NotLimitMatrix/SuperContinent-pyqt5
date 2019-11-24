@@ -2,19 +2,16 @@
   "energy_sword_1": {
     "cost": 1000,
     "front": null,
-    "weight": 100,
     "type": 0
   },
   "energy_sword_2": {
     "cost": 1500,
     "front": "energy_sword_1",
-    "weight": 100,
     "type": 0
   },
   "energy_sword_3": {
     "cost": 2000,
     "front": "energy_sword_2",
-    "weight": 100,
     "type": 0
   },
   "energy_sword_4": {
@@ -23,13 +20,11 @@
       "energy_sword_3",
       "dark_energy_technology"
     ],
-    "weight": 100,
     "type": 0
   },
   "energy_sword_5": {
     "cost": 3000,
     "front": "energy_sword_4",
-    "weight": 100,
     "type": 0
   },
   "energy_sword_x": {
@@ -38,7 +33,6 @@
       "energy_sword_5",
       "psionic_theory"
     ],
-    "weight": 30,
     "type": 0
   }
 }
