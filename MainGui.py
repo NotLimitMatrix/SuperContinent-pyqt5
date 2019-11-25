@@ -13,6 +13,10 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QPushButton,
     QTextBrowser,
+    QAction,
+    QMenu,
+    QMainWindow,
+    qApp,
 )
 from PyQt5.QtCore import (
     QObject,
@@ -111,7 +115,7 @@ class Tester(QObject):
 
 
 # 3 游戏主界面
-class MainGameGUI(QWidget):
+class MainGameGUI(QMainWindow):
     def __init__(self, game_loop, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -197,24 +201,38 @@ class MainGameGUI(QWidget):
         self.init_detail_text()
         self.draw_detail_text()
 
+        self.set_menu_bar()
+
+    def set_menu_bar(self):
+        main_menu_bar = self.menuBar()
+
+        exitAct = QAction('退出游戏', self)
+        exitAct.triggered.connect(qApp.quit)
+
+        start_game = QAction("开始游戏", self)
+        load_data = QAction("载入存档", self)
+        export_data = QAction("保存存档", self)
+        net_game = QAction("联机对战", self)
+
+        game = main_menu_bar.addMenu('游戏')
+
+        game.addAction(start_game)
+        game.addAction(net_game)
+        game.addAction(load_data)
+        game.addAction(export_data)
+        game.addAction(exitAct)
+
     def draw_world(self, painter: QPainter):
         for i in range(self.WN):
             for j in range(self.WN):
                 x, y = from_xy_to_position(i, j, self.WS, CONST.WORLD_POSITION_START, CONST.WORLD_POSITION_START)
                 painter.drawRect(x, y, self.WS, self.WS)
-        # for rect, text in self.WORLD_LIST:
-        #     text = str(text) if text else ''
-        #     painter.drawText(rect, Qt.AlignCenter, text)
 
     def draw_zoning(self, painter: QPainter):
         for i in range(self.ZN):
             for j in range(self.ZN):
                 x, y = from_xy_to_position(i, j, self.ZS, CONST.ZONING_POSITION_START_X, CONST.ZONING_POSITION_START_Y)
                 painter.drawRect(x, y, self.ZS, self.ZS)
-
-        # for rect, text in self.ZONING_LIST:
-        #     text = str(text) if text else ''
-        #     painter.drawText(rect, Qt.AlignCenter, text)
 
     def init_resource_panel(self):
         table = generate_table(self, 5, 3, 48, 26)
@@ -228,11 +246,6 @@ class MainGameGUI(QWidget):
             self.GUI_RESOURCE_PANEL.item(row, 0).setText(CONST.RESOURCE_PANELS[row])
             self.GUI_RESOURCE_PANEL.item(row, 1).setText(self.RESOURCE_LIST[row][0])
             self.GUI_RESOURCE_PANEL.item(row, 2).setText(self.RESOURCE_LIST[row][1])
-            # self.GUI_RESOURCE_PANEL.item(row, 1).setText(display_number(self.RESOURCE_LIST[row][0]))
-            #
-            # n = self.RESOURCE_LIST[row][1]
-            # neg = '+' if n >= 0 else '-'
-            # self.GUI_RESOURCE_PANEL.item(row, 2).setText(neg + display_number(abs(n)))
 
     def init_power_panel(self):
         table = generate_table(self, 3, 2, 73, 36)
@@ -367,8 +380,8 @@ class MainGameGUI(QWidget):
             self.draw_wait_select_options()
 
         detail_text = content.get('detail_text')
-        if detail_text == self.DETAIL_TEXT: \
-                pass
+        if detail_text == self.DETAIL_TEXT:
+            pass
         else:
             self.DETAIL_TEXT = detail_text
             self.draw_detail_text()
