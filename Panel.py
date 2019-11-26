@@ -2,85 +2,71 @@ from models import Resource
 from static import display_number, CONST
 
 
-class OneResource:
+class DynamicResource:
     def __init__(self, name, storage, daily):
         self.name = name
         self.storage = storage
         self.daily = daily
+        self.rate = 1
 
     def __repr__(self):
         return f"<{self.name}: {self.storage} {self.daily}>"
 
     def update(self):
-        self.storage += self.daily
+        self.storage += self.daily * self.rate
 
     def display(self):
         return display_number(self.storage), display_number(self.daily)
 
-    def update_storage(self, n):
-        self.storage += n
-
-    def update_daily(self, n):
-        self.daily += n
-
-    def set_storage(self, n):
-        self.storage = n
-
-    def set_daily(self, n):
-        self.daily = n
-
 
 class Panel:
-    def __init__(self,
-                 energy=OneResource('能量', 100, 5),
-                 mineral=OneResource('矿物', 100, 5),
-                 food=OneResource('食物', 100, 5),
-                 alloys=OneResource('合金', 100, 5),
-                 consumer_goods=OneResource('物资', 100, 5),
-                 economic_power=0,
-                 military_power=0,
-                 research_point=100
-                 ):
-        self.energy = energy
-        self.mineral = mineral
-        self.food = food
-        self.alloys = alloys
-        self.consumer_goods = consumer_goods
-        self.ep = economic_power
-        self.mp = military_power
-        self.rp = research_point
+    def __init__(self):
+        self.resource_dict = {
+            'energy': DynamicResource('能量', 100, 5),
+            'mineral': DynamicResource('矿物', 100, 5),
+            'food': DynamicResource('食物', 100, 5),
+            'consumer_goods': DynamicResource('物资', 100, 5),
+            'alloys': DynamicResource('合金', 100, 5),
+        }
+
+        self.power_dict = {
+            'economic_power': 0,
+            'military_power': 0,
+            'research_point': 100
+        }
 
     def update(self):
-        self.energy.update()
-        self.mineral.update()
-        self.food.update()
-        self.consumer_goods.update()
-        self.alloys.update()
-        self.ep = self.to_economic_power()
-        self.mp = 0
+        for _, v in self.resource_dict.items():
+            v.update()
+        self.power_dict['economic_power'] = self.to_economic_power()
 
-    def set_military_power(self, mp):
-        self.mp = mp
-        self.update()
-
-    def set_research_point(self, rp):
-        self.rp = rp
-        self.update()
+    def get_one_power(self, dynamic_resource: DynamicResource, weight_tuple: tuple):
+        storage_weight, daily_weight = weight_tuple
+        return dynamic_resource.storage * storage_weight + dynamic_resource.daily * daily_weight
 
     def to_economic_power(self):
-        (es, ed), (ms, md), (fs, fd), (as_, ad), (cs, cd) = CONST.RESOURCE_WEIGHT
-        e_power = es * self.energy.storage + ed * self.energy.daily
-        m_power = ms * self.mineral.storage + md * self.mineral.daily
-        f_power = fs * self.food.storage + fd * self.food.daily
-        a_power = as_ * self.alloys.storage + ad * self.alloys.daily
-        c_power = cs * self.consumer_goods.storage + cd * self.consumer_goods.daily
-        return e_power + m_power + f_power + a_power + c_power
+        return sum([self.get_one_power(self.resource_dict.get(k), wt) for k, wt in
+                    zip(CONST.RESOURCE_KEYS, CONST.RESOURCE_WEIGHT)])
+
+    def set_mp(self, mp):
+        self.power_dict['military_power'] = mp
+
+    def set_rp(self, rp):
+        self.power_dict['research_point'] = rp
+
+    def display_resource(self):
+        return [self.resource_dict[k].display() for k in CONST.RESOURCE_KEYS]
+
+    def display_power(self):
+        ep = self.power_dict.get('economic_power')
+        mp = self.power_dict.get('military_power')
+        rp = self.power_dict.get('research_point')
+        return [display_number(ep, False), display_number(mp, False), display_number(rp, False)]
 
     def display(self):
         self.update()
 
         return {
-            'resource': [self.energy.display(), self.mineral.display(), self.food.display(),
-                         self.consumer_goods.display(), self.alloys.display()],
-            'power': [display_number(self.ep, False), display_number(self.mp, False), display_number(self.rp, False)]
+            'resource': self.display_resource(),
+            'power': self.display_power()
         }

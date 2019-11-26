@@ -54,7 +54,6 @@ class ResourceTransformer(Transformer):
 
         for k, v in self.gen_technologists(json_load(self.dir)):
             self._dict[k] = Resource(name=l[k], need=v.get('need'), rate=v.get('rate'))
-            self._dict[f"dynamic_{k}"] = DynamicResource(name=l[k], monthly=5, store=300, rate=1)
 
 
 class JobTransformer(Transformer):
@@ -106,7 +105,8 @@ class TechnologyTransformer(Transformer):
                 front=v.get('front'),
                 _type=v.get('type'),
                 loop=False,
-                no=v.get('no')
+                no=v.get('no'),
+                key=k
             )
 
     def transform_sword_armor(self, l):
@@ -129,7 +129,8 @@ class TechnologyTransformer(Transformer):
                     _type=v.get('type'),
                     no=v.get('no'),
                     loop=loop,
-                    level=level
+                    level=level,
+                    key=k
                 )
 
 
@@ -145,6 +146,7 @@ def main():
     for tf in transforms:
         tf.init(localisation)
         tf.transform()
+
 
 def test(file):
     import pprint

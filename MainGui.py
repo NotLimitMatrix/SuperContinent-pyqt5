@@ -157,6 +157,7 @@ class MainGameGUI(QMainWindow):
         self.GUI_RATE_BUTTON_LIST = list()
         self.GUI_TRANSFORM_BUTTON_LIST = list()
         self.GUI_DETAIL_TEXT = None
+        self.GUI_RESEARCH_LABELS = dict(mility=None, civil=None, beyond=None)
 
         self.set_ui()
         self.init_game_loop()
@@ -282,18 +283,27 @@ class MainGameGUI(QMainWindow):
             self.WAIT_SELECT_WIDGET.setItemWidget(option_item, widget)
 
     def draw_research_panel(self):
-        not_empty = bool(self.RESEARCH_LABELS)
-
         for i in range(3):
             label = QLabel(self)
             label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + i * 20,
                               100, 18)
             label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
-            if not_empty:
-                t = self.RESEARCH_LABELS[i]
-                label.setText(f"{t[0]} : {t[1]}%")
+
+        if self.RESEARCH_LABELS:
+            if len(self.RESEARCH_LABELS) != 3:
+                quit(0)
             else:
-                label.setText('没有研究')
+                m, c, b = self.RESEARCH_LABELS
+                m = f"{m[0]}: {m[1]}%" if m else "没有研究"
+                c = f"{c[0]}: {c[1]}%" if c else "没有研究"
+                b = f"{b[0]}: {b[1]}%" if b else "没有研究"
+                self.GUI_RESEARCH_LABELS['mility'].setText(m)
+                self.GUI_RESEARCH_LABELS['civil'].setText(c)
+                self.GUI_RESEARCH_LABELS['beyond'].setText(b)
+        else:
+            self.GUI_RESEARCH_LABELS['mility'].setText("没有研究")
+            self.GUI_RESEARCH_LABELS['civil'].setText("没有研究")
+            self.GUI_RESEARCH_LABELS['beyond'].setText("没有研究")
 
     def init_rate_button(self):
         for i in range(3):
@@ -339,6 +349,21 @@ class MainGameGUI(QMainWindow):
         self.WAIT_SELECT_LIST = None
 
     def init_research_panel(self):
+        mility_label = QLabel(self)
+        mility_label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y, 100, 18)
+        mility_label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
+        self.GUI_RESEARCH_LABELS['mility'] = mility_label
+
+        civil_label = QLabel(self)
+        civil_label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + 20, 100, 18)
+        civil_label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
+        self.GUI_RESEARCH_LABELS['civil'] = civil_label
+
+        beyond_label = QLabel(self)
+        beyond_label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + 40, 100, 18)
+        beyond_label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
+        self.GUI_RESEARCH_LABELS['beyond'] = beyond_label
+
         self.RESEARCH_LABELS = None
 
     def init_detail_text(self):
@@ -385,6 +410,9 @@ class MainGameGUI(QMainWindow):
         else:
             self.DETAIL_TEXT = detail_text
             self.draw_detail_text()
+
+        self.RESEARCH_LABELS = content.get('research_label_list')
+        self.draw_research_panel()
 
         self.update()
 

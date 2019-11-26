@@ -29,6 +29,7 @@ class CONST:
 
     WINDOW_TITLE = "Super Continent"
     RESOURCE_PANELS = ("能量", "矿物", "食物", "物资", "合金")
+    RESOURCE_KEYS = ('energy', 'mineral', 'food', 'alloys', 'consumer_goods')
     POWER_PANELS = ("经济", '军事', "科研")
 
     RIGHT_ALL_PANEL_START_X = 850
@@ -65,6 +66,8 @@ class CONST:
     TIME_FLOW = 1 / SPEED
 
     RESOURCE_WEIGHT = [(1, 5), (1, 5), (1, 5), (3, 10), (3, 10)]
+    INIT_RESEARCHER_RATES = (3, 3, 4)
+    USE_RESEARCHER_RATES = [i / 10 for i in INIT_RESEARCHER_RATES]
 
 
 def coordinate_to_index(i, j, size):

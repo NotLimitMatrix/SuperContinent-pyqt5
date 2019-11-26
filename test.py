@@ -1,6 +1,7 @@
 from Country import Country, ALL_TECHNOLOGISTS, ALL_KEYS
-from Researcher import Researcher
+from Researcher import *
 import transform
+from static import CONST
 
 from MainGui import MainGameGUI, QApplication, sys
 
@@ -28,41 +29,18 @@ class Tester:
             self._run(input_str)
             input_str = input("> ")
 
-    def show(self, technology_key):
-        technology = ALL_TECHNOLOGISTS[technology_key]
-        information = """
-        Technology: {name}
-        花费：{cost}
-        前置科技：{fronts}
-        循环科技：{yes}{level}
-        """
-        fronts = technology.front
-        str_fronts = ", ".join(fronts) if isinstance(fronts, list) else fronts
-        loop = technology.loop
-        yes = "是" if loop else "否"
-        try:
-            level = f"\n\t\t\t等级：{technology.level}"
-        except:
-            level = ''
-
-        print(information.format(name=technology.name, cost=technology.cost, fronts=str_fronts, yes=yes, level=level))
-
-    def research(self):
-        for i, item in enumerate(self.country.RESEARCH_ABLE):
-            temp = ALL_TECHNOLOGISTS[item]
-            print(f"{i}) {temp.name}, Cost:{temp.cost}")
-        index = int(input("> "))
-        select_technology = self.country.RESEARCH_ABLE[index]
-        self.be_test.research(select_technology, ALL_TECHNOLOGISTS)
-
-    def technologists(self):
-        for i, item in enumerate(ALL_KEYS):
-            print(f"{i}) {item}")
-
 
 class TestGui:
-    def __init__(self, panel):
+    def __init__(self, panel: Panel):
         self.PANEL = panel
+        # self.RESEARCHER = MainResearcher()
+
+        technologist = {
+            'mility': 'energy_armor_1',
+            'civil': None,
+            'beyond': 'dark_energy_technology'
+        }
+        # self.RESEARCHER.assign(self.PANEL.power_dict.get('research_point'), CONST.USE_RESEARCHER_RATES, technologist)
 
     def display(self):
         panel_display = self.PANEL.display()
@@ -83,11 +61,7 @@ class TestGui:
                     ['基因改造工程', 60000, ['人口增长率 +30%', ' 帝国所有人口消耗 -10%', '帝国所有人口效率 +30%']]
                 ]
             },
-            'research_label_list': [
-                ("导弹防御系统", 81),
-                ("研究中心", 23),
-                ("灵能理论", 67)
-            ],
+            'research_label_list': [None, None, None],
             'detail_text': """地块：
 --------------------
 环境： 还行 50%

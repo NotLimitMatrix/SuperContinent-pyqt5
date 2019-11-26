@@ -5,6 +5,7 @@ import json
 from os.path import join
 from os import listdir
 
+
 def json_load(file):
     with open(file, 'r', encoding='utf-8') as r:
         return json.load(r)
@@ -38,25 +39,8 @@ class Resource:
         return f"<Resource: {self.name}>"
 
 
-class DynamicResource:
-    def __init__(self, name, store, monthly, rate):
-        self.name = name
-        self.store = store
-        self.monthly = monthly
-        self.rate = rate
-
-    def update(self, monthlys, rates):
-        self.rate += sum(rates)
-        self.monthly += sum(monthlys)
-        self.store += self.monthly
-
-    def __repr__(self):
-        symbol = '+' if self.monthly > 0 else None
-        return f"<{self.name}: {self.store} {symbol}{self.monthly} >"
-
-
 class Technology:
-    def __init__(self, name, cost, front, no, _type, loop):
+    def __init__(self, name, cost, front, no, _type, loop, key):
         self.name = name
         self.cost = cost
         self.front = front
@@ -65,6 +49,8 @@ class Technology:
         self.type = _type  # 0: military, 1: civil, 2: beyond
         self.current = 0
         self.loop = loop
+
+        self.key = key
 
     def finish(self):
         return self.current >= self.cost
@@ -87,6 +73,7 @@ class SwordArmor(Technology):
     def update(self):
         if self.loop:
             self.cost = self.cost + (self.level - 5) * self.dynamic_cost
+
 
 class Consumption:
     def __init__(self, rate, materials):
