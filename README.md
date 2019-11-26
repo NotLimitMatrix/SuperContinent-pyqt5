@@ -1,3 +1,3 @@
 # SuperContinent
 
-![Main Gui](https://raw.github.com/soleperson/repositpry/master/SuperContinent/Doc/Images/main_gui.png)
+![Main Gui](https://github.com/soleperson/SuperContinent/blob/master/Doc/Images/main_gui.png)
