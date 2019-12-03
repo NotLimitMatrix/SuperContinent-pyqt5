@@ -18,7 +18,6 @@ class ItemWidget:
 
 
 class TechnologyItemWidget(ItemWidget):
-
     def to_widget(self):
         if self.type != KEY.TECHNOLOGY:
             raise ValueError("备选列表类型错误")
