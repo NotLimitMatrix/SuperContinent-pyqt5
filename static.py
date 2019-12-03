@@ -49,7 +49,7 @@ class CONST:
 
     RESEARCH_LABEL_START_X = RESEARCH_PANEL_START_X
     RESEARCH_LABEL_START_Y = RESEARCH_PANEL_START_Y
-    RESEARCE_LABEL_STYLE = "font: 10pt ;border-width: 1px;border-style: solid;border-color: rgb(0, 0, 0)"
+    RESEARCH_LABEL_STYLE = "font: 10pt ;border-width: 1px;border-style: solid;border-color: rgb(0, 0, 0)"
 
     RESEARCH_RATE_BUTTON_START_X = RESEARCH_PANEL_START_X + 100
     RESEARCH_RATE_BUTTON_START_Y = RESEARCH_PANEL_START_Y - 6
@@ -68,6 +68,20 @@ class CONST:
     RESOURCE_WEIGHT = [(1, 5), (1, 5), (1, 5), (3, 10), (3, 10)]
     INIT_RESEARCHER_RATES = (3, 3, 4)
     USE_RESEARCHER_RATES = [i / 10 for i in INIT_RESEARCHER_RATES]
+
+
+class KEY:
+    MILITARY = 'military'
+    CIVIL = 'civil'
+    BEYOND = 'beyond'
+    RESOURCE = 'resource'
+    TECHNOLOGY = 'technology'
+    ENERGY = 'energy'
+    MINERAL = 'mineral'
+    FOOD = 'food'
+    CONSUMER_GOODS = 'consumer_goods'
+    ALLOYS = 'alloys'
+    RESEARCH_POINT = 'research_point'
 
 
 def coordinate_to_index(i, j, size):
@@ -96,6 +110,17 @@ def display_number(n, have_neg=True):
         return f"{neg}{format_number(number)}"
     else:
         return format_number(n) if n > 0 else '0'
+
+
+def from_xy_to_position(x, y, size, lt_x, lt_y):
+    return lt_x + x * size, lt_y + y * size
+
+
+def from_index_to_positioin(index, n, size, lt_x, lt_y):
+    # lt_x : left_top_x
+    # lt_y : left_top_y
+    x, y = divmod(index, n)
+    return from_xy_to_position(x, y, size, lt_x, lt_y)
 
 
 ALL_TECHNOLOGISTS = pkl_load("Models/technology.pkl")

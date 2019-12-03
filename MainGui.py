@@ -22,7 +22,6 @@ from PyQt5.QtCore import (
     QObject,
     pyqtSignal,
     Qt,
-    QRect,
     QSize,
     QThread,
 )
@@ -32,69 +31,32 @@ from PyQt5.QtGui import (
 )
 
 from static import *
+from ItemWidget import *
 
 
-def from_xy_to_position(x, y, size, lt_x, lt_y):
-    return lt_x + x * size, lt_y + y * size
-
-
-def from_index_to_positioin(index, n, size, lt_x, lt_y):
-    # lt_x : left_top_x
-    # lt_y : left_top_y
-    x, y = divmod(index, n)
-    return from_xy_to_position(x, y, size, lt_x, lt_y)
-
-
-def get_wait_item_widget(name, cost, informations):
-    name_label = QLabel(name)
-    cost_label = QLabel(str(cost))
-    line_label = QLabel("----------------------")
-
-    if len(informations) > 3:
-        quit(0)
-    info_label = QLabel('\n'.join(informations))
-
-    widget = QWidget()
-
-    main_layout = QVBoxLayout()
-    top_layout = QHBoxLayout()
-
-    top_layout.addWidget(name_label)
-    top_layout.addWidget(cost_label)
-
-    main_layout.addLayout(top_layout)
-    main_layout.addWidget(line_label)
-    main_layout.addWidget(info_label)
-
-    widget.setLayout(main_layout)
-    widget.setStyleSheet("background-color:rgb(176,196,222)")
-    return widget
-
-
-def generate_table(parent, row, col, h_size, v_size):
+def GenerateTable(parent, r, c, hSize, vSize):
     table = QTableWidget(parent)
-    table.setRowCount(row)
-    table.setColumnCount(col)
+    table.setRowCount(r)
+    table.setColumnCount(c)
     table.horizontalHeader().setVisible(False)
-    table.horizontalHeader().setDefaultSectionSize(h_size)
+    table.horizontalHeader().setDefaultSectionSize(hSize)
     table.horizontalHeader().setHighlightSections(False)
     table.verticalHeader().setVisible(False)
-    table.verticalHeader().setDefaultSectionSize(v_size)
+    table.verticalHeader().setDefaultSectionSize(vSize)
     table.verticalHeader().setHighlightSections(False)
 
     font = QFont()
     font.setPixelSize(11)
 
-    for r in range(row):
-        for c, item in enumerate(QTableWidgetItem() for _ in range(col)):
+    for r_ in range(r):
+        for c_, item in enumerate(QTableWidgetItem() for _ in range(c)):
             item.setTextAlignment(Qt.AlignCenter)
             item.setFont(font)
-            table.setItem(r, c, item)
+            table.setItem(r_, c_, item)
 
     return table
 
 
-# 1 把需要被更新的数据委托给子线程，由子线程完成游戏逻辑
 class GameLoop(QObject):
     updater = pyqtSignal(dict)
 
@@ -109,100 +71,237 @@ class GameLoop(QObject):
             time.sleep(CONST.TIME_FLOW)
 
 
-# 2 测试子程序，临时验证用
-class Tester(QObject):
-    pass
+class OneResearchPanel:
+    def __init__(self, parent):
+        self.parent = parent
+
+        self.label = QLabel(self.parent)
+        self.rate_button = QPushButton(self.parent)
+        self.transform_button = QPushButton(self.parent)
+
+    def init_label(self, x, y):
+        self.label.setGeometry(x, y, 100, 18)
+        self.label.setStyleSheet(CONST.RESEARCH_LABEL_STYLE)
+        self.label.setText("没有研究")
+
+    def init_rate_button(self, x, y):
+        self.rate_button.setGeometry(x, y, 30, 30)
+        self.rate_button.setText('')
+        self.rate_button.clicked.connect(self.update_rate)
+
+    def init_transform_button(self, x, y):
+        self.transform_button.setGeometry(x, y, 30, 30)
+        self.transform_button.setText('T')
+        self.transform_button.clicked.connect(self.update_transform)
+
+    def update_rate(self):
+        pass
+
+    def update_transform(self):
+        pass
+
+    def clear(self):
+        self.label.setText("没有研究")
+
+    def display(self, info: tuple):
+        if info:
+            self.label.setText(f"{info[0]}: {info[1]}")
+        else:
+            self.clear()
 
 
-# 3 游戏主界面
 class MainGameGUI(QMainWindow):
-    def __init__(self, game_loop, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.title = CONST.WINDOW_TITLE
-
         self.WN = CONST.WORLD_NUMBER
         self.WS = CONST.WORLD_SQUARE_SIZE
         self.ZN = CONST.ZONING_NUMBER
         self.ZS = CONST.ZONING_SQUARE_SIZE
+        self.title = CONST.WINDOW_TITLE
 
+        self.COMMISSION = None
+
+        # 时间进度
         self.TIME_FLOW = 0
 
-        # 主世界地块列表
+        # 主世界和区划
         self.WORLD_LIST = []
-        # 区划列表
         self.ZONING_LIST = []
-        # 备选列表
-        self.WAIT_SELECT_LIST = []
-        # 资源列表
-        self.RESOURCE_LIST = [('0', '0')] * 5
-        # 综合实力列表
-        self.POWER_LIST = ['0'] * 3
-        # 科研项目列表
-        self.RESEARCH_LABELS = []
-        # 科研点转化比例列表, Default = 3:3:4
-        self.TECHNOLOGY_RATES = [3, 3, 4]
-        # 选择按钮列表, 三个按钮对应触发三个科技的备选列表
-        self.TECHNOLOGY_TRANSFORMS = []
-        # 详细信息
-        self.DETAIL_TEXT = "Empty text"
-        # 委托给外部对象
-        self.COMMISSION = None
-        self.GAME_LOOP = game_loop
-        # wait select list
-        self.WAIT_SELECT_WIDGET = None
 
-        self.GUI_RESOURCE_PANEL = None
-        self.GUI_POWER_PANEL = None
-        self.GUI_RATE_BUTTON_LIST = list()
-        self.GUI_TRANSFORM_BUTTON_LIST = list()
-        self.GUI_DETAIL_TEXT = None
-        self.GUI_RESEARCH_LABELS = dict(mility=None, civil=None, beyond=None)
+        # 备选列表GUI和Item列表
+        self.GUI_WAIT_SELECT = self.init_GUI_WAIT_SELECT()
+        self.WAIT_SELECT_ITEMS = []
 
-        self.set_ui()
-        self.init_game_loop()
+        # 资源面板GUI和资源信息列表
+        self.GUI_RESOURCE_PANEL = self.init_GUI_RESEARCE_PANEL()
+        self.RESOURCE_LIST = [['0', '0'], ['0', '0'], ['0', '0'], ['0', '0'], ['0', '0']]
+
+        # 综合实力面板GUI和实力数据列表
+        self.GUI_POWER_PANEL = self.init_GUI_POWER_PANEL()
+        self.POWER_LIST = ['0', '0', '0']
+
+        # 科研面板GUI和科研信息列表
+        self.GUI_RESEARCH_PAENL = self.init_GUI_RESEARCH_PANEL()
+        self.RESEARCH_INFO_LIST = {
+            KEY.MILITARY: (None, None),
+            KEY.CIVIL: (None, None),
+            KEY.BEYOND: (None, None)
+        }
+
+        # 情报GUI和情报内容
+        self.GUI_DETAIL_TEXT = self.init_GUI_DETAIL_TEXT()
+        self.DETAIL_TEXT = '没有信息'
+
+        self.set_UI()
+        self.set_menu_bar()
 
         self.show()
 
-    def clear(self):
-        self.DETAIL_TEXT = "Empty text"
-        self.WAIT_SELECT_LIST = []
+    def init_GUI_WAIT_SELECT(self):
+        wsw = QListWidget(self)
+        wsw.setGeometry(CONST.WAIT_PANEL_START_X, CONST.WAIT_PANEL_START_Y,
+                        CONST.WAIT_PANEL_WIDTH, CONST.WAIT_PANEL_HEIGHT)
+        wsw.setStyleSheet("QListWidget{border:1px solid black; color:black; }"
+                          "QListWidget::Item{padding-top:0px; padding-bottom:4px; }")
+        wsw.setSelectionMode(QAbstractItemView.NoSelection)
+        return wsw
+
+    def init_GUI_RESEARCE_PANEL(self):
+        table = GenerateTable(self, 5, 3, 48, 26)
+        table.setGeometry(CONST.RESOURCE_PANEL_START_X, CONST.RESOURCE_PANEL_START_Y,
+                          CONST.RESOURCE_PANEL_WIDTh, CONST.RESOURCE_PANEL_HEIGHT)
+
+        return table
+
+    def init_GUI_POWER_PANEL(self):
+        table = GenerateTable(self, 3, 2, 73, 36)
+        table.setGeometry(CONST.POWER_PANEL_START_X, CONST.POWER_PANEL_START_Y,
+                          CONST.POWER_PANEL_WIDTH, CONST.POWER_PANEL_HEIGHT)
+
+        return table
+
+    def init_GUI_RESEARCH_PANEL(self):
+        r_military = OneResearchPanel(self)
+        r_military.init_label(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y)
+        r_military.init_rate_button(CONST.RESEARCH_RATE_BUTTON_START_X, CONST.RESEARCH_RATE_BUTTON_START_Y)
+        r_military.init_transform_button(CONST.RESEARCH_TRANSFORM_START_X, CONST.RESEARCH_TRANSFORM_START_Y)
+
+        r_civil = OneResearchPanel(self)
+        r_civil.init_label(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + 20)
+        r_civil.init_rate_button(CONST.RESEARCH_RATE_BUTTON_START_X, CONST.RESEARCH_RATE_BUTTON_START_Y + 20)
+        r_civil.init_transform_button(CONST.RESEARCH_TRANSFORM_START_X, CONST.RESEARCH_TRANSFORM_START_Y + 20)
+
+        r_beyond = OneResearchPanel(self)
+        r_beyond.init_label(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + 40)
+        r_beyond.init_rate_button(CONST.RESEARCH_RATE_BUTTON_START_X, CONST.RESEARCH_RATE_BUTTON_START_Y + 40)
+        r_beyond.init_transform_button(CONST.RESEARCH_TRANSFORM_START_X, CONST.RESEARCH_TRANSFORM_START_Y + 40)
+
+        return {
+            KEY.MILITARY: r_military,
+            KEY.CIVIL: r_civil,
+            KEY.BEYOND: r_beyond
+        }
+
+    def init_GUI_DETAIL_TEXT(self):
+        textBrowser = QTextBrowser(self)
+        textBrowser.setGeometry(CONST.DETAIL_START_X, CONST.DETAIL_START_Y,
+                                CONST.DETAIL_WIDTH, CONST.DETAIL_HEIGHT)
+        font = QFont()
+        font.setPixelSize(12)
+
+        textBrowser.setFont(font)
+        return textBrowser
+
+    def init_GameLoop(self, game_loop):
+        self.COMMISSION = GameLoop(game_loop)
+        self.COMMISSION.updater.connect(self.update_game)
+        self.thread = QThread()
+        self.COMMISSION.moveToThread(self.thread)
+        self.thread.started.connect(self.COMMISSION.run)
+        self.thread.start()
+
+    def update_time(self):
+        years, o = divmod(self.TIME_FLOW, 360)
+        months, days = divmod(o, 30)
+        self.setWindowTitle(f"{self.title} 【TIME: {years}-{months}-{days}】")
+
+    def update_WORLD(self, painter: QPainter):
+        for i in range(self.WN):
+            for j in range(self.WN):
+                x, y = from_xy_to_position(i, j, self.WS, CONST.WORLD_POSITION_START, CONST.WORLD_POSITION_START)
+                painter.drawRect(x, y, self.WS, self.WS)
+
+    def update_ZONING(self, painter: QPainter):
+        for i in range(self.ZN):
+            for j in range(self.ZN):
+                x, y = from_xy_to_position(i, j, self.ZS, CONST.ZONING_POSITION_START_X, CONST.ZONING_POSITION_START_Y)
+                painter.drawRect(x, y, self.ZS, self.ZS)
+
+    def update_GUI_WAIT_SELECT(self):
+        self.GUI_WAIT_SELECT.clear()
+        if self.WAIT_SELECT_ITEMS is None:
+            return
+
+        for item in self.WAIT_SELECT_ITEMS:
+            option_item = QListWidgetItem()
+            option_item.setSizeHint(QSize(200, 120))
+
+            W = TechnologyItemWidget(t=KEY.TECHNOLOGY, datas=item).to_widget()
+            self.GUI_WAIT_SELECT.addItem(option_item)
+            self.GUI_WAIT_SELECT.setItemWidget(option_item, W)
+
+    def update_GUI_RESOURCE_PANEL(self):
+        for row in range(5):
+            stroage, daily = self.RESOURCE_LIST[row]
+            self.GUI_RESOURCE_PANEL.item(row, 0).setText(CONST.RESOURCE_PANELS[row])
+            self.GUI_RESOURCE_PANEL.item(row, 1).setText(stroage)
+            self.GUI_RESOURCE_PANEL.item(row, 2).setText(daily)
+
+    def update_GUI_POWER_PANEL(self):
+        for row in range(3):
+            self.GUI_POWER_PANEL.item(row, 0).setText(CONST.POWER_PANELS[row])
+            self.GUI_POWER_PANEL.item(row, 1).setText(self.POWER_LIST[row])
+
+    def update_GUI_RESEARCH_PANEL(self):
+        for key in [KEY.MILITARY, KEY.CIVIL, KEY.BEYOND]:
+            info = self.RESEARCH_INFO_LIST.get(key)
+            panel = self.GUI_RESEARCH_PAENL.get(key)
+            panel.display(info)
+
+    def update_GUI_DETAIL_TEXT(self):
+        if self.DETAIL_TEXT is None:
+            self.GUI_DETAIL_TEXT.setText('没有消息')
+        else:
+            self.GUI_DETAIL_TEXT.setText(self.DETAIL_TEXT)
+
+    def update_game(self, content):
+        self.TIME_FLOW += content.get('time_flow')
+        self.update_time()
+
+        self.RESOURCE_LIST = content.get('resources_list')[:]
+        self.update_GUI_RESOURCE_PANEL()
+
+        self.POWER_LIST = content.get('power_list')[:]
+        self.update_GUI_POWER_PANEL()
+
+        wsl = content['wait_select_list']['options']
+        if wsl == self.WAIT_SELECT_ITEMS:
+            pass
+        else:
+            self.WAIT_SELECT_ITEMS = wsl[:]
+            self.update_GUI_WAIT_SELECT()
+
+        dtt = content['detail_text']
+        if dtt == self.DETAIL_TEXT:
+            pass
+        else:
+            self.DETAIL_TEXT = dtt
+            self.update_GUI_DETAIL_TEXT()
+
+        self.RESEARCH_INFO_LIST = content.get('research_label_list')
+        self.update_GUI_RESEARCH_PANEL()
+
         self.update()
-
-    # 2 绘制主界面
-    def set_ui(self):
-        width = CONST.WINDOW_WIDTH + 1
-        height = CONST.WINDOW_HEIGHT + 1
-
-        self.resize(width, height)
-        self.setFixedSize(width, height)
-        self.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.MSWindowsFixedSizeDialogHint)
-        self.setWindowTitle(self.title)
-
-        self.init_world()
-        self.init_zoning()
-        self.init_transform_button()
-
-        self.init_resource_panel()
-        self.draw_resource_panel()
-
-        self.init_power_panel()
-        self.draw_power_panel()
-
-        self.init_wait_select_list()
-        self.draw_wait_select_panel()
-        self.draw_wait_select_options()
-
-        self.init_research_panel()
-        self.draw_research_panel()
-
-        self.init_rate_button()
-        self.draw_rate_button()
-
-        self.init_detail_text()
-        self.draw_detail_text()
-
-        self.set_menu_bar()
 
     def set_menu_bar(self):
         main_menu_bar = self.menuBar()
@@ -223,211 +322,18 @@ class MainGameGUI(QMainWindow):
         game.addAction(export_data)
         game.addAction(exitAct)
 
-    def draw_world(self, painter: QPainter):
-        for i in range(self.WN):
-            for j in range(self.WN):
-                x, y = from_xy_to_position(i, j, self.WS, CONST.WORLD_POSITION_START, CONST.WORLD_POSITION_START)
-                painter.drawRect(x, y, self.WS, self.WS)
+    def set_UI(self):
+        width = CONST.WINDOW_WIDTH + 1
+        height = CONST.WINDOW_HEIGHT + 1
 
-    def draw_zoning(self, painter: QPainter):
-        for i in range(self.ZN):
-            for j in range(self.ZN):
-                x, y = from_xy_to_position(i, j, self.ZS, CONST.ZONING_POSITION_START_X, CONST.ZONING_POSITION_START_Y)
-                painter.drawRect(x, y, self.ZS, self.ZS)
+        self.resize(width, height)
+        self.setFixedSize(width, height)
+        self.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.MSWindowsFixedSizeDialogHint)
+        self.setWindowTitle(self.title)
 
-    def init_resource_panel(self):
-        table = generate_table(self, 5, 3, 48, 26)
-        table.setGeometry(CONST.RESOURCE_PANEL_START_X, CONST.RESOURCE_PANEL_START_Y,
-                          CONST.RESOURCE_PANEL_WIDTh, CONST.RESOURCE_PANEL_HEIGHT)
-
-        self.GUI_RESOURCE_PANEL = table
-
-    def draw_resource_panel(self):
-        for row in range(5):
-            self.GUI_RESOURCE_PANEL.item(row, 0).setText(CONST.RESOURCE_PANELS[row])
-            self.GUI_RESOURCE_PANEL.item(row, 1).setText(self.RESOURCE_LIST[row][0])
-            self.GUI_RESOURCE_PANEL.item(row, 2).setText(self.RESOURCE_LIST[row][1])
-
-    def init_power_panel(self):
-        table = generate_table(self, 3, 2, 73, 36)
-        table.setGeometry(CONST.POWER_PANEL_START_X, CONST.POWER_PANEL_START_Y,
-                          CONST.POWER_PANEL_WIDTH, CONST.POWER_PANEL_HEIGHT)
-
-        self.GUI_POWER_PANEL = table
-
-    def draw_power_panel(self):
-        for row in range(3):
-            self.GUI_POWER_PANEL.item(row, 0).setText(CONST.POWER_PANELS[row])
-            self.GUI_POWER_PANEL.item(row, 1).setText(self.POWER_LIST[row])
-
-    def draw_wait_select_panel(self):
-        self.WAIT_SELECT_WIDGET = QListWidget(self)
-        self.WAIT_SELECT_WIDGET.setGeometry(CONST.WAIT_PANEL_START_X, CONST.WAIT_PANEL_START_Y,
-                                            CONST.WAIT_PANEL_WIDTH, CONST.WAIT_PANEL_HEIGHT)
-
-        self.WAIT_SELECT_WIDGET.setStyleSheet("QListWidget{border:1px solid black; color:black; }"
-                                              "QListWidget::Item{padding-top:0px; padding-bottom:4px; }"
-                                              )
-        self.WAIT_SELECT_WIDGET.setSelectionMode(QAbstractItemView.NoSelection)
-
-    def draw_wait_select_options(self):
-        self.WAIT_SELECT_WIDGET.clear()
-        if self.WAIT_SELECT_LIST is None:
-            return
-
-        for item in self.WAIT_SELECT_LIST:
-            option_item = QListWidgetItem()
-            option_item.setSizeHint(QSize(200, 120))
-            widget = get_wait_item_widget(*item)
-            self.WAIT_SELECT_WIDGET.addItem(option_item)
-            self.WAIT_SELECT_WIDGET.setItemWidget(option_item, widget)
-
-    def draw_research_panel(self):
-        for i in range(3):
-            label = QLabel(self)
-            label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + i * 20,
-                              100, 18)
-            label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
-
-        if self.RESEARCH_LABELS:
-            if len(self.RESEARCH_LABELS) != 3:
-                quit(0)
-            else:
-                m, c, b = self.RESEARCH_LABELS
-                m = f"{m[0]}: {m[1]}%" if m else "没有研究"
-                c = f"{c[0]}: {c[1]}%" if c else "没有研究"
-                b = f"{b[0]}: {b[1]}%" if b else "没有研究"
-                self.GUI_RESEARCH_LABELS['mility'].setText(m)
-                self.GUI_RESEARCH_LABELS['civil'].setText(c)
-                self.GUI_RESEARCH_LABELS['beyond'].setText(b)
-        else:
-            self.GUI_RESEARCH_LABELS['mility'].setText("没有研究")
-            self.GUI_RESEARCH_LABELS['civil'].setText("没有研究")
-            self.GUI_RESEARCH_LABELS['beyond'].setText("没有研究")
-
-    def init_rate_button(self):
-        for i in range(3):
-            rate_button = QPushButton(self)
-            rate_button.setGeometry(CONST.RESEARCH_RATE_BUTTON_START_X, CONST.RESEARCH_RATE_BUTTON_START_Y + i * 20, 30,
-                                    30)
-            rate_button.setText('')
-            self.GUI_RATE_BUTTON_LIST.append(rate_button)
-
-    def draw_rate_button(self):
-        for i in range(3):
-            btn = self.GUI_RATE_BUTTON_LIST[i]
-            btn.setText(str(self.TECHNOLOGY_RATES[i]))
-
-    def init_transform_button(self):
-        for i in range(3):
-            transform_button = QPushButton(self)
-            transform_button.setGeometry(CONST.RESEARCH_TRANSFORM_START_X, CONST.RESEARCH_TRANSFORM_START_Y + i * 20,
-                                         30, 30)
-            transform_button.setText('T')
-            self.GUI_TRANSFORM_BUTTON_LIST.append(transform_button)
-
-    def draw_detail_text(self):
-        if self.DETAIL_TEXT is None:
-            self.GUI_DETAIL_TEXT.setText('暂无消息')
-        else:
-            self.GUI_DETAIL_TEXT.setText(self.DETAIL_TEXT)
-
-    def draw_time_flow(self):
-        years, o = divmod(self.TIME_FLOW, 360)
-        months, days = divmod(o, 30)
-
-        self.setWindowTitle(f"{self.title} 【TIME: {years}-{months}-{days}】")
-
-    # 3 任务委托
-    def init_world(self):
-        pass
-
-    def init_zoning(self):
-        pass
-
-    def init_wait_select_list(self):
-        self.WAIT_SELECT_LIST = None
-
-    def init_research_panel(self):
-        mility_label = QLabel(self)
-        mility_label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y, 100, 18)
-        mility_label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
-        self.GUI_RESEARCH_LABELS['mility'] = mility_label
-
-        civil_label = QLabel(self)
-        civil_label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + 20, 100, 18)
-        civil_label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
-        self.GUI_RESEARCH_LABELS['civil'] = civil_label
-
-        beyond_label = QLabel(self)
-        beyond_label.setGeometry(CONST.RESEARCH_LABEL_START_X, CONST.RESEARCH_LABEL_START_Y + 40, 100, 18)
-        beyond_label.setStyleSheet(CONST.RESEARCE_LABEL_STYLE)
-        self.GUI_RESEARCH_LABELS['beyond'] = beyond_label
-
-        self.RESEARCH_LABELS = None
-
-    def init_detail_text(self):
-        # 为保证显示效果，单行长度不超过20
-        textBrowser = QTextBrowser(self)
-        textBrowser.setGeometry(CONST.DETAIL_START_X, CONST.DETAIL_START_Y,
-                                CONST.DETAIL_WIDTH, CONST.DETAIL_HEIGHT)
-        font = QFont()
-        font.setPixelSize(12)
-
-        textBrowser.setFont(font)
-        self.GUI_DETAIL_TEXT = textBrowser
-        self.DETAIL_TEXT = None
-
-    # 4 事件重载
     def paintEvent(self, QPaintEvent):
         p = QPainter()
         p.begin(self)
-        self.draw_world(p)
-        self.draw_zoning(p)
+        self.update_WORLD(p)
+        self.update_ZONING(p)
         p.end()
-
-    # 更新时间轴
-    def update_game(self, content: dict):
-        self.TIME_FLOW += content.get('time_flow')
-        self.draw_time_flow()
-
-        self.RESOURCE_LIST = content.get('resources_list')[:]
-        self.draw_resource_panel()
-
-        self.POWER_LIST = content.get('power_list')[:]
-        self.draw_power_panel()
-
-        wsl = content['wait_select_list']['options']
-        if wsl == self.WAIT_SELECT_LIST:
-            pass
-        else:
-            self.WAIT_SELECT_LIST = wsl[:]
-            self.draw_wait_select_options()
-
-        detail_text = content.get('detail_text')
-        if detail_text == self.DETAIL_TEXT:
-            pass
-        else:
-            self.DETAIL_TEXT = detail_text
-            self.draw_detail_text()
-
-        self.RESEARCH_LABELS = content.get('research_label_list')
-        self.draw_research_panel()
-
-        self.update()
-
-    def init_game_loop(self):
-        self.COMMISSION = GameLoop(self.GAME_LOOP)
-        self.COMMISSION.updater.connect(self.update_game)
-        self.thread = QThread()
-        self.COMMISSION.moveToThread(self.thread)
-        self.thread.started.connect(self.COMMISSION.run)
-        self.thread.start()
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    example = MainGameGUI(None)
-
-    sys.exit(app.exec_())

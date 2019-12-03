@@ -1,33 +1,33 @@
 from Country import Country, ALL_TECHNOLOGISTS, ALL_KEYS
 from Researcher import *
 import transform
-from static import CONST
+from static import CONST, KEY
 
 from MainGui import MainGameGUI, QApplication, sys
 
 from Panel import Panel
 
 
-class Tester:
-    def __init__(self, be_test, country: Country):
-        self.be_test = be_test
-        self.country = country
-
-    def _run(self, input_str: str):
-        if ' ' in input_str:
-            command, *args = input_str.split()
-            func = getattr(self, command)
-            func(*args)
-        else:
-            command = input_str
-            func = getattr(self, command)
-            func()
-
-    def run(self):
-        input_str = input("> ")
-        while input_str:
-            self._run(input_str)
-            input_str = input("> ")
+# class Tester:
+#     def __init__(self, be_test, country: Country):
+#         self.be_test = be_test
+#         self.country = country
+#
+#     def _run(self, input_str: str):
+#         if ' ' in input_str:
+#             command, *args = input_str.split()
+#             func = getattr(self, command)
+#             func(*args)
+#         else:
+#             command = input_str
+#             func = getattr(self, command)
+#             func()
+#
+#     def run(self):
+#         input_str = input("> ")
+#         while input_str:
+#             self._run(input_str)
+#             input_str = input("> ")
 
 
 class TestGui:
@@ -35,11 +35,11 @@ class TestGui:
         self.PANEL = panel
         # self.RESEARCHER = MainResearcher()
 
-        technologist = {
-            'mility': 'energy_armor_1',
-            'civil': None,
-            'beyond': 'dark_energy_technology'
-        }
+        # technologist = {
+        #     'mility': 'energy_armor_1',
+        #     'civil': None,
+        #     'beyond': 'dark_energy_technology'
+        # }
         # self.RESEARCHER.assign(self.PANEL.power_dict.get('research_point'), CONST.USE_RESEARCHER_RATES, technologist)
 
     def display(self):
@@ -61,7 +61,11 @@ class TestGui:
                     ['基因改造工程', 60000, ['人口增长率 +30%', ' 帝国所有人口消耗 -10%', '帝国所有人口效率 +30%']]
                 ]
             },
-            'research_label_list': [None, None, None],
+            'research_label_list': {
+                KEY.MILITARY: (None, None),
+                KEY.CIVIL: (None, None),
+                KEY.BEYOND: (None, None)
+            },
             'detail_text': """地块：
 --------------------
 环境： 还行 50%
@@ -94,8 +98,10 @@ def main():
     app = QApplication(sys.argv)
 
     panel = Panel()
+    tester = TestGui(panel)
 
-    game = MainGameGUI(TestGui(panel))
+    game = MainGameGUI()
+    game.init_GameLoop(tester)
     sys.exit(app.exec_())
 
 
