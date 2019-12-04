@@ -2,14 +2,6 @@ from Core import CONST
 import random
 
 
-def coordinate_to_index(i, j, size):
-    return i * size + j
-
-
-def index_to_coordinate(index, size):
-    return divmod(index, size)
-
-
 def format_number(number):
     if number > 1000000000:
         return "1G"
@@ -30,15 +22,41 @@ def display_number(n, have_neg=True):
         return format_number(n) if n > 0 else '0'
 
 
+def xy_to_index(x, y, size):
+    return y * size + x
+
+
+def index_to_xy(index, size):
+    return divmod(index, size)
+
+
 def xy_to_position(x, y, size, lt_x, lt_y):
     return lt_x + x * size, lt_y + y * size
 
 
-def index_to_xy(index, n, size, lt_x, lt_y):
+def index_to_pos_xy(index, n, size, lt_x, lt_y):
     # lt_x : left_top_x
     # lt_y : left_top_y
-    x, y = divmod(index, n)
+    y, x = divmod(index, n)
     return xy_to_position(x, y, size, lt_x, lt_y)
+
+
+def mouse_int_world(x, y):
+    bx = CONST.WORLD_POSITION_START <= x <= CONST.WORLD_POSITION_END
+    by = CONST.WORLD_POSITION_START <= y <= CONST.WORLD_POSITION_END
+    return (bx and by)
+
+
+def mouse_in_zoning(x, y):
+    bx = CONST.ZONING_POSITION_START_X <= x <= CONST.ZONING_POSITION_END_X
+    by = CONST.ZONING_POSITION_START_Y <= y <= CONST.ZONING_POSITION_END_Y
+    return (bx and by)
+
+
+def mouse_in_which_block(x, y, world_size, block_number):
+    index_x = (x - CONST.WORLD_POSITION_START) // world_size
+    index_y = (y - CONST.WORLD_POSITION_START) // world_size
+    return xy_to_index(index_x, index_y, block_number)
 
 
 class RandomBlock:
@@ -67,11 +85,8 @@ class RandomBlock:
         else:
             return 4
 
+    def random_attr(self):
+        return self.to_index((random.randint(0, 100))), random.choice(CONST.BLOCK_ZONING_NUMBER)
+
     def new_world(self, size):
-        return [self.to_index(random.randint(0, 100)) for _ in range(size)]
-
-
-if __name__ == '__main__':
-    b = RandomBlock()
-    x = b.new_world(100)
-    print(x)
+        return [self.random_attr() for _ in range(size)]

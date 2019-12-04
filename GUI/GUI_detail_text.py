@@ -25,7 +25,6 @@ class DetailText:
         if self.text:
             return False
         else:
-            self.text = '没有信息'
             return True
 
     def update(self, items):

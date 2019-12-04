@@ -10,6 +10,10 @@ class GameLoop(QObject):
         self.main_process = main_process
         super().__init__(*args, **kwargs)
 
+    def recv(self, content: dict):
+        content = content.copy()
+        print(content)
+
     def run(self):
         while True:
             content = self.main_process.display()

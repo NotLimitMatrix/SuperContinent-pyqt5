@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QTableWidget,
     QTableWidgetItem,
+    QMenu,
 )
 from PyQt5.QtCore import (
     Qt,
@@ -20,7 +21,7 @@ from PyQt5.QtCore import (
     QThread,
     QObject,
     pyqtSignal,
-
+    QRect,
 )
 from PyQt5.QtGui import (
     QPainter,

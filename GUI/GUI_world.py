@@ -1,4 +1,4 @@
-from GUI import METHOD, CONST, QPainter, QColor
+from GUI import METHOD, CONST, QPainter, QColor, QRect, Qt
 from GUI.Static import new_world
 
 
@@ -15,13 +15,19 @@ class World:
             painter.setBrush(QColor(*CONST.White))
 
         painter.drawRect(x, y, self.ws, self.ws)
+
+        # 这段代码开发时使用，用于显示地块的序号
+        painter.drawText(QRect(x, y, self.ws, self.ws), Qt.AlignHCenter | Qt.AlignVCenter, str(block.id))
+        #
+
         painter.setBrush(QColor(*CONST.White))
+
+    def block(self, index):
+        return self.world_list[index]
 
     def update(self, painter: QPainter):
         for index, block in enumerate(self.world_list):
-            x, y = METHOD.index_to_coordinate(index, self.wn)
-            pos_x, pos_y = METHOD.xy_to_position(x, y, self.ws, CONST.WORLD_POSITION_START, CONST.WORLD_POSITION_START)
-
-            print(block.id, block.status_id)
+            pos_x, pos_y = METHOD.index_to_pos_xy(index, self.wn, self.ws, CONST.WORLD_POSITION_START,
+                                                  CONST.WORLD_POSITION_START)
 
             self.update_one(pos_x, pos_y, painter, block)

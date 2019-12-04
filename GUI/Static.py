@@ -1,8 +1,9 @@
 from GUI import (
     QTableWidget,
     QTableWidgetItem,
+    QAbstractItemView,
     QFont,
-    Qt
+    Qt,
 )
 
 from Core.METHOD import RandomBlock
@@ -29,6 +30,11 @@ def GenerateTable(parent, r, c, hSize, vSize):
             item.setFont(font)
             table.setItem(r_, c_, item)
 
+    # 设置 不可编辑
+    table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    # 设置 不可选择
+    table.setSelectionMode(QAbstractItemView.NoSelection)
+
     return table
 
 
@@ -36,5 +42,6 @@ def new_world(size):
     rb = RandomBlock()
     b_list = []
     for i, b in enumerate(rb.new_world(size)):
-        b_list.append(Block(i, b))
+        status_id, zoning_number = b
+        b_list.append(Block(i, status_id, zoning_number))
     return b_list

@@ -1,7 +1,7 @@
 from Core.COLOR import *
 
 WORLD_NUMBER = 20
-ZONING_NUMBER = 5
+ZONING_NUMBER = 1
 
 WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 600
@@ -68,5 +68,9 @@ INIT_RESEARCHER_RATES = (3, 3, 4)
 USE_RESEARCHER_RATES = [i / 10 for i in INIT_RESEARCHER_RATES]
 
 BLOCK_STATUS = (0, 1, 2, 3, 4)
+BLOCK_WORD = ('死寂', '恶劣', '一般', '优秀', '理想')
 BLOCK_STATUS_WEIGHT = (5, 23, 60, 9, 3)
 BLOCK_STATUS_COLOR = (HotPink, Orange, Cyna, CornflowerBlue, SpringGreen)
+BLOCK_PERCENT = (0, 25, 50, 75, 100)
+BLOCK_MODIFIER = (-50, -25, 0, 25, 50)
+BLOCK_ZONING_NUMBER = (3, 4, 5, 6)

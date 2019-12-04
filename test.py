@@ -91,7 +91,7 @@ class TestGui:
             KEY.CIVIL: (None, None),
             KEY.BEYOND: (None, None)
         }
-        content[INTERFACE.DETAIL_TEXT] = temp
+        content[INTERFACE.DETAIL_TEXT] = None
 
         return content
 
@@ -107,8 +107,7 @@ def main():
     panel = Panel()
     tester = TestGui(panel)
 
-    game = MainGameGUI()
-    game.init_GameLoop(tester)
+    MainGameGUI(tester)
     sys.exit(app.exec_())
 
 
