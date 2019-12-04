@@ -14,7 +14,7 @@ class GuiPowerPanel:
 
     def check_items(self, items):
         if items:
-            self.table_items = items[:]
+            self.table_items = items.copy()
         else:
             self.table_items = ['0', '0', '0']
 

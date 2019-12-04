@@ -13,5 +13,5 @@ class World:
     def update(self, painter: QPainter):
         for i in range(self.wn):
             for j in range(self.wn):
-                x, y = METHOD.from_xy_to_position(i, j, self.ws, CONST.WORLD_POSITION_START, CONST.WORLD_POSITION_START)
+                x, y = METHOD.xy_to_position(i, j, self.ws, CONST.WORLD_POSITION_START, CONST.WORLD_POSITION_START)
                 self.update_one(x, y, painter)

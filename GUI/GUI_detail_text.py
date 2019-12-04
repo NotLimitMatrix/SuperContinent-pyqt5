@@ -17,7 +17,7 @@ class DetailText:
         self.tb = textBrowser
         self.text = '没有信息'
 
-    def check_items(self, items):
+    def check_items(self, items: str):
         if items == self.text:
             return True
 

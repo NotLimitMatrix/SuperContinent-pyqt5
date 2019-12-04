@@ -16,6 +16,7 @@ from GUI.GUI_power_panel import GuiPowerPanel
 from GUI.GUI_researcher_panel import ResearcherPanel
 from GUI.GUI_detail_text import DetailText
 from GUI.GUI_menu import Menu
+from Core import INTERFACE
 
 
 class MainGameGUI(QMainWindow):
@@ -27,7 +28,11 @@ class MainGameGUI(QMainWindow):
         self.ZS = CONST.ZONING_SQUARE_SIZE
         self.title = CONST.WINDOW_TITLE
 
-        self.set_UI()
+        self.resize(CONST.WINDOW_WIDTH + 1, CONST.WINDOW_HEIGHT + 1)
+        self.setFixedSize(CONST.WINDOW_WIDTH + 1, CONST.WINDOW_HEIGHT + 1)
+        self.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.MSWindowsFixedSizeDialogHint)
+        self.setWindowTitle(self.title)
+
         self.GUI_MENU = Menu(self)
         self.COMMISSION = None
 
@@ -43,13 +48,12 @@ class MainGameGUI(QMainWindow):
         self.show()
 
     def update_game(self, content):
-        self.TIMER.update(content.get('time_flow'))
-        self.GUI_RESOURCE_PANEL.update(content.get('resources_list'))
-        self.GUI_POWER_PANEL.update(content.get('power_list'))
-        self.GUI_WAIT_SELECT.update(content['wait_select_list']['options'])
-        self.GUI_RESEARCH_PAENL.update(content.get('research_label_list'))
-        self.GUI_DETAIL_TEXT.update(content.get('detail_text'))
-
+        self.TIMER.update(content.get(INTERFACE.TIME_FLOW))
+        self.GUI_RESOURCE_PANEL.update(content.get(INTERFACE.RESOURCES))
+        self.GUI_POWER_PANEL.update(content.get(INTERFACE.POWERS))
+        self.GUI_WAIT_SELECT.update(content[INTERFACE.WAIT_SELECT_ITEMS][INTERFACE.WAIT_ITEMS_OPTIONS])
+        self.GUI_RESEARCH_PAENL.update(content.get(INTERFACE.RESEARCHER_ITEMS))
+        self.GUI_DETAIL_TEXT.update(content.get(INTERFACE.DETAIL_TEXT))
         self.update()
 
     def init_GameLoop(self, game_loop):
@@ -59,15 +63,6 @@ class MainGameGUI(QMainWindow):
         self.COMMISSION.moveToThread(self.thread)
         self.thread.started.connect(self.COMMISSION.run)
         self.thread.start()
-
-    def set_UI(self):
-        width = CONST.WINDOW_WIDTH + 1
-        height = CONST.WINDOW_HEIGHT + 1
-
-        self.resize(width, height)
-        self.setFixedSize(width, height)
-        self.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.MSWindowsFixedSizeDialogHint)
-        self.setWindowTitle(self.title)
 
     def paintEvent(self, QPaintEvent):
         p = QPainter()

@@ -26,7 +26,7 @@ class WaitSelect:
         if items == self.wait_select_items:
             return True
 
-        self.wait_select_items = items[:]
+        self.wait_select_items = items.copy()
         if self.wait_select_items:
             return False
         else:

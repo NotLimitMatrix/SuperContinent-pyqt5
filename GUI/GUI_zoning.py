@@ -13,6 +13,6 @@ class Zoning:
     def update(self, painter: QPainter):
         for i in range(self.zn):
             for j in range(self.zn):
-                x, y = METHOD.from_xy_to_position(i, j, self.zs, CONST.ZONING_POSITION_START_X,
-                                                  CONST.ZONING_POSITION_START_Y)
+                x, y = METHOD.xy_to_position(i, j, self.zs, CONST.ZONING_POSITION_START_X,
+                                             CONST.ZONING_POSITION_START_Y)
                 self.update_one(x, y, painter)

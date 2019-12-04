@@ -32,9 +32,9 @@ class ResearcherPanel:
             KEY.BEYOND: (None, None)
         }
 
-    def check_items(self, items):
+    def check_items(self, items: dict):
         if items:
-            self.researcher_items = items
+            self.researcher_items = items.copy()
         else:
             self.researcher_items = {
                 KEY.MILITARY: (None, None),
