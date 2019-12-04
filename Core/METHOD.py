@@ -27,7 +27,8 @@ def xy_to_index(x, y, size):
 
 
 def index_to_xy(index, size):
-    return divmod(index, size)
+    y, x = divmod(index, size)
+    return x, y
 
 
 def xy_to_position(x, y, size, lt_x, lt_y):

@@ -15,11 +15,11 @@ class Block:
         produce_modifier = f"+{produce}%" if produce > 0 else f"{produce}%"
 
         upkeep = -produce
-        upkeep_modifier = f"+{produce}%" if upkeep > 0 else f"{upkeep}%"
+        upkeep_modifier = f"+{upkeep}%" if upkeep > 0 else f"{upkeep}%"
 
         temp = f"""地块: {self.id}
 环境：{CONST.BLOCK_WORD[self.status_id]} {CONST.BLOCK_PERCENT[self.status_id]}%
-生产修正：{produce_modifier}
+生产修正: {produce_modifier}
 维护花费: {upkeep_modifier}
 """
         return temp
