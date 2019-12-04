@@ -1,5 +1,3 @@
-from static import *
-
 class Producer:
     def __init__(self, material, rate):
         self.material = material

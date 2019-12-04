@@ -1,31 +1,6 @@
-from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QLabel, QPushButton
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QLabel, QPushButton
 
-from static import CONST
-
-
-def GenerateTable(parent, r, c, hSize, vSize):
-    table = QTableWidget(parent)
-    table.setRowCount(r)
-    table.setColumnCount(c)
-    table.horizontalHeader().setVisible(False)
-    table.horizontalHeader().setDefaultSectionSize(hSize)
-    table.horizontalHeader().setHighlightSections(False)
-    table.verticalHeader().setVisible(False)
-    table.verticalHeader().setDefaultSectionSize(vSize)
-    table.verticalHeader().setHighlightSections(False)
-
-    font = QFont()
-    font.setPixelSize(11)
-
-    for r_ in range(r):
-        for c_, item in enumerate(QTableWidgetItem() for _ in range(c)):
-            item.setTextAlignment(Qt.AlignCenter)
-            item.setFont(font)
-            table.setItem(r_, c_, item)
-
-    return table
+from GUI import CONST
 
 
 class OneResearchPanel:
@@ -61,7 +36,8 @@ class OneResearchPanel:
         self.label.setText("没有研究")
 
     def display(self, info: tuple):
-        if info:
+        name, p = info
+        if name and p:
             self.label.setText(f"{info[0]}: {info[1]}")
         else:
             self.clear()

@@ -1,20 +1,9 @@
-import sys, time
-
 from PyQt5.QtWidgets import (
-    QApplication,
-    QWidget,
-    QTableWidget,
-    QTableWidgetItem,
     QAbstractItemView,
     QListWidget,
     QListWidgetItem,
-    QLabel,
-    QVBoxLayout,
-    QHBoxLayout,
-    QPushButton,
     QTextBrowser,
     QAction,
-    QMenu,
     QMainWindow,
     qApp,
 )
@@ -30,9 +19,9 @@ from PyQt5.QtGui import (
     QFont,
 )
 
-from static import *
-from ItemWidget import TechnologyItemWidget
-from SubGui import GenerateTable, OneResearchPanel
+from Recycle.static import *
+from Recycle.ItemWidget import TechnologyItemWidget
+from Recycle.SubGui import GenerateTable, OneResearchPanel
 
 
 class GameLoop(QObject):

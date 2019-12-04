@@ -1,4 +1,4 @@
-from static import ALL_TECHNOLOGISTS, ALL_KEYS, all_in
+from Recycle.static import ALL_TECHNOLOGISTS, ALL_KEYS, all_in
 
 
 def key_2_tech(technology_key):

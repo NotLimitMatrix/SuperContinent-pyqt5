@@ -1,9 +1,10 @@
-from Country import Country, ALL_TECHNOLOGISTS, ALL_KEYS
-from Researcher import *
-import transform
-from static import CONST, KEY
+import sys
 
-from MainGui import MainGameGUI, QApplication, sys
+import transform
+from Recycle.static import CONST, KEY
+
+from GUI.MainGUI import MainGameGUI
+from GUI import QApplication
 
 from Panel import Panel
 
@@ -68,7 +69,7 @@ class TestGui:
             },
             'detail_text': """地块：
 --------------------
-环境： 还行 50%
+环境： 一般 50%
 --------------------
 人口： 934
   电工： 40

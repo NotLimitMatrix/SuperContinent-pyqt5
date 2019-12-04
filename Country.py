@@ -1,4 +1,3 @@
-from static import *
 from Panel import Panel
 
 

@@ -1,5 +1,4 @@
-from models import Resource
-from static import display_number, CONST
+from Recycle.static import display_number, CONST
 
 
 class DynamicResource:

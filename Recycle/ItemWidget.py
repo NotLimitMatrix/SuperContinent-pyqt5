@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
 )
 
-from static import KEY
+from Recycle.static import KEY
 
 
 class ItemWidget:
