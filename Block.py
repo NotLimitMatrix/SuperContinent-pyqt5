@@ -7,3 +7,4 @@ class Block:
         self.id = ident
         self.status_id = status_id
         self.color = BLOCK_STATUS_COLOR[status_id]
+        self.observable = True
