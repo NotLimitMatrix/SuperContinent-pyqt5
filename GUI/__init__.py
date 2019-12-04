@@ -19,11 +19,13 @@ from PyQt5.QtCore import (
     QSize,
     QThread,
     QObject,
-    pyqtSignal
+    pyqtSignal,
+
 )
 from PyQt5.QtGui import (
     QPainter,
     QFont,
+    QColor,
 )
 
 from Core import (

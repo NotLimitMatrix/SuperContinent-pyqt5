@@ -5,6 +5,9 @@ from GUI import (
     Qt
 )
 
+from Core.METHOD import RandomBlock
+from Block import Block
+
 
 def GenerateTable(parent, r, c, hSize, vSize):
     table = QTableWidget(parent)
@@ -27,3 +30,11 @@ def GenerateTable(parent, r, c, hSize, vSize):
             table.setItem(r_, c_, item)
 
     return table
+
+
+def new_world(size):
+    rb = RandomBlock()
+    b_list = []
+    for i, b in enumerate(rb.new_world(size)):
+        b_list.append(Block(i, b))
+    return b_list
