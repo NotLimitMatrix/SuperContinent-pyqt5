@@ -117,12 +117,11 @@ class MainGameGUI(QMainWindow):
         x = event.pos().x()
         y = event.pos().y()
 
-        if CONST.WORLD_POSITION_START <= x <= CONST.WORLD_POSITION_END:
-            if CONST.WORLD_POSITION_START <= y <= CONST.WORLD_POSITION_END:
-                cmenu = QMenu(self)
-                newAct = cmenu.addAction("新建")
-                opnAct = cmenu.addAction("保存")
-                quitAct = cmenu.addAction("退出")
-                action = cmenu.exec_(self.mapToGlobal(event.pos()))
-                if action == quitAct:
-                    qApp.quit()
+        if METHOD.mouse_int_world(x, y):
+            cmenu = QMenu(self)
+            newAct = cmenu.addAction("新建")
+            opnAct = cmenu.addAction("保存")
+            quitAct = cmenu.addAction("退出")
+            action = cmenu.exec_(self.mapToGlobal(event.pos()))
+            if action == quitAct:
+                qApp.quit()

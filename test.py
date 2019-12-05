@@ -72,19 +72,21 @@ class TestGui:
 
         content = INTERFACE.MESSAGE_TEMPLATE.copy()
 
+        wait_items = [
+            ['灵能理论', 30000,
+             ['帝国所有人口消耗 -20%', '帝国所有人口效率 +50%', '军队战斗力 +100%']],
+            ['灵能工程', 60000,
+             ['生产物资所需矿物 -30%', '生产合金所需矿物 -30%', '军队生命值 +100%']],
+            ['基因编码实验', 30000, ['人口增长率 +20%', '人口消耗食物 -50%', '军队生命值 +200%']],
+            ['基因改造工程', 60000,
+             ['人口增长率 +30%', ' 帝国所有人口消耗 -10%', '帝国所有人口效率 +30%']]
+        ]
+
         content[INTERFACE.RESOURCES] = resources_list
         content[INTERFACE.POWERS] = power_list
         content[INTERFACE.WAIT_SELECT_ITEMS] = {
             INTERFACE.WAIT_ITEMS_TYPE: KEY.TECHNOLOGY,
-            INTERFACE.WAIT_ITEMS_OPTIONS: [
-                ['灵能理论', 30000,
-                 ['帝国所有人口消耗 -20%', '帝国所有人口效率 +50%', '军队战斗力 +100%']],
-                ['灵能工程', 60000,
-                 ['生产物资所需矿物 -30%', '生产合金所需矿物 -30%', '军队生命值 +100%']],
-                ['基因编码实验', 30000, ['人口增长率 +20%', '人口消耗食物 -50%', '军队生命值 +200%']],
-                ['基因改造工程', 60000,
-                 ['人口增长率 +30%', ' 帝国所有人口消耗 -10%', '帝国所有人口效率 +30%']]
-            ]
+            INTERFACE.WAIT_ITEMS_OPTIONS: None
         }
         content[INTERFACE.RESEARCHER_ITEMS] = {
             KEY.MILITARY: (None, None),

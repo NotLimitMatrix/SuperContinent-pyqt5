@@ -23,7 +23,7 @@ class WaitSelect:
         self.wait_select_items = []
 
     def check_items(self, items: list):
-        if items == self.wait_select_items:
+        if items is None or items == self.wait_select_items:
             return True
 
         self.wait_select_items = items.copy()
