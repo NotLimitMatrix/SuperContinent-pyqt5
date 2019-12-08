@@ -26,13 +26,5 @@
     "cost": 3000,
     "front": "energy_sword_4",
     "type": 0
-  },
-  "energy_sword_x": {
-    "cost": 4000,
-    "front": [
-      "energy_sword_5",
-      "psionic_theory"
-    ],
-    "type": 0
   }
 }

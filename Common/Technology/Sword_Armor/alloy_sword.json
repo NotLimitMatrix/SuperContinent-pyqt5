@@ -26,13 +26,5 @@
     "cost": 3000,
     "front": "alloy_sword_4",
     "type": 0
-  },
-  "alloy_sword_x": {
-    "cost": 4000,
-    "front": [
-      "alloy_sword_5",
-      "substance_compression_technology"
-    ],
-    "type": 0
   }
 }

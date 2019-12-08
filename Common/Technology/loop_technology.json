@@ -1,0 +1,38 @@
+{
+  "alloy_sword_x": {
+    "cost": 4000,
+    "front": [
+      "alloy_sword_5",
+      "substance_compression_technology"
+    ],
+    "type": 0,
+    "dynamic_cost": 1000
+  },
+  "alloy_armor_x": {
+    "cost": 4000,
+    "front": [
+      "alloy_armor_5",
+      "substance_compression_technology"
+    ],
+    "type": 0,
+    "dynamic_cost": 1000
+  },
+  "energy_armor_x": {
+    "cost": 4000,
+    "front": [
+      "energy_armor_5",
+      "psionic_theory"
+    ],
+    "type": 0,
+    "dynamic_cost": 1000
+  },
+  "energy_sword_x": {
+    "cost": 4000,
+    "front": [
+      "energy_sword_5",
+      "psionic_theory"
+    ],
+    "type": 0,
+    "dynamic_cost": 1000
+  }
+}

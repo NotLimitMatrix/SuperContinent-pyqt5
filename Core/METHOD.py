@@ -1,6 +1,31 @@
 from Core import CONST
 import random
 
+import json
+import _pickle
+
+
+def json_load(file):
+    with open(file, 'r', encoding='utf-8') as r:
+        return json.load(r)
+
+
+def pkl_load(file):
+    with open(file, 'rb') as bin:
+        return _pickle.load(bin)
+
+
+def pkl_dump(data, file):
+    with open(file, 'wb') as bin:
+        _pickle.dump(data, bin)
+
+
+def all_in(tested, within):
+    for item in tested:
+        if item not in within:
+            return False
+    return True
+
 
 def format_number(number):
     if number > 1000000000:
