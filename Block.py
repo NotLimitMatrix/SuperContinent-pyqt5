@@ -1,14 +1,16 @@
 from Core import CONST
 from GUI.GUI_shape import Shape
+from Core.METHOD import Vector
 
 
 class Block:
-    def __init__(self, ident, status_id, zn, ws, ids: tuple):
+    def __init__(self, ident, status_id, zn, ws, ids: Vector):
         # 地块环境 (0:绝地 1:恶劣 2:一般 3:良好 4:理想)
         self.id = ident
         self.status_id = status_id
         self.color = CONST.BLOCK_STATUS_COLOR[status_id]
         self.observable = True
+        self.can_move = self.observable
         self.zoning_number = zn
         self.ids = ids
         self.ws = ws
@@ -18,9 +20,8 @@ class Block:
         self.solt2 = Shape(0, self.ws // 2)
 
     def draw_solt(self, painter):
-        dy, dx = self.ids
-        self.solt1.draw(painter, dx * self.ws, dy * self.ws)
-        self.solt2.draw(painter, dx * self.ws + self.ws // 2, dy * self.ws)
+        self.solt1.draw(painter, self.ids.x * self.ws, self.ids.y * self.ws)
+        self.solt2.draw(painter, self.ids.x * self.ws + self.ws // 2, self.ids.y * self.ws)
 
     def clear_color(self):
         self.color = CONST.BLOCK_STATUS_COLOR[self.status_id]

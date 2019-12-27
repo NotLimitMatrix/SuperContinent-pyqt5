@@ -10,7 +10,7 @@ from GUI import (
 
 from Core.CONST import WORLD_WIDTH
 
-from Core.METHOD import RandomBlock, square_from_one_xy, xy_to_index
+from Core import METHOD
 from Block import Block
 
 
@@ -67,12 +67,12 @@ def GenerateTable(parent, r, c, hSize, vSize):
 
 
 def new_world(size):
-    rb = RandomBlock()
+    rb = METHOD.RandomBlock()
     ws = WORLD_WIDTH // size
     b_list = []
     for i, b in enumerate(rb.new_world(size * size)):
         status_id, zoning_number = b
-        ids = divmod(i, size)
-        b_list.append(Block(i, status_id, zoning_number, ws, ids))
+        x, y = METHOD.index_to_xy(i, size)
+        b_list.append(Block(i, status_id, zoning_number, ws, METHOD.Vector(x, y)))
 
     return b_list

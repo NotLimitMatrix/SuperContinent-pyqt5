@@ -60,6 +60,12 @@ class MainGameGUI(QMainWindow):
 
         self.show()
 
+        self.GUI_WORLD.block(32).observable = False
+        self.GUI_WORLD.block(33).observable = False
+        self.GUI_WORLD.block(34).observable = False
+        self.GUI_WORLD.block(35).observable = False
+        self.GUI_WORLD.block(36).observable = False
+
         # Static
         self.Memory = []
         self.Selected = None
@@ -110,27 +116,26 @@ class MainGameGUI(QMainWindow):
         x = event.pos().x()
         y = event.pos().y()
 
+        for m in self.Memory:
+            temp_block = self.GUI_WORLD.block(m)
+            temp_block.clear_color()
+
         # 左键单击
         if b == Qt.LeftButton:
             if METHOD.mouse_int_world(x, y):
-                for m in self.Memory:
-                    temp_block = self.GUI_WORLD.block(m)
-                    temp_block.clear_color()
-
                 block_id = METHOD.mouse_in_which_block(x, y, self.WS, self.WN)
                 block = self.GUI_WORLD.block(block_id)
 
-                dx, dy = block.ids
+                ids = block.ids
                 if self.Selected:
-                    sy, sx = self.Selected.ids
-                    points = METHOD.AStar_path(sx, sy, dx, dy, self.WN)
+                    select_ids = self.Selected.ids
+                    points = self.GUI_WORLD.AStar_path(select_ids.x, select_ids.y, ids.x, ids.y)
                     self.Memory = METHOD.points_to_indexs(points, self.WN)
 
                     self.Selected.clear_color()
                     self.Selected = None
                 else:
-                    #points = METHOD.square_from_one_walk(dx, dy, self.WN)
-                    points = METHOD.square_from_one_xy(dx, dy, 2, self.WN)
+                    points = self.GUI_WORLD.square_from_one_walk(ids.x, ids.y)
                     self.Memory = METHOD.points_to_indexs(points, self.WN)
 
                 for m in self.Memory:
@@ -141,11 +146,11 @@ class MainGameGUI(QMainWindow):
                 self.GUI_ZONING.set_number(block.zoning_number)
         # 右键单击
         if b == Qt.RightButton:
+            if self.Selected:
+                self.Selected.clear_color()
+
             if METHOD.mouse_int_world(x, y):
-                for m in self.Memory:
-                    temp_block = self.GUI_WORLD.block(m)
-                    temp_block.clear_color()
-                block_id = METHOD.mouse_in_which_block(y, x, self.WS, self.WN)
+                block_id = METHOD.mouse_in_which_block(x, y, self.WS, self.WN)
                 block = self.GUI_WORLD.block(block_id)
                 block.set_color(COLOR.White)
                 self.Selected = block
