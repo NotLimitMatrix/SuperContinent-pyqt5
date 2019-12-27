@@ -1,3 +1,3 @@
 # SuperContinent
 
-![Main Gui](https://github.com/soleperson/SuperContinent/blob/master/Doc/Images/main_gui.png)
+![Main Gui](https://s2.ax1x.com/2019/12/27/lZ4JQs.png)
