@@ -1,12 +1,13 @@
 from GUI import METHOD, CONST, QPainter, QColor, QRect, Qt
 from GUI.Static import new_world
+from GUI.GUI_shape import Shape
 
 
 class World:
     def __init__(self, ws, wn):
         self.ws = ws
         self.wn = wn
-        self.world_list = new_world(self.wn * self.wn)
+        self.world_list = new_world(self.wn)
 
     def update_one(self, x, y, painter: QPainter, block):
         if block.observable:
@@ -19,10 +20,12 @@ class World:
         # 这段代码开发时使用，用于显示地块的序号
         painter.drawText(QRect(x, y, self.ws, self.ws), Qt.AlignHCenter | Qt.AlignVCenter, str(block.id))
         #
-
+        painter.setBrush(QColor(*CONST.Black))
+        block.draw_solt(painter)
         painter.setBrush(QColor(*CONST.White))
 
     def block(self, index):
+        print(index)
         return self.world_list[index]
 
     def update(self, painter: QPainter):

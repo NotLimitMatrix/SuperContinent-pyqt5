@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QMenu,
+    QInputDialog,
 )
 from PyQt5.QtCore import (
     Qt,
@@ -22,11 +23,13 @@ from PyQt5.QtCore import (
     QObject,
     pyqtSignal,
     QRect,
+    QPoint,
 )
 from PyQt5.QtGui import (
     QPainter,
     QFont,
     QColor,
+    QPolygon,
 )
 
 from Core import (

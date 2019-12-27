@@ -59,6 +59,12 @@ class MainGameGUI(QMainWindow):
 
         self.show()
 
+    def NewGame(self, wn):
+        self.TIMER = Timer(self)
+        self.WN = wn
+        self.WS = CONST.WORLD_WIDTH // self.WN
+        self.GUI_WORLD = World(self.WS, self.WN)
+
     def self_update(self):
         self.TIMER.update(self.CONTENT.get(INTERFACE.TIME_FLOW))
         self.GUI_RESOURCE_PANEL.update(self.CONTENT.get(INTERFACE.RESOURCES))
@@ -119,9 +125,11 @@ class MainGameGUI(QMainWindow):
 
         if METHOD.mouse_int_world(x, y):
             cmenu = QMenu(self)
-            newAct = cmenu.addAction("新建")
+            newAct = cmenu.addAction("新建 10x10游戏")
             opnAct = cmenu.addAction("保存")
             quitAct = cmenu.addAction("退出")
             action = cmenu.exec_(self.mapToGlobal(event.pos()))
             if action == quitAct:
                 qApp.quit()
+            if action == newAct:
+                self.NewGame(10)
