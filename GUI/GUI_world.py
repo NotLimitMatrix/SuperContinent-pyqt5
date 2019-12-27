@@ -18,14 +18,13 @@ class World:
         painter.drawRect(x, y, self.ws, self.ws)
 
         # 这段代码开发时使用，用于显示地块的序号
-        painter.drawText(QRect(x, y, self.ws, self.ws), Qt.AlignHCenter | Qt.AlignVCenter, str(block.id))
+        painter.drawText(QRect(x, y, self.ws, self.ws), Qt.AlignHCenter | Qt.AlignVCenter, str(block.ids))
         #
         painter.setBrush(QColor(*CONST.Black))
         block.draw_solt(painter)
         painter.setBrush(QColor(*CONST.White))
 
     def block(self, index):
-        print(index)
         return self.world_list[index]
 
     def update(self, painter: QPainter):

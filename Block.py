@@ -22,6 +22,12 @@ class Block:
         self.solt1.draw(painter, dx * self.ws, dy * self.ws)
         self.solt2.draw(painter, dx * self.ws + self.ws // 2, dy * self.ws)
 
+    def clear_color(self):
+        self.color = CONST.BLOCK_STATUS_COLOR[self.status_id]
+
+    def set_color(self, color):
+        self.color = color
+
     def display(self):
         produce = CONST.BLOCK_MODIFIER[self.status_id]
         produce_modifier = f"+{produce}%" if produce > 0 else f"{produce}%"

@@ -10,7 +10,7 @@ from GUI import (
 
 from Core.CONST import WORLD_WIDTH
 
-from Core.METHOD import RandomBlock
+from Core.METHOD import RandomBlock, square_from_one_xy, xy_to_index
 from Block import Block
 
 

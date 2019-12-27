@@ -1,5 +1,6 @@
 from Core import CONST
 import random
+from math import hypot
 
 import json
 import _pickle
@@ -48,11 +49,11 @@ def display_number(n, have_neg=True):
 
 
 def xy_to_index(x, y, size):
-    return y * size + x
+    return x * size + y
 
 
 def index_to_xy(index, size):
-    y, x = divmod(index, size)
+    x, y = divmod(index, size)
     return x, y
 
 
@@ -116,3 +117,64 @@ class RandomBlock:
 
     def new_world(self, size):
         return [self.random_attr() for _ in range(size)]
+
+
+def points_to_indexs(points: set, wn):
+    result = []
+    for i, j in points:
+        result.append(xy_to_index(j, i, wn))
+    return result
+
+
+def square_from_one_xy(x, y, sn, wn):
+    if sn >= wn:
+        raise ValueError("步长不能大于地图尺寸")
+    sn += 1
+
+    d = [i for i in range(sn)]
+
+    left_x = [(0 if x - i < 0 else x - i) for i in d]
+    right_x = [(wn - 1 if x + i >= wn else x + i) for i in d]
+
+    xs = set(left_x + right_x)
+
+    left_y = [(0 if y - i < 0 else y - i) for i in d]
+    right_y = [((wn - 1) if y + i >= wn else y + i) for i in d]
+
+    ys = set(left_y + right_y)
+
+    return [(i, j) for i in xs for j in ys]
+
+
+def square_from_one_walk(x, y, wn):
+    lx = 0 if x - 1 < 0 else x - 1
+    gx = wn - 1 if x + 1 == wn else x + 1
+    ly = 0 if y - 1 < 0 else y - 1
+    gy = wn - 1 if y + 1 == wn else y + 1
+
+    points = [(x, y), (lx, y), (gx, y), (x, ly), (x, gy)]
+
+    return set(points)
+
+
+def AStar_path(x1, y1, x2, y2, wn):
+    d = -1
+
+    x = x1
+    y = y1
+
+    result = [(x, y)]
+
+    while d != 0:
+        can_move_list = square_from_one_walk(x, y, wn)
+        tags_can_move_list = {hypot(i[0] - x2, i[1] - y2): i for i in can_move_list}
+        d = min(tags_can_move_list.keys())
+        x, y = tags_can_move_list[d]
+        result.append((x, y))
+
+    return result
+
+
+if __name__ == '__main__':
+    x = AStar_path(1, 1, 8, 9, 20)
+    print(x)

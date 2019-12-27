@@ -1,7 +1,6 @@
 from GUI import (
     CONST,
     METHOD,
-
     QMainWindow,
     Qt,
     QThread,
@@ -10,6 +9,8 @@ from GUI import (
     QMenu,
     qApp,
 )
+
+from Core import COLOR
 
 from GUI.GameLoop import GameLoop
 from GUI.GUI_timer import Timer
@@ -58,6 +59,10 @@ class MainGameGUI(QMainWindow):
         self.init_GameLoop()
 
         self.show()
+
+        # Static
+        self.Memory = []
+        self.Selected = None
 
     def NewGame(self, wn):
         self.TIMER = Timer(self)
@@ -108,13 +113,42 @@ class MainGameGUI(QMainWindow):
         # 左键单击
         if b == Qt.LeftButton:
             if METHOD.mouse_int_world(x, y):
-                index = METHOD.mouse_in_which_block(x, y, self.WS, self.WN)
-                block = self.GUI_WORLD.block(index)
+                for m in self.Memory:
+                    temp_block = self.GUI_WORLD.block(m)
+                    temp_block.clear_color()
+
+                block_id = METHOD.mouse_in_which_block(x, y, self.WS, self.WN)
+                block = self.GUI_WORLD.block(block_id)
+
+                dx, dy = block.ids
+                if self.Selected:
+                    sy, sx = self.Selected.ids
+                    points = METHOD.AStar_path(sx, sy, dx, dy, self.WN)
+                    self.Memory = METHOD.points_to_indexs(points, self.WN)
+
+                    self.Selected.clear_color()
+                    self.Selected = None
+                else:
+                    #points = METHOD.square_from_one_walk(dx, dy, self.WN)
+                    points = METHOD.square_from_one_xy(dx, dy, 2, self.WN)
+                    self.Memory = METHOD.points_to_indexs(points, self.WN)
+
+                for m in self.Memory:
+                    temp_block = self.GUI_WORLD.block(m)
+                    temp_block.set_color(COLOR.Red)
+
                 self.CONTENT[INTERFACE.DETAIL_TEXT] = block.display()
                 self.GUI_ZONING.set_number(block.zoning_number)
         # 右键单击
         if b == Qt.RightButton:
-            pass
+            if METHOD.mouse_int_world(x, y):
+                for m in self.Memory:
+                    temp_block = self.GUI_WORLD.block(m)
+                    temp_block.clear_color()
+                block_id = METHOD.mouse_in_which_block(y, x, self.WS, self.WN)
+                block = self.GUI_WORLD.block(block_id)
+                block.set_color(COLOR.White)
+                self.Selected = block
 
         self.self_update()
 
@@ -123,7 +157,7 @@ class MainGameGUI(QMainWindow):
         x = event.pos().x()
         y = event.pos().y()
 
-        if METHOD.mouse_int_world(x, y):
+        if not METHOD.mouse_int_world(x, y) and not METHOD.mouse_in_zoning(x, y):
             cmenu = QMenu(self)
             newAct = cmenu.addAction("新建 10x10游戏")
             opnAct = cmenu.addAction("保存")
