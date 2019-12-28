@@ -11,6 +11,7 @@ from GUI import (
 from Core.CONST import WORLD_WIDTH
 
 from Core import METHOD
+from Core.METHOD import Vector
 from Block import Block
 
 
@@ -76,3 +77,62 @@ def new_world(size):
         b_list.append(Block(i, status_id, zoning_number, ws, METHOD.Vector(x, y)))
 
     return b_list
+
+
+def AStar_path(world_list, n, startPoint: Vector, goalPoint: Vector):
+    closedSet = []
+    openSet = [startPoint]
+    cameFrom = dict()
+    gScore = {startPoint: 0}
+    hScore = {startPoint: METHOD.heuristic_estimate_of_distance(startPoint, goalPoint)}
+    fScore = {startPoint: hScore.get(startPoint)}
+    while openSet:
+        x = METHOD.lowset_fscore(fScore)
+        if x == goalPoint:
+            return reconstruct_path(cameFrom, goalPoint)
+        openSet.remove(x)
+        closedSet.append(x)
+        for y in neighbor_nodes(world_list, n, x):
+            if y in closedSet:
+                continue
+
+            tentative_gScore = gScore[x] + METHOD.m_distance(x, y)
+            if y not in openSet:
+                tentative_better = True
+            elif tentative_gScore < gScore[y]:
+                tentative_better = True
+            else:
+                tentative_better = False
+
+            if tentative_better:
+                cameFrom[y] = x
+                gScore[y] = tentative_gScore
+                hScore[y] = METHOD.heuristic_estimate_of_distance(y, goalPoint)
+                fScore[y] = gScore[y] + hScore[y]
+                openSet.append(y)
+
+        return []
+
+
+def neighbor_nodes(world_list, n, point: Vector):
+    index = point.to_index(n)
+    if not world_list[index]:
+        return []
+
+    points = [Vector(point.x, point.y),
+              Vector(point.x - 1, point.y), Vector(point.x + 1, point.y),
+              Vector(point.x, point.y - 1), Vector(point.x, point.y + 1)]
+
+    for point in points:
+        if point.x < 0 or point.y < 0 or point.x == n or point.y == n or not world_list[point.to_index(n)]:
+            points.remove(point)
+    return points
+
+
+def reconstruct_path(came_from, current_node):
+    result = [current_node]
+    while current_node in came_from:
+        temp = came_from[current_node]
+        result.append(temp)
+        current_node = temp
+    return result

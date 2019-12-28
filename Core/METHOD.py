@@ -4,6 +4,8 @@ import random
 import json
 import _pickle
 
+import pandas
+
 
 def json_load(file):
     with open(file, 'r', encoding='utf-8') as r:
@@ -44,13 +46,20 @@ class Vector:
         self.y = y
 
     def to_index(self, wn):
-        return self.x * wn + self.y
+        return self.y * wn + self.x
 
-    def m_distance(self, other):
-        return abs(self.x - other.x) + abs(self.y - other.y)
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
 
     def __repr__(self):
-        return f"({self.x},{self.y})"
+        return f"Vector({self.x},{self.y})"
+
+    def __hash__(self):
+        return hash(complex(self.x, self.y))
+
+
+def m_distance(point1: Vector, point2: Vector):
+    return abs(point1.x - point2.x) + abs(point1.y - point2.y)
 
 
 def display_number(n, have_neg=True):
@@ -142,3 +151,17 @@ def points_to_indexs(points: set, wn):
 
 def indexs_to_points(indexes, wn):
     return [index_to_xy(i, wn) for i in indexes]
+
+
+def heuristic_estimate_of_distance(start: Vector, goal: Vector):
+    return m_distance(start, goal)
+
+
+def lowset_fscore(fscore: dict):
+    data = pandas.Series(fscore).sort_values()
+    return data.keys()[0]
+
+
+if __name__ == '__main__':
+    x = dict(a=1, b=2, c=3, d=4)
+    print(lowset_fscore(x))

@@ -29,6 +29,13 @@ class Block:
     def set_color(self, color):
         self.color = color
 
+    def neg_observable(self):
+        self.observable = not self.observable
+        self.can_move = self.observable
+
+    def neg_can_move(self):
+        self.can_move = not self.can_move
+
     def display(self):
         produce = CONST.BLOCK_MODIFIER[self.status_id]
         produce_modifier = f"+{produce}%" if produce > 0 else f"{produce}%"

@@ -1,6 +1,7 @@
 from GUI import (
     CONST,
     METHOD,
+    Static,
     QMainWindow,
     Qt,
     QThread,
@@ -60,11 +61,11 @@ class MainGameGUI(QMainWindow):
 
         self.show()
 
-        self.GUI_WORLD.block(32).observable = False
-        self.GUI_WORLD.block(33).observable = False
-        self.GUI_WORLD.block(34).observable = False
-        self.GUI_WORLD.block(35).observable = False
-        self.GUI_WORLD.block(36).observable = False
+        self.GUI_WORLD.block(32).neg_observable()
+        self.GUI_WORLD.block(33).neg_observable()
+        self.GUI_WORLD.block(34).neg_observable()
+        self.GUI_WORLD.block(35).neg_observable()
+        self.GUI_WORLD.block(36).neg_observable()
 
         # Static
         self.Memory = []
@@ -129,13 +130,15 @@ class MainGameGUI(QMainWindow):
                 ids = block.ids
                 if self.Selected:
                     select_ids = self.Selected.ids
-                    points = self.GUI_WORLD.AStar_path(select_ids.x, select_ids.y, ids.x, ids.y)
+                    # points = self.GUI_WORLD.AStar_path(select_ids.x, select_ids.y, ids.x, ids.y)
+                    points = self.GUI_WORLD.found_path(self.Selected.ids, ids)
                     self.Memory = METHOD.points_to_indexs(points, self.WN)
 
                     self.Selected.clear_color()
                     self.Selected = None
                 else:
                     points = self.GUI_WORLD.square_from_one_walk(ids.x, ids.y)
+                    # points = self.GUI_WORLD.square_from_one_xy(ids.x, ids.y, 1)
                     self.Memory = METHOD.points_to_indexs(points, self.WN)
 
                 for m in self.Memory:

@@ -1,5 +1,4 @@
-from GUI import METHOD, CONST, QPainter, QColor, QRect, Qt
-from GUI.Static import new_world
+from GUI import METHOD, CONST, Static, QPainter, QColor, QRect, Qt
 from Core.METHOD import Vector
 
 
@@ -7,7 +6,7 @@ class World:
     def __init__(self, ws, wn):
         self.ws = ws
         self.wn = wn
-        self.world_list = new_world(self.wn)
+        self.world_list = Static.new_world(self.wn)
 
     def update_one(self, x, y, painter: QPainter, block):
         if block.observable:
@@ -18,7 +17,8 @@ class World:
         painter.drawRect(x, y, self.ws, self.ws)
 
         # 这段代码开发时使用，用于显示地块的序号
-        painter.drawText(QRect(x, y, self.ws, self.ws), Qt.AlignHCenter | Qt.AlignVCenter, str(block.ids))
+        mess = str(block.ids.x) + ', ' + str(block.ids.y)
+        painter.drawText(QRect(x, y, self.ws, self.ws), Qt.AlignHCenter | Qt.AlignVCenter, mess)
         #
         painter.setBrush(QColor(*CONST.Black))
         block.draw_solt(painter)
@@ -34,11 +34,9 @@ class World:
 
             self.update_one(pos_x, pos_y, painter, block)
 
-    def AStar_path(self, x1, y1, x2, y2):
-        d = -1
-        closedset = [(x1, y1)]
-        openset = [(i, j) for i in range(self.wn) for j in range(self.wn)]
-        openset.remove((x1, y1))
+    def found_path(self, startPoint, goalPoint):
+        world_list = [block.can_move for block in self.world_list]
+        return Static.AStar_path(world_list, self.wn, startPoint, goalPoint)
 
     def square_from_one_xy(self, x, y, sn):
         if sn > self.wn:
@@ -53,19 +51,26 @@ class World:
         ys = set(left_y + right_y)
         points = [Vector(i, j) for i in xs for j in ys]
 
-        return [point for point in points if self.block_can_move_with_point(point)]
+        return [point for point in points if self.block_observable_with_point(point)]
 
     def square_from_one_walk(self, x, y):
-        lx = 0 if x - 1 < 0 else x - 1
-        gx = self.wn - 1 if x + 1 == self.wn else x + 1
-        ly = 0 if y - 1 < 0 else y - 1
-        gy = self.wn - 1 if y + 1 == self.wn else y + 1
+        if not self.block(METHOD.xy_to_index(x, y, self.wn)).can_move:
+            return []
 
-        points = [Vector(x, y), Vector(lx, y), Vector(gx, y), Vector(x, ly), Vector(x, gy)]
-        return [point for point in set(points) if self.block_can_move_with_point(point)]
+        points = [Vector(x, y), Vector(x - 1, y), Vector(x + 1, y), Vector(x, y - 1), Vector(x, y + 1)]
+        for point in points:
+            if point.x < 0 or point.y < 0 or point.x == self.wn or point.y == self.wn:
+                points.remove(point)
+        return points
 
     def block_can_move_with_index(self, block_id):
         return self.block(block_id).can_move
 
     def block_can_move_with_point(self, point: Vector):
         return self.block_can_move_with_index(METHOD.xy_to_index(point.x, point.y, self.wn))
+
+    def block_observable_with_index(self, block_id):
+        return self.block(block_id).observable
+
+    def block_observable_with_point(self, point: Vector):
+        return self.block_observable_with_index(METHOD.xy_to_index(point.x, point.y, self.wn))
