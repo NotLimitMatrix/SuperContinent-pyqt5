@@ -40,7 +40,6 @@ class MainGameGUI(QMainWindow):
 
         self.resize(CONST.WINDOW_WIDTH + 1, CONST.WINDOW_HEIGHT + 1)
         self.setFixedSize(CONST.WINDOW_WIDTH + 1, CONST.WINDOW_HEIGHT + 1)
-        self.setWindowFlags(Qt.WindowMaximizeButtonHint | Qt.MSWindowsFixedSizeDialogHint)
         self.setWindowTitle(self.title)
 
         self.GUI_MENU = Menu(self)
