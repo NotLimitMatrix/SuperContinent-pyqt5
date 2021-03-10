@@ -2,7 +2,7 @@ import sys
 
 import transform
 
-from Core import CONST, KEY, INTERFACE
+from STATIC import CONST, KEY, INTERFACE
 from GUI.MainGUI import MainGameGUI
 from GUI import QApplication
 

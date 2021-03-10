@@ -2,7 +2,7 @@ import os
 
 from Transform.Transform import Transformer
 from models import SwordArmor, Technology, json_load
-from Core.DIRECTORY import DIR_MODELS, DIR_TECHNOLOGY
+from STATIC.DIRECTORY import DIR_MODELS, DIR_TECHNOLOGY
 
 DIR_SWORD_ARMOR = 'Sword_Armor'
 IN_FILE_TECHNOLOGY_MILITARY = 'military_technology.json'

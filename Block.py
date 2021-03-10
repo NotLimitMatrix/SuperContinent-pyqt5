@@ -1,6 +1,6 @@
-from Core import CONST
+from STATIC import CONST
 from GUI.GUI_shape import Shape
-from Core.METHOD import Vector
+from STATIC.METHOD import Vector
 
 
 class Block:

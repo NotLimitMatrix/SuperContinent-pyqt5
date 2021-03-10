@@ -1,4 +1,4 @@
-from Core import KEY
+from STATIC import KEY
 
 TIME_FLOW = 'time_flow'
 RESOURCES = 'resources_list'

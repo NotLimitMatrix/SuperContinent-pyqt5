@@ -1,4 +1,4 @@
-from Core.COLOR import *
+from STATIC.COLOR import *
 
 WORLD_NUMBER = 10
 ZONING_NUMBER = 1
@@ -60,7 +60,7 @@ DETAIL_START_Y = 305
 DETAIL_WIDTH = 148
 DETAIL_HEIGHT = 295
 
-SPEED = 2
+SPEED = 1
 TIME_FLOW = 1 / SPEED
 
 RESOURCE_WEIGHT = [(1, 5), (1, 5), (1, 5), (3, 10), (3, 10)]

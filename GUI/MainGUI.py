@@ -11,7 +11,7 @@ from GUI import (
     qApp,
 )
 
-from Core import COLOR
+from STATIC import COLOR
 
 from GUI.GameLoop import GameLoop
 from GUI.GUI_timer import Timer
@@ -23,7 +23,7 @@ from GUI.GUI_power_panel import GuiPowerPanel
 from GUI.GUI_researcher_panel import ResearcherPanel
 from GUI.GUI_detail_text import DetailText
 from GUI.GUI_menu import Menu
-from Core import INTERFACE
+from STATIC import INTERFACE
 
 
 class MainGameGUI(QMainWindow):

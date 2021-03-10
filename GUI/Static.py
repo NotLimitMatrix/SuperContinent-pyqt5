@@ -8,10 +8,10 @@ from GUI import (
     QPolygon,
 )
 
-from Core.CONST import WORLD_WIDTH
+from STATIC.CONST import WORLD_WIDTH
 
-from Core import METHOD
-from Core.METHOD import Vector
+from STATIC import METHOD
+from STATIC.METHOD import Vector
 from Block import Block
 
 

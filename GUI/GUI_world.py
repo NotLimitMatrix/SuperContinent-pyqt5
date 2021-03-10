@@ -1,5 +1,5 @@
 from GUI import METHOD, CONST, Static, QPainter, QColor, QRect, Qt
-from Core.METHOD import Vector
+from STATIC.METHOD import Vector
 
 
 class World:

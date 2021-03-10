@@ -1,4 +1,4 @@
-from Core import CONST
+from STATIC import CONST
 import random
 
 import json

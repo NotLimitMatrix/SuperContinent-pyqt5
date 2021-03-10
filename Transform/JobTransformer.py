@@ -2,7 +2,7 @@ import os
 
 from Transform.Transform import Transformer
 from models import Job, Consumption, Product, json_load
-from Core.DIRECTORY import DIR_COMMON, DIR_MODELS
+from STATIC.DIRECTORY import DIR_COMMON, DIR_MODELS
 
 IN_FILE_JOB = 'jobs.json'
 OUT_FILE_JOB = 'jobs.pkl'

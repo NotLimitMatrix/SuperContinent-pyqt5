@@ -32,7 +32,7 @@ from PyQt5.QtGui import (
     QPolygon,
 )
 
-from Core import (
+from STATIC import (
     CONST,
     KEY,
     METHOD,
