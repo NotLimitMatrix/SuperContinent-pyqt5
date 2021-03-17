@@ -17,7 +17,6 @@ def decompress_string(s):
 
 def compress_dict(s):
     temp = ''.join(JSONEncoder.encode(s))
-    print(len(temp))
     return zlib.compress(zlib.compress(temp.encode('utf-8')))
 
 
@@ -26,8 +25,6 @@ def decompress_dict(s):
 
 
 if __name__ == '__main__':
-    from pprint import pprint
-
     bl = [Block(i) for i in range(900)]
     zl = []
     for block in bl:

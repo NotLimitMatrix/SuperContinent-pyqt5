@@ -1,4 +1,4 @@
-from STATIC.COLOR import *
+from trash.STATIC.COLOR import *
 
 WORLD_NUMBER = 10
 ZONING_NUMBER = 1
