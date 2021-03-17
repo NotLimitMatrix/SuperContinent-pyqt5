@@ -1,7 +1,6 @@
 from GUI import (
     CONST,
     METHOD,
-    Static,
     QMainWindow,
     Qt,
     QThread,
@@ -15,7 +14,7 @@ from STATIC import COLOR
 
 from GUI.GameLoop import GameLoop
 from GUI.GUI_timer import Timer
-from GUI.GUI_world import World
+from trash.GUI.GUI_world import World
 from GUI.GUI_zoning import Zoning
 from GUI.GUI_wait_select import WaitSelect
 from GUI.GUI_resource_panel import GuiResourcePanel

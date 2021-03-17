@@ -16,7 +16,9 @@ def decompress_string(s):
 
 
 def compress_dict(s):
-    return zlib.compress(zlib.compress(''.join(JSONEncoder.encode(s)).encode('utf-8')))
+    temp = ''.join(JSONEncoder.encode(s))
+    print(len(temp))
+    return zlib.compress(zlib.compress(temp.encode('utf-8')))
 
 
 def decompress_dict(s):
@@ -40,6 +42,7 @@ if __name__ == '__main__':
         'zoning_list': Zoning.collect(zl)
     }
 
-    print(len(compress_dict(cs))/1024)
+    ccs = compress_dict(cs)
+    print(len(ccs) / 1024)
 
-    print(cs == decompress_dict(compress_dict(cs)))
+    # print(cs == decompress_dict(compress_dict(cs)))

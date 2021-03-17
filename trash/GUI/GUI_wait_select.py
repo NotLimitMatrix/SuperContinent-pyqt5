@@ -1,11 +1,11 @@
 from GUI import (
     CONST,
-    KEY,
     QListWidget,
     QListWidgetItem,
     QAbstractItemView,
     QSize,
 )
+from trash.STATIC import KEY
 
 from GUI.ItemWidget import TechnologyItemWidget
 

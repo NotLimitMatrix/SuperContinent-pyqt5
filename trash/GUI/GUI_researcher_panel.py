@@ -1,5 +1,6 @@
-from GUI.Panel import OneResearchPanel
-from GUI import CONST, KEY
+from trash.GUI.Panel import OneResearchPanel
+from GUI import CONST
+from trash.STATIC import KEY
 
 
 class ResearcherPanel:

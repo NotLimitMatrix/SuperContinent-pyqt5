@@ -1,4 +1,4 @@
-from STATIC import KEY
+from trash.STATIC import KEY
 
 TIME_FLOW = 'time_flow'
 RESOURCES = 'resources_list'

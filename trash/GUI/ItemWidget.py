@@ -1,10 +1,10 @@
 from GUI import (
-    KEY,
     QLabel,
     QWidget,
     QVBoxLayout,
     QHBoxLayout,
 )
+from trash.STATIC import KEY
 
 
 class ItemWidget:

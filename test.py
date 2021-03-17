@@ -1,8 +1,7 @@
 import sys
 
-import transform
-
-from STATIC import CONST, KEY, INTERFACE
+from STATIC import INTERFACE
+from trash.STATIC import KEY
 from GUI.MainGUI import MainGameGUI
 from GUI import QApplication
 
