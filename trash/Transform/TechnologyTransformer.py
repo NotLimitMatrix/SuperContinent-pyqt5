@@ -1,7 +1,7 @@
 import os
 
 from Transform.Transform import Transformer
-from models import SwordArmor, Technology, json_load
+from trash.models import SwordArmor, Technology, json_load
 from STATIC.DIRECTORY import DIR_MODELS, DIR_TECHNOLOGY
 
 DIR_SWORD_ARMOR = 'Sword_Armor'

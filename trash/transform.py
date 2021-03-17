@@ -2,7 +2,7 @@ from models import *
 
 
 class Localisation:
-    DIR = "trash/Common/Localisation"
+    DIR = "Common/Localisation"
 
     def __init__(self):
         self.files = [
@@ -49,7 +49,7 @@ class Transformer:
 
 class ResourceTransformer(Transformer):
     def init(self, l):
-        self.dir = "trash/Common/resources.json"
+        self.dir = "Common/resources.json"
         self.output = "Models/resources.pkl"
 
         for k, v in self.gen_technologists(json_load(self.dir)):
@@ -58,7 +58,7 @@ class ResourceTransformer(Transformer):
 
 class JobTransformer(Transformer):
     def init(self, l):
-        self.dir = "trash/Common/jobs.json"
+        self.dir = "Common/jobs.json"
         self.output = "Models/jobs.pkl"
         for k, v in self.gen_technologists(json_load(self.dir)):
             name = l[k]
@@ -85,7 +85,7 @@ class JobTransformer(Transformer):
 
 class TechnologyTransformer(Transformer):
     def init(self, l):
-        self.dir = "trash/Common/Technology"
+        self.dir = "Common/Technology"
         self.files = [
             "Common/Technology/military_technology.json",
             "Common/Technology/beyond_technology.json",
@@ -150,7 +150,7 @@ def main():
 
 def test(file):
     import pprint
-    res = pkl_load(join("trash/Models", file))
+    res = pkl_load(join("Models", file))
     pprint.pprint(res)
 
 

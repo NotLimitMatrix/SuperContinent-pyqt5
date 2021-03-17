@@ -12,7 +12,7 @@ from STATIC.CONST import WORLD_WIDTH
 
 from STATIC import METHOD
 from STATIC.METHOD import Vector
-from Block import Block
+from trash.Block import Block
 
 
 def draw_ellipse(painter: QPainter, x, y, ws):

@@ -5,7 +5,7 @@ from trash.STATIC import KEY
 from GUI.MainGUI import MainGameGUI
 from GUI import QApplication
 
-from Panel import Panel
+from trash.Panel import Panel
 
 temp = """地块：
 --------------------

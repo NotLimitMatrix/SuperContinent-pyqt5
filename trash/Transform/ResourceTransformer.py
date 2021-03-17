@@ -1,7 +1,7 @@
 import os
 
 from Transform.Transform import Transformer
-from models import Resource, json_load
+from trash.models import Resource, json_load
 from STATIC.DIRECTORY import DIR_COMMON, DIR_MODELS
 
 IN_FILE_RESOURCES = 'resources.json'

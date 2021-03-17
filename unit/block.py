@@ -1,6 +1,6 @@
 from random import choice
 
-from STATIC.CONST import BLOCK_STATUS, BLOCK_ZONING_NUMBER
+from trash.STATIC.CONST import BLOCK_STATUS, BLOCK_ZONING_NUMBER
 
 
 class Block:

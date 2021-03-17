@@ -1,4 +1,4 @@
-from models import *
+from trash.models import *
 
 ALL_TECHNOLOGISTS = pkl_load("Models/technology.pkl")
 ALL_KEYS = [k for k in ALL_TECHNOLOGISTS]

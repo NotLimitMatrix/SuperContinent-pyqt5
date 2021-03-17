@@ -1,4 +1,4 @@
-from models import *
+from trash.models import *
 
 
 class CONST:

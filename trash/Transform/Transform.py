@@ -1,4 +1,4 @@
-from models import pkl_dump
+from trash.models import pkl_dump
 
 from Transform.Localisation import Localisation
 
