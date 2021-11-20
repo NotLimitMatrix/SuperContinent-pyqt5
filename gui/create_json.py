@@ -3,7 +3,7 @@ import json
 from unit.block import Block
 from unit.zoning import Zoning
 
-from reference.const import WORLD_NUMBER
+from reference.gui import WORLD_NUMBER
 
 if __name__ == '__main__':
     bl = [Block(i) for i in range(WORLD_NUMBER ** 2)]
