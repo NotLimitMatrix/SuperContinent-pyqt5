@@ -69,3 +69,4 @@ class COLOR:
     GREEN = QColor(0, 255, 0)
     RED = QColor(255, 0, 0)
     BLUE = QColor(0, 0, 255)
+    DIM_GREY = QColor(105, 105, 105)
