@@ -7,6 +7,7 @@ from PyQt5.QtCore import QRect, Qt
 from PyQt5.QtGui import QColor, QPainter
 
 from reference.gui import COLOR
+from settings import LANGUAGE_DICTIONARY
 
 JSONEncoder = json.JSONEncoder()
 JSONDecoder = json.JSONDecoder()
@@ -26,7 +27,7 @@ def draw_text(rect: QRect, msg: str, painter: QPainter, color: QColor = None):
     else:
         painter.setBrush(color)
 
-    painter.drawText(rect, Qt.AlignHCenter | Qt.AlignVCenter, msg)
+    painter.drawText(rect, Qt.AlignHCenter | Qt.AlignVCenter, f"{msg}")
     painter.setBrush(COLOR.WHITE)
 
 
@@ -47,13 +48,5 @@ def decompress_dict(s):
     return JSONDecoder.decode(zlib.decompress(zlib.decompress(s)).decode('utf-8'))
 
 
-if __name__ == '__main__':
-    x = string.ascii_letters
-    print(x.__sizeof__())
-    print(compress_string(x).__sizeof__())
-    print(x == decompress_string(compress_string(x)))
-
-    y = dict(a=1, b=2, c=3, d=4)
-    print(y.__sizeof__())
-    print(compress_dict(y).__sizeof__())
-    print(y == decompress_dict(compress_dict(y)))
+def tr(msg):
+    return LANGUAGE_DICTIONARY.get(msg, msg)

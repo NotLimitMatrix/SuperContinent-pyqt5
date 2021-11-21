@@ -1,0 +1,11 @@
+class WORDS:
+    TIME = 'time'
+    FOOD = 'food'
+    MINERAL = 'mineral'
+    ENERGY = 'energy'
+    COMMODITY = 'commodity'
+    ALLOY = 'alloy'
+    TECHNOLOGY = 'technology'
+    ECONOMY = 'economy'
+    MILITARY = 'military'
+    POPULATION = 'population'
