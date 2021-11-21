@@ -17,6 +17,8 @@ class NUMBER:
     PANEL_DAILY_PER = 0.4
     # 面板战力宽度比例
     PANEL_POWER_PER = 0.8
+    # 科技领域种类: 经济、军工、超越
+    TECHNOLOGY_TYPE = 3
 
 
 # 尺寸常数
@@ -37,11 +39,19 @@ class SIZE:
     PANEL_HEIGHT = ZONING_HEIGHT
     # 面板每层高度
     PANEL_LEVEL_HEIGHT = PANEL_HEIGHT // NUMBER.PANEL_NUMBER
+
+    # 科技板宽度
+    TECHNOLOGY_WIDTH = PANEL_WIDTH
+    # 每个科技领域板的高度
+    TECHNOLOGY_LEVEL_HEIGHT = PANEL_LEVEL_HEIGHT
+    # 科技板高度
+    TECHNOLOGY_HEIGHT = TECHNOLOGY_LEVEL_HEIGHT * NUMBER.TECHNOLOGY_TYPE
+
     # 区域间隔
     DX = 1
 
     # 窗口宽度
-    WINDOW_WIDTH = DX + WORLD_WIDTH + DX + ZONING_WIDTH + DX + PANEL_WIDTH + DX
+    WINDOW_WIDTH = DX + WORLD_WIDTH + DX * 2 + ZONING_WIDTH + DX * 2 + PANEL_WIDTH + DX
     # 窗口高度
     WINDOW_HEIGHT = DX + WORLD_WIDTH + DX
 
@@ -62,18 +72,23 @@ class POSITION:
     # 区划底部坐标
     ZONING_BOTTOM = ZONING_TOP + SIZE.ZONING_HEIGHT
     # 区划左边坐标
-    ZONING_LEFT = WORLD_RIGHT + SIZE.DX
+    ZONING_LEFT = WORLD_RIGHT + SIZE.DX * 2
     # 区划右边坐标
     ZONING_RIGHT = ZONING_LEFT + SIZE.ZONING_WIDTH
 
     # 面板顶部坐标
     PANEL_TOP = WORLD_TOP
-    # 面板底部坐标
-    PANEL_BOTTOM = PANEL_TOP + SIZE.PANEL_HEIGHT
     # 面板左边坐标
-    PANEL_LEFT = ZONING_RIGHT + SIZE.DX
-    # 面板右边坐标
-    PANEL_RIGHT = PANEL_LEFT + SIZE.PANEL_WIDTH
+    PANEL_LEFT = ZONING_RIGHT + SIZE.DX * 2
+
+    # 科技板顶部坐标
+    TECHNOLOGY_TOP = PANEL_TOP + SIZE.PANEL_HEIGHT + SIZE.DX * 2
+    # 科技板底部坐标
+    TECHNOLOGY_BOTTOM = TECHNOLOGY_TOP + SIZE.PANEL_LEVEL_HEIGHT * NUMBER.TECHNOLOGY_TYPE
+    # 科技板左边坐标
+    TECHNOLOGY_LEFT = PANEL_LEFT
+    # 科技板右边坐标
+    TECHNOLOGY_RIGHT = TECHNOLOGY_LEFT + SIZE.TECHNOLOGY_WIDTH
 
 
 # 颜色常量
@@ -84,3 +99,13 @@ class COLOR:
     RED = QColor(255, 0, 0)
     BLUE = QColor(0, 0, 255)
     DIM_GREY = QColor(105, 105, 105)
+
+    # 无色
+    COLOR_LESS = QColor(0, 0, 0, 0)
+
+    # 科技: 经济领域指定颜色
+    TECH_ECONOMY = QColor(0, 255, 127)
+    # 科技: 军工领域指定颜色
+    TECH_MILITARY = QColor(0, 191, 255)
+    # 科技: 超越领域指定颜色
+    TECH_BEYOND = QColor(255, 215, 0)

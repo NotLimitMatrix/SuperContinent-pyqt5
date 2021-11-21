@@ -65,27 +65,36 @@ class PanelGUI(BaseGUI, ABC):
         super(PanelGUI, self).__init__(*args, **kwargs)
 
         self.panels_resource = [
+            # 食物
             PanelResourceGUI(tr(WORDS.FOOD), 0, 0, top=self.top, left=self.left,
-                             width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT),
+                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
+            # 矿物
             PanelResourceGUI(tr(WORDS.MINERAL), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT, left=self.left,
-                             width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT),
+                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
+            # 能源
             PanelResourceGUI(tr(WORDS.ENERGY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 2, left=self.left,
-                             width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT),
+                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
+            # 物资
             PanelResourceGUI(tr(WORDS.COMMODITY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 3, left=self.left,
-                             width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT),
+                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
+            # 合金
             PanelResourceGUI(tr(WORDS.ALLOY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 4, left=self.left,
-                             width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT)
+                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT)
         ]
 
         self.panels_power = [
+            # 人口
             PanelPowerGUI(tr(WORDS.POPULATION), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 5, left=self.left,
-                          width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT),
+                          width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
+            # 经济
             PanelPowerGUI(tr(WORDS.ECONOMY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 6, left=self.left,
-                          width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT),
-            PanelPowerGUI(tr(WORDS.MINERAL), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 7, left=self.left,
-                          width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT),
+                          width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
+            # 军力
+            PanelPowerGUI(tr(WORDS.MILITARY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 7, left=self.left,
+                          width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
+            # 科技
             PanelPowerGUI(tr(WORDS.TECHNOLOGY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 8, left=self.left,
-                          width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_LEVEL_HEIGHT)
+                          width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT)
         ]
 
     def draw_component(self, painter: QPainter):

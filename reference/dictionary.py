@@ -9,3 +9,4 @@ class WORDS:
     ECONOMY = 'economy'
     MILITARY = 'military'
     POPULATION = 'population'
+    BEYOND = 'beyond'
