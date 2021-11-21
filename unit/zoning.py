@@ -1,19 +1,12 @@
+from PyQt5.QtCore import QRect
+
+
 class Zoning:
-    def __init__(self, ident, belong):
-        self.id = ident
+    def __init__(self, ident, row, col, size):
+        self.ident = ident
+        self.row = row
+        self.col = col
+        self.size = size
 
-        self.build = 0
-        self.belong = belong
-
-    def get_xy(self, dx):
-        return divmod(self.id, dx)
-
-    def dump(self):
-        return {
-            'build': self.build,
-            'belong': self.belong
-        }
-
-    @staticmethod
-    def collect(zoning_list):
-        return {str(zoning.id): zoning.dump() for zoning in zoning_list}
+    def real_position(self, top, left):
+        return QRect(self.size * self.col + left, self.size * self.row + top, self.size, self.size)

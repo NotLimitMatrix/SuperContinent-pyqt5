@@ -5,6 +5,7 @@ from PyQt5 import QtGui
 from reference.gui import SIZE, NUMBER, POSITION
 
 from gui.gui_world import WorldGUI
+from gui.gui_zoning import ZoningGUI
 
 
 class MainGameGUI(QMainWindow):
@@ -14,6 +15,9 @@ class MainGameGUI(QMainWindow):
         self.gui_world = WorldGUI(NUMBER.WORLD_NUMBER,
                                   top=POSITION.WORLD_TOP, left=POSITION.WORLD_LEFT,
                                   width=SIZE.WORLD_WIDTH, height=SIZE.WORLD_HEIGHT)
+        self.gui_zoning = ZoningGUI(NUMBER.ZONING_NUMBER,
+                                    top=POSITION.ZONING_TOP, left=POSITION.ZONING_LEFT,
+                                    width=SIZE.ZONING_WIDTH, height=SIZE.ZONING_HEIGHT)
 
         self.resize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
         self.setFixedSize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
@@ -23,6 +27,7 @@ class MainGameGUI(QMainWindow):
 
     def draw_window(self, painter: QPainter):
         self.gui_world.draw_component(painter)
+        self.gui_zoning.draw_component(painter)
 
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         p = QPainter()

@@ -6,7 +6,7 @@ class NUMBER:
     # 初始世界宽度
     WORLD_NUMBER = 10
     # 初始区划数量
-    ZONING_NUMBER = 1
+    ZONING_NUMBER = 6
 
 
 # 尺寸常数
