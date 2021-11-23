@@ -1,4 +1,4 @@
-# Technology type
+# technology type
 MILITARY = 'military'
 CIVIL = 'civil'
 BEYOND = 'beyond'

@@ -97,7 +97,7 @@ class Researcher:
 #         else:
 #             self.BEYOND_RESEARCHER = None
 #
-#     def finish_technology(self, technology: Technology):
+#     def finish_technology(self, technology: technology):
 #         if technology.loop:
 #             if technology.key in self.LOOP_TECHNOLOGISTS:
 #                 self.LOOP_TECHNOLOGISTS[technology.key].level_up()

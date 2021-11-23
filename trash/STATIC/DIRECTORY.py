@@ -6,7 +6,7 @@ MODELS = 'Models'
 COMMON = 'Common'
 C_BUILDING = 'Building'
 C_LOCALISATION = 'Localisation'
-C_TECHNOLOGY = 'Technology'
+C_TECHNOLOGY = 'technology'
 
 DIR_COMMON = os.path.join(PROJECT_ROOT, COMMON)
 DIR_MODELS = os.path.join(PROJECT_ROOT, MODELS)

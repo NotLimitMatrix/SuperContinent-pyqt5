@@ -6,9 +6,9 @@ class Localisation:
 
     def __init__(self):
         self.files = [
-            "Technology/beyond.txt",
-            "Technology/civil.txt",
-            "Technology/military.txt",
+            "technology/beyond.txt",
+            "technology/civil.txt",
+            "technology/military.txt",
             "jobs.txt",
             "resources.txt"
         ]

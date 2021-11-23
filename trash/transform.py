@@ -6,9 +6,9 @@ class Localisation:
 
     def __init__(self):
         self.files = [
-            "Technology/beyond.txt",
-            "Technology/civil.txt",
-            "Technology/military.txt",
+            "technology/beyond.txt",
+            "technology/civil.txt",
+            "technology/military.txt",
             "jobs.txt",
             "resources.txt"
         ]
@@ -85,11 +85,11 @@ class JobTransformer(Transformer):
 
 class TechnologyTransformer(Transformer):
     def init(self, l):
-        self.dir = "Common/Technology"
+        self.dir = "../common/technology"
         self.files = [
-            "Common/Technology/military_technology.json",
-            "Common/Technology/beyond_technology.json",
-            "Common/Technology/civil_technology.json"
+            "Common/technology/military_technology.json",
+            "Common/technology/beyond_technology.json",
+            "Common/technology/civil_technology.json"
         ]
         self.output = "Models/technology.pkl"
 
@@ -110,7 +110,7 @@ class TechnologyTransformer(Transformer):
             )
 
     def transform_sword_armor(self, l):
-        Sword_Armor = join(self.dir, "Sword_Armor")
+        Sword_Armor = join(self.dir, "SwordArmor")
         for file in listdir(Sword_Armor):
             for k, v in self.gen_technologists(json_load(join(Sword_Armor, file))):
 
