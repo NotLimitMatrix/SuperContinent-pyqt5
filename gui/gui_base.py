@@ -14,7 +14,7 @@ class BaseGUI(ABC):
         self.height = height
 
     @abstractmethod
-    def update(self):
+    def update(self, *args, **kwargs):
         """更新界面"""
 
     @abstractmethod

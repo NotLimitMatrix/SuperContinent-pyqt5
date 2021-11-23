@@ -23,12 +23,12 @@ def ident_to_row_col(ident, number):
 
 def draw_text(rect: QRect, msg: str, painter: QPainter, color: QColor = None):
     if color is None:
-        painter.setBrush(COLOR.BLACK)
+        painter.setPen(COLOR.BLACK)
     else:
-        painter.setBrush(color)
+        painter.setPen(color)
 
     painter.drawText(rect, Qt.AlignHCenter | Qt.AlignVCenter, f"{msg}")
-    painter.setBrush(COLOR.WHITE)
+    painter.setPen(COLOR.BLACK)
 
 
 def compress_string(s: str):

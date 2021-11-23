@@ -8,6 +8,17 @@ from gui.gui_world import WorldGUI
 from gui.gui_zoning import ZoningGUI
 from gui.gui_panel import PanelGUI
 from gui.gui_technology import TechnologyGUI
+from gui.gui_text_browser import TextBrowserGUI
+
+test_message = """
+地块: 01
+坐标: 1,2
+环境: 恶劣
+资源:
+    食物: +2
+    矿物: +4
+    能量: -1
+"""
 
 
 class MainGameGUI(QMainWindow):
@@ -25,6 +36,10 @@ class MainGameGUI(QMainWindow):
         self.gui_technology = TechnologyGUI(top=POSITION.TECHNOLOGY_TOP, left=POSITION.TECHNOLOGY_LEFT,
                                             width=SIZE.TECHNOLOGY_WIDTH, height=SIZE.TECHNOLOGY_HEIGHT)
 
+        self.gui_text_browser = TextBrowserGUI(test_message,
+                                               top=POSITION.TEXT_BROWSER_TOP, left=POSITION.TEXT_BROWSER_LEFT,
+                                               width=SIZE.TEXT_BROWSER_WIDTH, height=SIZE.TEXT_BROWSER_HEIGHT)
+
         self.resize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
         self.setFixedSize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
         self.setWindowTitle('Super Continent')
@@ -36,6 +51,7 @@ class MainGameGUI(QMainWindow):
         self.gui_zoning.draw_component(painter)
         self.gui_panel.draw_component(painter)
         self.gui_technology.draw_component(painter)
+        self.gui_text_browser.draw_component(painter)
 
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         p = QPainter()

@@ -43,7 +43,7 @@ class TechnologyUnitGUI(BaseGUI, ABC):
         big_rect = QRect(self.left, self.top, self.width, self.height)
         painter.setBrush(COLOR.COLOR_LESS)
         painter.drawRect(big_rect)
-        draw_text(big_rect, f"{self.name}: {round(self.per, 2)}%", painter)
+        draw_text(big_rect, f"{self.name}: {round(self.per * 100, 2)}%", painter)
 
     def update(self):
         pass
