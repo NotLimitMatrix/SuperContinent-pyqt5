@@ -4,7 +4,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MODELS = 'Models'
 COMMON = 'Common'
-C_BUILDING = 'Building'
+C_BUILDING = 'building'
 C_LOCALISATION = 'Localisation'
 C_TECHNOLOGY = 'technology'
 
