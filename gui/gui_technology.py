@@ -5,13 +5,13 @@ from PyQt5.QtCore import QRect
 
 from reference.gui import COLOR, SIZE
 from reference.functions import draw_text
-from reference.dictionary import WORDS
+from reference import dictionary
 from gui.gui_base import BaseGUI
 
 TECH_AREA_USING_COLOR = {
-    WORDS.ECONOMY: COLOR.TECH_ECONOMY,
-    WORDS.MILITARY: COLOR.TECH_MILITARY,
-    WORDS.BEYOND: COLOR.TECH_BEYOND
+    dictionary.ECONOMY: COLOR.TECH_ECONOMY,
+    dictionary.MILITARY: COLOR.TECH_MILITARY,
+    dictionary.BEYOND: COLOR.TECH_BEYOND
 }
 
 
@@ -55,15 +55,15 @@ class TechnologyGUI(BaseGUI, ABC):
 
         self.tech_list = [
             # 经济科技
-            TechnologyUnitGUI(WORDS.ECONOMY, '矿产探测', 2301, 5689,
+            TechnologyUnitGUI(dictionary.ECONOMY, '矿产探测', 2301, 5689,
                               top=self.top, left=self.left,
                               width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT),
             # 军事科技
-            TechnologyUnitGUI(WORDS.MILITARY, '蓝色激光', 3569, 4321,
+            TechnologyUnitGUI(dictionary.MILITARY, '蓝色激光', 3569, 4321,
                               top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT, left=self.left,
                               width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT),
             # 超越科技
-            TechnologyUnitGUI(WORDS.BEYOND, '进化破译', 1021, 10248,
+            TechnologyUnitGUI(dictionary.BEYOND, '进化破译', 1021, 10248,
                               top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT * 2, left=self.left,
                               width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT)
         ]

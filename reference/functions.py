@@ -50,3 +50,15 @@ def decompress_dict(s):
 
 def tr(msg):
     return LANGUAGE_DICTIONARY.get(msg, msg)
+
+
+def fmt_number(number):
+    n = abs(number)
+    if n > 1000000000:
+        return f"{round(number / 1000000000, 2)} G"
+    elif n > 999999:
+        return f"{round(number / 1000000, 2)} M"
+    elif n > 999:
+        return f"{round(number / 1000, 2)} K"
+    else:
+        return str(number)

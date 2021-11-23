@@ -7,3 +7,6 @@ USING_LANGUAGE = 'zh_cn'
 
 with open(BASE_DIR.joinpath('localization').joinpath(f"{USING_LANGUAGE}.json"), 'r', encoding='utf-8') as f:
     LANGUAGE_DICTIONARY: dict = json.load(f)
+
+SPEED = 1
+TIME_FLOW = 1 / SPEED

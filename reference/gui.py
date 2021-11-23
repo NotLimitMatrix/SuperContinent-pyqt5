@@ -149,3 +149,14 @@ class COLOR:
     TECH_MILITARY = QColor(0, 191, 255)
     # 科技: 超越领域指定颜色
     TECH_BEYOND = QColor(255, 215, 0)
+
+    # 地块环境: 死寂
+    ENV__2 = QColor(255, 105, 180)
+    # 地块环境: 恶劣
+    ENV__1 = QColor(255, 165, 0)
+    # 地块环境: 一般
+    ENV_0 = QColor(0, 255, 255)
+    # 地块环境: 优秀
+    ENV_1 = QColor(100, 149, 237)
+    # 地块环境: 理想
+    ENV_2 = QColor(0, 255, 127)

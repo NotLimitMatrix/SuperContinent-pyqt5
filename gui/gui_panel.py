@@ -5,7 +5,7 @@ from PyQt5.QtCore import QRect
 
 from reference.gui import COLOR, NUMBER, SIZE
 from reference.functions import draw_text, tr
-from reference.dictionary import WORDS
+from reference import dictionary
 from gui.gui_base import BaseGUI
 
 
@@ -66,34 +66,34 @@ class PanelGUI(BaseGUI, ABC):
 
         self.panels_resource = [
             # 食物
-            PanelResourceGUI(tr(WORDS.FOOD), 0, 0, top=self.top, left=self.left,
+            PanelResourceGUI(tr(dictionary.FOOD), 0, 0, top=self.top, left=self.left,
                              width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 矿物
-            PanelResourceGUI(tr(WORDS.MINERAL), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT, left=self.left,
+            PanelResourceGUI(tr(dictionary.MINERAL), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT, left=self.left,
                              width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 能源
-            PanelResourceGUI(tr(WORDS.ENERGY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 2, left=self.left,
+            PanelResourceGUI(tr(dictionary.ENERGY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 2, left=self.left,
                              width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 物资
-            PanelResourceGUI(tr(WORDS.COMMODITY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 3, left=self.left,
+            PanelResourceGUI(tr(dictionary.COMMODITY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 3, left=self.left,
                              width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 合金
-            PanelResourceGUI(tr(WORDS.ALLOY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 4, left=self.left,
+            PanelResourceGUI(tr(dictionary.ALLOY), 0, 0, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 4, left=self.left,
                              width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT)
         ]
 
         self.panels_power = [
             # 人口
-            PanelPowerGUI(tr(WORDS.POPULATION), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 5, left=self.left,
+            PanelPowerGUI(tr(dictionary.POPULATION), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 5, left=self.left,
                           width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 经济
-            PanelPowerGUI(tr(WORDS.ECONOMY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 6, left=self.left,
+            PanelPowerGUI(tr(dictionary.ECONOMY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 6, left=self.left,
                           width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 军力
-            PanelPowerGUI(tr(WORDS.MILITARY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 7, left=self.left,
+            PanelPowerGUI(tr(dictionary.MILITARY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 7, left=self.left,
                           width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 科技
-            PanelPowerGUI(tr(WORDS.TECHNOLOGY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 8, left=self.left,
+            PanelPowerGUI(tr(dictionary.TECHNOLOGY), 10, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 8, left=self.left,
                           width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT)
         ]
 

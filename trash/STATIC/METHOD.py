@@ -31,7 +31,7 @@ def all_in(tested, within):
 
 def format_number(number):
     if number > 1000000000:
-        return "1G"
+        return f"{number // 1000000000}G"
     elif number > 999999:
         return f"{number // 1000000}M"
     elif number > 999:
