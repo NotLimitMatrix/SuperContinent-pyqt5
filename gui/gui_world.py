@@ -2,17 +2,17 @@ from abc import ABC
 
 from PyQt5.QtGui import QPainter
 
-from reference.gui import COLOR
+from reference.gui import COLOR, NUMBER
 from reference.functions import row_col_to_ident, draw_text
 from gui.gui_base import BaseGUI
 from unit.block import Block
 
 
 class WorldGUI(BaseGUI, ABC):
-    def __init__(self, n, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(WorldGUI, self).__init__(*args, **kwargs)
-        self.n = n
-        self.size = self.width // n
+        self.n = NUMBER.WORLD_NUMBER
+        self.size = self.width // NUMBER.WORLD_NUMBER
         self.world_list = self.init_world()
 
     def init_world(self):

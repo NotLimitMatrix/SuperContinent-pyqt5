@@ -2,17 +2,17 @@ from abc import ABC
 
 from PyQt5.QtGui import QPainter
 
-from reference.gui import COLOR
+from reference.gui import COLOR, NUMBER
 from reference.functions import draw_text, row_col_to_ident
 from gui.gui_base import BaseGUI
 from unit.zoning import Zoning
 
 
 class ZoningGUI(BaseGUI, ABC):
-    def __init__(self, n, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(ZoningGUI, self).__init__(*args, **kwargs)
-        self.n = n
-        self.size = self.width // n
+        self.n = NUMBER.ZONING_NUMBER
+        self.size = self.width // NUMBER.ZONING_NUMBER
         self.zoning_list = self.init_zoning()
 
     def init_zoning(self):
