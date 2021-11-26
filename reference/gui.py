@@ -1,6 +1,16 @@
 from PyQt5.QtGui import QColor
 
 
+# 键名
+class KEY:
+    WORLD = 'world'
+    ZONING = 'zoning'
+    PANEL = 'panel'
+    SELECT = 'select'
+    TECHNOLOGY = 'technology'
+    TEXT_BROWSER = 'text_browser'
+
+
 # 数据常数
 class NUMBER:
     # 初始世界宽度
