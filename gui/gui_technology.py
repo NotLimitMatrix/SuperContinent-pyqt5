@@ -19,6 +19,10 @@ class TechnologyUnitGUI(BaseGUI, ABC):
     def __init__(self, color, *args, **kwargs):
         super(TechnologyUnitGUI, self).__init__(*args, **kwargs)
         self.color = color
+        self.name = None
+        self.schedule = 0
+        self.total = 1
+        self.per = 0
 
     def draw_schedule(self, schedule_width, painter: QPainter):
         painter.setBrush(self.color)
@@ -43,8 +47,8 @@ class TechnologyUnitGUI(BaseGUI, ABC):
 
     def update(self, name, schedule, total):
         self.name = name
+        self.total = 1 if total == 0 else total
         self.schedule = schedule
-        self.total = total
         self.per = schedule / total
         return self.is_finished()
 
@@ -79,12 +83,13 @@ class TechnologyGUI(BaseGUI, ABC):
                 width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
             )
         }
+        self.memory = {
+
+        }
 
     def update(self, data):
-        result = dict()
         for area in TECH_AREA_USING_COLOR:
-            result[area] = self.tech_list[area].update(*data[area])
-        return result
+            self.tech_list[area].update(*data[area])
 
     def draw(self, painter: QPainter):
         for tech, component in self.tech_list.items():

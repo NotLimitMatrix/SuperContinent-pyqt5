@@ -23,7 +23,4 @@ class ZoningGUI(BaseGUI, ABC):
             draw_text(rect, f"{zoning.row},{zoning.col}", painter)
 
     def update(self, data):
-        self.zoning_list = [
-            Zoning(i, *ident_to_row_col(i, self.n), self.size)
-            for i in data
-        ]
+        self.zoning_list = data

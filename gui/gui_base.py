@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 
-from PyQt5.QtGui import QPainter, QMouseEvent
+from PyQt5.QtGui import QMouseEvent
 
 
 class BaseGUI(ABC):

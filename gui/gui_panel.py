@@ -49,7 +49,7 @@ class PanelPowerGUI(BaseGUI, ABC):
         width_name = int(self.width * NUMBER.PANEL_NAME_PER)
         width_power = int(self.width * NUMBER.PANEL_POWER_PER)
 
-        self.draw_power(painter, self.left, width_name, name)
+        self.draw_power(painter, self.left, width_name, tr(name))
         self.draw_power(painter, self.left + width_name, width_power, self.power)
 
     def update(self, power):

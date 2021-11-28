@@ -21,6 +21,13 @@ def ident_to_row_col(ident, number):
     return divmod(ident, number)
 
 
+def game_time_to_date(time_number):
+    days = time_number % 30 + 1
+    months = (time_number // 30) % 12 + 1
+    years = time_number // 360
+    return f"{years + 1}-{'' if months > 9 else '0'}{months}-{'' if days > 9 else '0'}{days}"
+
+
 def draw_text(rect: QRect, msg: str, painter: QPainter, color: QColor = None):
     if color is None:
         painter.setPen(COLOR.BLACK)

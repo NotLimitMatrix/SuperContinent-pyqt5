@@ -2,11 +2,13 @@ from pprint import pprint
 
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QPainter
+from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 
 from reference.gui import SIZE, POSITION, GUI_KEY, NUMBER
 from reference import dictionary
 from reference import functions
+from reference import templates
 from gui.gui_world import WorldGUI
 from gui.gui_zoning import ZoningGUI
 from gui.gui_panel import PanelGUI
@@ -16,23 +18,17 @@ from gui.gui_select import SelectGUI
 from gui.gui_filter import FilterGUI
 
 from unit.block import Block
-
-test_message = """
-地块: 01
-坐标: 1,2
-环境: 恶劣
-资源:
-    食物: +2
-    矿物: +4
-    能量: -1
-"""
+from unit.zoning import Zoning
 
 MAIN_MEMORY = {
     GUI_KEY.WORLD: [
         Block(i, *functions.ident_to_row_col(i, NUMBER.WORLD_NUMBER), SIZE.WORLD_WIDTH // NUMBER.WORLD_NUMBER)
         for i in range(NUMBER.WORLD_NUMBER * NUMBER.WORLD_NUMBER)
     ],
-    GUI_KEY.ZONING: [i for i in range(36)],
+    GUI_KEY.ZONING: [
+        Zoning(i, *functions.ident_to_row_col(i, NUMBER.ZONING_NUMBER), SIZE.ZONING_WIDTH // NUMBER.ZONING_NUMBER)
+        for i in range(NUMBER.ZONING_NUMBER * NUMBER.ZONING_NUMBER)
+    ],
     GUI_KEY.PANEL: {
         dictionary.FOOD: (0, 10),
         dictionary.MINERAL: (0, 10),
@@ -51,7 +47,7 @@ MAIN_MEMORY = {
         'more_point': 0
     },
     GUI_KEY.SELECT: [i for i in range(6)],
-    GUI_KEY.TEXT_BROWSER: test_message
+    GUI_KEY.TEXT_BROWSER: ''
 }
 
 
@@ -81,21 +77,15 @@ class MainGameGUI(QMainWindow):
 
         self.resize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
         self.setFixedSize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
-        self.setWindowTitle('Super Continent')
+        self.setWindowTitle(f'Super Continent [{functions.game_time_to_date(0)}]')
 
         self.show()
 
     def update_data(self):
-        d = dict()
         # 根据memory更新界面
         for key, value in self.memory.items():
-            response = self.components[key].update(value)
-            if response is not None:
-                d[key] = response
+            self.components[key].update(value)
 
-        # 根据界面变动返回结果更新memory
-        self.memory.update(d)
-        pprint(self.memory)
         self.update()
 
     # 绘制界面
@@ -110,12 +100,22 @@ class MainGameGUI(QMainWindow):
         p.end()
 
     def choose_component(self, event):
-        for c_name, item_component in self.components:
+        for c_name, item_component in self.components.items():
             if item_component.in_this(event):
                 return c_name, item_component
-        return None
+        return None, None
 
-    # def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
-    #     c_name, component = self.choose_component(event)
-    #     if c_name == GUI_KEY.WORLD:
-    #         self.update_data()
+    def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
+        c_name, component = self.choose_component(event)
+        if c_name is None:
+            return
+
+        click = event.buttons()
+
+        if click == Qt.LeftButton:
+            self.memory[GUI_KEY.TEXT_BROWSER] = f"左键:\n{event.pos().x()}, {event.pos().y()}"
+
+        if click == Qt.RightButton:
+            self.memory[GUI_KEY.TEXT_BROWSER] = f"右键:\n{event.pos().x()}, {event.pos().y()}"
+
+        self.update_data()

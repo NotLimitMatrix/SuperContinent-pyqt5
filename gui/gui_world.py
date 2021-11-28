@@ -1,6 +1,6 @@
 from abc import ABC
 
-from PyQt5.QtGui import QPainter
+from PyQt5.QtGui import QPainter, QMouseEvent
 
 from reference.gui import COLOR, NUMBER
 from reference.functions import draw_text
