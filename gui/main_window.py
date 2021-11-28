@@ -38,8 +38,9 @@ MAIN_MEMORY = {
     },
     GUI_KEY.TECHNOLOGY: {
         dictionary.ECONOMY: ('矿产探测', 2301, 5689),
-        dictionary.MILITARY: ('蓝色激光', 3569, 4321),
-        dictionary.BEYOND: ('进化破译', 9568, 10248)
+        dictionary.MILITARY: ('蓝色激光', 36987, 4321),
+        dictionary.BEYOND: ('进化破译', 9568, 10248),
+        'more_point': 0
     },
     GUI_KEY.SELECT: [i for i in range(6)],
     GUI_KEY.TEXT_BROWSER: test_message
@@ -75,9 +76,14 @@ class MainGameGUI(QMainWindow):
         self.show()
 
     def update_data(self):
+        d = dict()
+        # 根据memory更新界面
         for key, value in self.memory.items():
-            self.components[key].update(value)
-
+            response = self.components[key].update(value)
+            d[key] = value if response is None else response
+        # 根据界面变动返回结果更新memory
+        self.memory.update(d)
+        print(self.memory)
         self.update()
 
     # 绘制界面

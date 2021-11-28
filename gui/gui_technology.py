@@ -29,7 +29,8 @@ class TechnologyUnitGUI(BaseGUI, ABC):
         painter.drawRect(other_left, self.top, other_width, self.height)
 
     def draw(self, painter: QPainter):
-        schedule_width = int(self.per * self.width)
+        schedule_width = int(self.per * self.width) if self.schedule < self.total else self.total
+
         painter.setPen(COLOR.COLOR_LESS)
         self.draw_schedule(schedule_width, painter)
         self.draw_other_rect(self.left + schedule_width, self.width - schedule_width, painter)
@@ -45,6 +46,13 @@ class TechnologyUnitGUI(BaseGUI, ABC):
         self.schedule = schedule
         self.total = total
         self.per = schedule / total
+        return self.is_finished()
+
+    def is_finished(self):
+        if self.schedule < self.total:
+            return False, 0
+        else:
+            return True, self.schedule - self.total
 
 
 class TechnologyGUI(BaseGUI, ABC):
@@ -73,9 +81,10 @@ class TechnologyGUI(BaseGUI, ABC):
         }
 
     def update(self, data):
+        result = dict()
         for area in TECH_AREA_USING_COLOR:
-            self.tech_list[area].update(*data[area])
-
+            result[area] = self.tech_list[area].update(*data[area])
+        return result
 
     def draw(self, painter: QPainter):
         for tech, component in self.tech_list.items():
