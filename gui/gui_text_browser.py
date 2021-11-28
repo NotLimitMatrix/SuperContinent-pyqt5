@@ -6,26 +6,15 @@ from PyQt5.QtCore import Qt
 from reference.gui import COLOR, SIZE
 from gui.gui_base import BaseGUI
 
-test_message = """
-地块: 01
-坐标: 1,2
-环境: 恶劣
-资源:
-    食物: +2
-    矿物: +4
-    能量: -1
-"""
-
 
 class TextBrowserGUI(BaseGUI, ABC):
     def __init__(self, *args, **kwargs):
         super(TextBrowserGUI, self).__init__(*args, **kwargs)
-        self.message = test_message
 
-    def update(self, *args, **kwargs):
-        pass
+    def update(self, msg):
+        self.message = msg
 
-    def draw_component(self, painter: QPainter):
+    def draw(self, painter: QPainter):
         painter.setBrush(COLOR.WHITE)
         painter.drawRect(self.left, self.top, self.width, self.height)
 

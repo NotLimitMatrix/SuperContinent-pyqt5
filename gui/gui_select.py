@@ -19,7 +19,7 @@ class SelectGUI(BaseGUI, ABC):
     def update(self, *args, **kwargs):
         pass
 
-    def draw_component(self, painter: QPainter):
+    def draw(self, painter: QPainter):
         painter.setBrush(COLOR.WHITE)
         for index, rect in enumerate(self.options):
             painter.drawRect(rect)

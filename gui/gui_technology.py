@@ -28,7 +28,7 @@ class TechnologyUnitGUI(BaseGUI, ABC):
         painter.setBrush(COLOR.WHITE)
         painter.drawRect(other_left, self.top, other_width, self.height)
 
-    def draw_component(self, painter: QPainter):
+    def draw(self, painter: QPainter):
         schedule_width = int(self.per * self.width)
         painter.setPen(COLOR.COLOR_LESS)
         self.draw_schedule(schedule_width, painter)
@@ -77,6 +77,6 @@ class TechnologyGUI(BaseGUI, ABC):
             self.tech_list[area].update(*data[area])
 
 
-    def draw_component(self, painter: QPainter):
+    def draw(self, painter: QPainter):
         for tech, component in self.tech_list.items():
-            component.draw_component(painter)
+            component.draw(painter)

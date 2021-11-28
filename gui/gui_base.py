@@ -14,10 +14,6 @@ class BaseGUI(ABC):
     def update(self, *args, **kwargs):
         """更新界面"""
 
-    @abstractmethod
-    def draw_component(self, painter: QPainter):
-        """绘制界面"""
-
     def in_this(self, event: QMouseEvent):
         pos = event.pos()
         bool_x = self.left <= pos.x() <= self.left + self.width
