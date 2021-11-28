@@ -73,7 +73,7 @@ class MainGameGUI(QMainWindow):
         self.RESEARCH_INFO_LIST = {
             KEY.MILITARY: (None, None),
             KEY.CIVIL: (None, None),
-            KEY.BEYOND: (None, None)
+            KEY.HYPER: (None, None)
         }
 
         # 情报GUI和情报内容
@@ -127,7 +127,7 @@ class MainGameGUI(QMainWindow):
         return {
             KEY.MILITARY: r_military,
             KEY.CIVIL: r_civil,
-            KEY.BEYOND: r_beyond
+            KEY.HYPER: r_beyond
         }
 
     def init_GUI_DETAIL_TEXT(self):
@@ -191,7 +191,7 @@ class MainGameGUI(QMainWindow):
             self.GUI_POWER_PANEL.item(row, 1).setText(self.POWER_LIST[row])
 
     def update_GUI_RESEARCH_PANEL(self):
-        for key in [KEY.MILITARY, KEY.CIVIL, KEY.BEYOND]:
+        for key in [KEY.MILITARY, KEY.CIVIL, KEY.HYPER]:
             info = self.RESEARCH_INFO_LIST.get(key)
             panel = self.GUI_RESEARCH_PAENL.get(key)
             panel.display(info)

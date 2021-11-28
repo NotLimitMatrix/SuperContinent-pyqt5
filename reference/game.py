@@ -25,9 +25,9 @@ class BLOCK:
 
 class ZONING:
     # 地块区划数
-    ZONING_NUMBER = (3, 4, 5, 6)
+    ZONING_NUMBER = (4, 5, 6, 7)
     # 区划数权重
-    ZONING_WEIGHT = calculate_weight(20, 54, 12, 9)
+    ZONING_WEIGHT = calculate_weight(75, 30, 12, 1)
 
 
 class TECH:

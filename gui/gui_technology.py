@@ -9,9 +9,9 @@ from reference import dictionary
 from gui.gui_base import BaseGUI
 
 TECH_AREA_USING_COLOR = {
-    dictionary.ECONOMY: COLOR.TECH_ECONOMY,
+    dictionary.CIVIL: COLOR.TECH_ECONOMY,
     dictionary.MILITARY: COLOR.TECH_MILITARY,
-    dictionary.BEYOND: COLOR.TECH_BEYOND
+    dictionary.HYPER: COLOR.TECH_BEYOND
 }
 
 
@@ -65,8 +65,8 @@ class TechnologyGUI(BaseGUI, ABC):
 
         self.tech_list = {
             # 经济科技
-            dictionary.ECONOMY: TechnologyUnitGUI(
-                color=TECH_AREA_USING_COLOR[dictionary.ECONOMY],
+            dictionary.CIVIL: TechnologyUnitGUI(
+                color=TECH_AREA_USING_COLOR[dictionary.CIVIL],
                 top=self.top, left=self.left,
                 width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
             ),
@@ -77,8 +77,8 @@ class TechnologyGUI(BaseGUI, ABC):
                 width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
             ),
             # 超越科技
-            dictionary.BEYOND: TechnologyUnitGUI(
-                color=TECH_AREA_USING_COLOR[dictionary.BEYOND],
+            dictionary.HYPER: TechnologyUnitGUI(
+                color=TECH_AREA_USING_COLOR[dictionary.HYPER],
                 top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT * 2, left=self.left,
                 width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
             )

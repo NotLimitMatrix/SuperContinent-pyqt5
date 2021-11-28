@@ -25,14 +25,14 @@ MAIN_MEMORY = {
         dictionary.COMMODITY: (0, 10),
         dictionary.ALLOY: (0, 10),
         dictionary.POPULATION: 10,
-        dictionary.ECONOMY: 10,
+        dictionary.CIVIL: 10,
         dictionary.MILITARY: 10,
         dictionary.TECHNOLOGY: 10
     },
     GUI_KEY.TECHNOLOGY: {
-        dictionary.ECONOMY: ('矿产探测', 2301, 5689),
+        dictionary.CIVIL: ('矿产探测', 2301, 5689),
         dictionary.MILITARY: ('蓝色激光', 36987, 4321),
-        dictionary.BEYOND: ('进化破译', 9568, 10248),
+        dictionary.HYPER: ('进化破译', 9568, 10248),
         'more_point': 0
     },
     GUI_KEY.SELECT: [i for i in range(6)],
@@ -54,6 +54,8 @@ class Memory:
         self.zoning_data = list()
         self.zoning_display = {Zoning(0, 0, 0, self.zoning_width)}
 
+        self.init_zoning()
+
         self.msg = ''
 
     def init_zoning(self):
@@ -61,9 +63,9 @@ class Memory:
         for block in self.world_data:
             size = self.zoning_width // block.z_num
             z_number = block.z_num * block.z_num
-            z_list = (Zoning(n, *functions.ident_to_row_col(i, size), size) for i in range(z_number))
+            z_list = (Zoning(n, *functions.ident_to_row_col(i, block.z_num), size) for i in range(z_number))
             block.add_zoning(z_list)
-            n += len(z_number)
+            n += z_number
 
     def update_block(self, block_id):
         block = self.world_data[block_id]
@@ -85,14 +87,14 @@ class Memory:
                 dictionary.COMMODITY: (0, 10),
                 dictionary.ALLOY: (0, 10),
                 dictionary.POPULATION: 10,
-                dictionary.ECONOMY: 10,
+                dictionary.CIVIL: 10,
                 dictionary.MILITARY: 10,
                 dictionary.TECHNOLOGY: 10
             },
             GUI_KEY.TECHNOLOGY: {
-                dictionary.ECONOMY: ('矿产探测', 2301, 5689),
+                dictionary.CIVIL: ('矿产探测', 2301, 5689),
                 dictionary.MILITARY: ('蓝色激光', 36987, 4321),
-                dictionary.BEYOND: ('进化破译', 9568, 10248),
+                dictionary.HYPER: ('进化破译', 9568, 10248),
                 'more_point': 0
             },
             GUI_KEY.SELECT: [i for i in range(6)],

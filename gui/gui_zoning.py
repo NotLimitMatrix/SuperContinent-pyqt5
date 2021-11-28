@@ -3,7 +3,7 @@ from abc import ABC
 from PyQt5.QtGui import QPainter, QMouseEvent
 
 from reference.gui import COLOR, NUMBER
-from reference.functions import draw_text, ident_to_row_col
+from reference.functions import draw_text, row_col_to_ident
 from gui.gui_base import BaseGUI
 from unit.zoning import Zoning
 
@@ -26,3 +26,8 @@ class ZoningGUI(BaseGUI, ABC):
         self.n = data['number']
         self.size = data['size']
         self.zoning_list = data['data']
+
+    def mouse_choose_item(self, event: QMouseEvent):
+        cx = (event.pos().x() - self.left) // self.size
+        cy = (event.pos().y() - self.top) // self.size
+        return self.zoning_list[row_col_to_ident(cy, cx, self.n)]

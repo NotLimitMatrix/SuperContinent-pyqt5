@@ -4,3 +4,9 @@ TEMPLATE_BLOCK = """地块: {ident}
 生产修正: {product_modifier}
 维护花费: {upkeep_modifier}
 """
+
+TEMPLATE_ZONING = """区划: {ident}
+坐标: Row:{row}, Col:{col}
+所属: {block_id}
+建筑: {building}
+"""

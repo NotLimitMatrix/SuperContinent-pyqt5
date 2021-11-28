@@ -83,8 +83,8 @@ class PanelGUI(BaseGUI, ABC):
             dictionary.POPULATION: PanelPowerGUI(top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 5, left=self.left,
                                                  width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 经济
-            dictionary.ECONOMY: PanelPowerGUI(top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 6, left=self.left,
-                                              width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
+            dictionary.CIVIL: PanelPowerGUI(top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 6, left=self.left,
+                                            width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
             # 军力
             dictionary.MILITARY: PanelPowerGUI(top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 7, left=self.left,
                                                width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
