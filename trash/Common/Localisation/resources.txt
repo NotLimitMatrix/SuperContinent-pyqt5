@@ -1,7 +1,0 @@
-time=时间
-energy=能量
-minerals=矿物
-food=食物
-alloys=合金
-consumer_goods=物资
-research_point=科研点

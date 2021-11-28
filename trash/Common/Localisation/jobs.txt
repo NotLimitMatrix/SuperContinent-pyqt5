@@ -1,6 +1,0 @@
-electrician=电工
-miner=矿工
-farmer=农民
-metallurgist=冶金师
-worker=工人
-researcher=研究员
