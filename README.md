@@ -14,4 +14,4 @@ python main.py
 
 # SuperContinent
 
-![Main Gui](https://s2.ax1x.com/2019/12/27/lZ4JQs.png)
+[![ourRHg.png](https://z3.ax1x.com/2021/11/28/ourRHg.png)](https://imgtu.com/i/ourRHg)
