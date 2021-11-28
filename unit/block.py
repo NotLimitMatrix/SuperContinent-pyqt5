@@ -23,13 +23,13 @@ class Block:
         self.attribute = Attribute(status=weight_choice(BLOCK.ENV_WEIGHT), display=True)
 
         self.z_num = ZONING.ZONING_NUMBER[weight_choice(ZONING.ZONING_WEIGHT)]
-        self.z_set = set()
+        self.z_set = list()
 
     def add_zoning(self, z):
         if isinstance(z, int):
-            self.z_set.add(z)
+            self.z_set.append(z)
         elif isinstance(z, Iterable):
-            self.z_set.update(z)
+            self.z_set.extend(z)
         else:
             raise ValueError("Block: Insert element must be int or iterable")
 

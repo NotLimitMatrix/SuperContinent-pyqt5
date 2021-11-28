@@ -12,8 +12,10 @@ from gui.gui_world import WorldGUI
 from gui.gui_zoning import ZoningGUI
 from reference import functions
 from reference.gui import SIZE, POSITION, GUI_KEY
+
 from unit.block import Block
-from unit.memory import MAIN_MEMORY, Memory
+from unit.zoning import Zoning
+from unit.memory import Memory
 
 
 class MainGameGUI(QMainWindow):
@@ -84,6 +86,9 @@ class MainGameGUI(QMainWindow):
                 block: Block = component.mouse_choose_item(event)
                 msg += block.display()
                 self.memory.update_block(block.ident)
+            if c_name == GUI_KEY.ZONING:
+                zoning: Zoning = component.mouse_choose_item(event)
+                msg += zoning.display()
 
             self.memory.msg = msg
 

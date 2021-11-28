@@ -24,7 +24,7 @@ class WorldGUI(BaseGUI, ABC):
 
             rect = block.real_position(self.top, self.left)
             painter.drawRect(rect)
-            draw_text(rect, f"{block.row},{block.col}", painter)
+            # draw_text(rect, f"{block.row},{block.col}", painter)
 
     def update(self, data):
         self.world_list = data

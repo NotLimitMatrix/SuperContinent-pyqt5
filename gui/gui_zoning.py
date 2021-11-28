@@ -20,7 +20,7 @@ class ZoningGUI(BaseGUI, ABC):
         for zoning in self.zoning_list:
             rect = zoning.real_position(self.top, self.left)
             painter.drawRect(rect)
-            draw_text(rect, f"{zoning.row},{zoning.col}", painter)
+            # draw_text(rect, f"{zoning.row},{zoning.col}", painter)
 
     def update(self, data):
         self.n = data['number']

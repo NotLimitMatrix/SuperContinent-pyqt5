@@ -15,7 +15,7 @@ class GUI_KEY:
 # 数据常数
 class NUMBER:
     # 初始世界宽度
-    WORLD_NUMBER = 20
+    WORLD_NUMBER = 30
     # 初始区划数量
     ZONING_NUMBER = 6
     # 面板层数：食物、矿物、能源、物资、合金、人口、经济、军事、科技
@@ -31,9 +31,9 @@ class NUMBER:
     # 科技领域种类: 经济、军工、超越
     TECHNOLOGY_TYPE = 3
     # 消息面板行数
-    TEXT_LINE = 20
+    TEXT_LINE = 30
     # 列表框元素数量
-    SELECT_OPTIONS = 5
+    SELECT_OPTIONS = 9
     # 滤镜数量
     FILTER_OPTIONS = 3
 
@@ -44,7 +44,7 @@ class SIZE:
     DX = 1
 
     # 世界宽度
-    WORLD_WIDTH = 700
+    WORLD_WIDTH = 900
     # 世界高度
     WORLD_HEIGHT = WORLD_WIDTH
 
@@ -177,7 +177,14 @@ class COLOR:
     # 科技: 军工领域指定颜色
     TECH_MILITARY = QColor(0, 191, 255)
     # 科技: 超越领域指定颜色
-    TECH_BEYOND = QColor(255, 215, 0)
+    TECH_HYPER = QColor(255, 215, 0)
+
+    # 民用建筑指定颜色
+    BUILDING_CIVIL = QColor(0, 250, 154)
+    # 军用建筑指定颜色
+    BUILDING_MILITARY = QColor(0, 0, 205)
+    # 超越建筑指定颜色
+    BUILDING_HYPER = QColor(255, 165, 0)
 
     # 地块环境: 死寂
     ENV__2 = QColor(255, 105, 180)

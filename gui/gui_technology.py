@@ -11,7 +11,7 @@ from gui.gui_base import BaseGUI
 TECH_AREA_USING_COLOR = {
     dictionary.CIVIL: COLOR.TECH_ECONOMY,
     dictionary.MILITARY: COLOR.TECH_MILITARY,
-    dictionary.HYPER: COLOR.TECH_BEYOND
+    dictionary.HYPER: COLOR.TECH_HYPER
 }
 
 
