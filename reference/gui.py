@@ -2,7 +2,7 @@ from PyQt5.QtGui import QColor
 
 
 # 键名
-class KEY:
+class GUI_KEY:
     WORLD = 'world'
     ZONING = 'zoning'
     PANEL = 'panel'

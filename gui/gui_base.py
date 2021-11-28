@@ -1,9 +1,6 @@
 from abc import abstractmethod, ABC
 
-from PyQt5.QtGui import QPainter, QColor
-from PyQt5.QtCore import QRect, Qt
-
-from reference.gui import COLOR
+from PyQt5.QtGui import QPainter, QMouseEvent
 
 
 class BaseGUI(ABC):
@@ -20,3 +17,9 @@ class BaseGUI(ABC):
     @abstractmethod
     def draw_component(self, painter: QPainter):
         """绘制界面"""
+
+    def in_this(self, event: QMouseEvent):
+        pos = event.pos()
+        bool_x = self.left <= pos.x() <= self.left + self.width
+        bool_y = self.top <= pos.y() <= self.top + self.height
+        return bool_x and bool_y

@@ -139,7 +139,7 @@ class RandomBlock:
             return 4
 
     def random_attr(self):
-        return self.to_index((random.randint(0, 100))), random.choice(CONST.BLOCK_ZONING_NUMBER)
+        return self.to_index((random.randint(0, 100))), random.choice(CONST.ZONING_NUMBER)
 
     def new_world(self, size):
         return [self.random_attr() for _ in range(size)]

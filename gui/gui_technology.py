@@ -16,14 +16,9 @@ TECH_AREA_USING_COLOR = {
 
 
 class TechnologyUnitGUI(BaseGUI, ABC):
-    def __init__(self, area, name, schedule, total, *args, **kwargs):
+    def __init__(self, color, *args, **kwargs):
         super(TechnologyUnitGUI, self).__init__(*args, **kwargs)
-        self.area = area
-        self.color = TECH_AREA_USING_COLOR[area]
-        self.name = name
-        self.schedule = schedule
-        self.total = total
-        self.per = schedule / self.total
+        self.color = color
 
     def draw_schedule(self, schedule_width, painter: QPainter):
         painter.setBrush(self.color)
@@ -45,32 +40,43 @@ class TechnologyUnitGUI(BaseGUI, ABC):
         painter.drawRect(big_rect)
         draw_text(big_rect, f"{self.name}: {round(self.per * 100, 2)}%", painter)
 
-    def update(self):
-        pass
+    def update(self, name, schedule, total):
+        self.name = name
+        self.schedule = schedule
+        self.total = total
+        self.per = schedule / total
 
 
 class TechnologyGUI(BaseGUI, ABC):
     def __init__(self, *args, **kwargs):
         super(TechnologyGUI, self).__init__(*args, **kwargs)
 
-        self.tech_list = [
+        self.tech_list = {
             # 经济科技
-            TechnologyUnitGUI(dictionary.ECONOMY, '矿产探测', 2301, 5689,
-                              top=self.top, left=self.left,
-                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT),
+            dictionary.ECONOMY: TechnologyUnitGUI(
+                color=TECH_AREA_USING_COLOR[dictionary.ECONOMY],
+                top=self.top, left=self.left,
+                width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
+            ),
             # 军事科技
-            TechnologyUnitGUI(dictionary.MILITARY, '蓝色激光', 3569, 4321,
-                              top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT, left=self.left,
-                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT),
+            dictionary.MILITARY: TechnologyUnitGUI(
+                color=TECH_AREA_USING_COLOR[dictionary.MILITARY],
+                top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT, left=self.left,
+                width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
+            ),
             # 超越科技
-            TechnologyUnitGUI(dictionary.BEYOND, '进化破译', 1021, 10248,
-                              top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT * 2, left=self.left,
-                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT)
-        ]
+            dictionary.BEYOND: TechnologyUnitGUI(
+                color=TECH_AREA_USING_COLOR[dictionary.BEYOND],
+                top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT * 2, left=self.left,
+                width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
+            )
+        }
 
-    def update(self):
-        pass
+    def update(self, data):
+        for area in TECH_AREA_USING_COLOR:
+            self.tech_list[area].update(*data[area])
+
 
     def draw_component(self, painter: QPainter):
-        for tech in self.tech_list:
-            tech.draw_component(painter)
+        for tech, component in self.tech_list.items():
+            component.draw_component(painter)
