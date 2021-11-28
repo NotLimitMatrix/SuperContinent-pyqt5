@@ -25,7 +25,7 @@ class PanelResourceGUI(BaseGUI, ABC):
         width_storage = int(self.width * NUMBER.PANEL_STORAGE_PER)
         width_daily = int(self.width * NUMBER.PANEL_DAILY_PER)
 
-        self.draw_resource(painter, self.left, width_name, name)
+        self.draw_resource(painter, self.left, width_name, tr(name))
         self.draw_resource(painter, self.left + width_name, width_storage, self.storage)
         self.draw_resource(painter, self.left + width_name + width_storage, width_daily, self.daily)
 
@@ -96,7 +96,7 @@ class PanelGUI(BaseGUI, ABC):
     def draw(self, painter: QPainter):
         painter.setBrush(COLOR.WHITE)
         for p_name, p_component in self.panels.items():
-            p_component.draw(tr(p_name), painter)
+            p_component.draw(p_name, painter)
 
     def update(self, data):
         for title in data:

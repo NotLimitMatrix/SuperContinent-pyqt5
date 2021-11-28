@@ -1,16 +1,21 @@
+from pprint import pprint
+
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QPainter
 from PyQt5 import QtGui
 
-from reference.gui import SIZE, POSITION, GUI_KEY
+from reference.gui import SIZE, POSITION, GUI_KEY, NUMBER
 from reference import dictionary
-
+from reference import functions
 from gui.gui_world import WorldGUI
 from gui.gui_zoning import ZoningGUI
 from gui.gui_panel import PanelGUI
 from gui.gui_technology import TechnologyGUI
 from gui.gui_text_browser import TextBrowserGUI
 from gui.gui_select import SelectGUI
+from gui.gui_filter import FilterGUI
+
+from unit.block import Block
 
 test_message = """
 地块: 01
@@ -23,7 +28,10 @@ test_message = """
 """
 
 MAIN_MEMORY = {
-    GUI_KEY.WORLD: [i for i in range(100)],
+    GUI_KEY.WORLD: [
+        Block(i, *functions.ident_to_row_col(i, NUMBER.WORLD_NUMBER), SIZE.WORLD_WIDTH // NUMBER.WORLD_NUMBER)
+        for i in range(NUMBER.WORLD_NUMBER * NUMBER.WORLD_NUMBER)
+    ],
     GUI_KEY.ZONING: [i for i in range(36)],
     GUI_KEY.PANEL: {
         dictionary.FOOD: (0, 10),
@@ -63,7 +71,9 @@ class MainGameGUI(QMainWindow):
             GUI_KEY.TEXT_BROWSER: TextBrowserGUI(top=POSITION.TEXT_BROWSER_TOP, left=POSITION.TEXT_BROWSER_LEFT,
                                                  width=SIZE.TEXT_BROWSER_WIDTH, height=SIZE.TEXT_BROWSER_HEIGHT),
             GUI_KEY.SELECT: SelectGUI(top=POSITION.SELECT_TOP, left=POSITION.SELECT_LEFT,
-                                      width=SIZE.SELECT_WIDTH, height=SIZE.SELECT_HEIGHT)
+                                      width=SIZE.SELECT_WIDTH, height=SIZE.SELECT_HEIGHT),
+            GUI_KEY.FILTER: FilterGUI(top=POSITION.FILTER_TOP, left=POSITION.FILTER_LEFT,
+                                      width=SIZE.FILTER_WIDTH, height=SIZE.FILTER_HEIGHT)
         }
 
         self.memory = MAIN_MEMORY
@@ -80,10 +90,12 @@ class MainGameGUI(QMainWindow):
         # 根据memory更新界面
         for key, value in self.memory.items():
             response = self.components[key].update(value)
-            d[key] = value if response is None else response
+            if response is not None:
+                d[key] = response
+
         # 根据界面变动返回结果更新memory
         self.memory.update(d)
-        print(self.memory)
+        pprint(self.memory)
         self.update()
 
     # 绘制界面

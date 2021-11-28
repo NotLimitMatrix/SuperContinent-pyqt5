@@ -1,16 +1,16 @@
+import random
 from collections.abc import Iterable
 
 from PyQt5.QtCore import QRect
 
 from reference.templates import TEMPLATE_BLOCK
 from reference.game import BLOCK
-
+from reference.functions import weight_choice
 
 class Attribute:
     def __init__(self, **kwargs):
         self.status = kwargs.get('status', 0)
         self.display = kwargs.get('display', False)
-        self.color = kwargs.get('color', )
 
 
 class Block:
@@ -20,14 +20,10 @@ class Block:
         self.col = col
         self.size = size
 
-        self.attribute = Attribute()
+        self.attribute = Attribute(status=weight_choice(BLOCK.ENV_WEIGHT), display=True)
 
         self.z_num = 1
         self.z_set = set()
-
-    def init(self, **kwargs):
-        self.attribute.status = kwargs.get('status', 0)
-        self.z_num = kwargs.get('z_num', 1)
 
     def add_zoning(self, z):
         if isinstance(z, int):

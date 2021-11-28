@@ -9,12 +9,13 @@ class GUI_KEY:
     SELECT = 'select'
     TECHNOLOGY = 'technology'
     TEXT_BROWSER = 'text_browser'
+    FILTER = 'filter'
 
 
 # 数据常数
 class NUMBER:
     # 初始世界宽度
-    WORLD_NUMBER = 10
+    WORLD_NUMBER = 20
     # 初始区划数量
     ZONING_NUMBER = 6
     # 面板层数：食物、矿物、能源、物资、合金、人口、经济、军事、科技
@@ -32,7 +33,9 @@ class NUMBER:
     # 消息面板行数
     TEXT_LINE = 20
     # 列表框元素数量
-    SELECT_OPTIONS = 6
+    SELECT_OPTIONS = 5
+    # 滤镜数量
+    FILTER_OPTIONS = 3
 
 
 # 尺寸常数
@@ -71,10 +74,17 @@ class SIZE:
     # 消息区行高
     TEXT_LINE_HEIGHT = TEXT_BROWSER_HEIGHT // NUMBER.TEXT_LINE
 
+    # 滤镜框宽度
+    FILTER_WIDTH = ZONING_WIDTH
+    # 滤镜框高度
+    FILTER_HEIGHT = 30
+    # 滤镜框列宽
+    FILTER_ITEM_WIDTH = FILTER_WIDTH // NUMBER.FILTER_OPTIONS
+
     # 备选区宽度
     SELECT_WIDTH = ZONING_WIDTH
     # 备选区高度
-    SELECT_HEIGHT = WORLD_HEIGHT - ZONING_HEIGHT - DX * 4
+    SELECT_HEIGHT = WORLD_HEIGHT - ZONING_HEIGHT - FILTER_HEIGHT - DX * 4
     # 备选区行高
     SELECT_LINE_HEIGHT = SELECT_HEIGHT // NUMBER.SELECT_OPTIONS
 
@@ -139,6 +149,15 @@ class POSITION:
     SELECT_LEFT = ZONING_LEFT
     # 备选区右边坐标
     SELECT_RIGHT = ZONING_RIGHT
+
+    # 滤镜框顶部坐标
+    FILTER_TOP = SELECT_BOTTOM + SIZE.DX
+    # 滤镜框底部坐标
+    FILTER_BOTTOM = FILTER_TOP + SIZE.FILTER_HEIGHT
+    # 滤镜框左边坐标
+    FILTER_LEFT = ZONING_LEFT
+    # 滤镜框右边左边
+    FILTER_RIGHT = ZONING_RIGHT
 
 
 # 颜色常量

@@ -15,3 +15,7 @@ ENV__1 = 'env_-1'
 ENV_0 = 'env_0'
 ENV_1 = 'env_1'
 ENV_2 = 'env_2'
+
+F_DEFAULT = 'filter_default'
+F_DISCOVERY = 'filter_discovery'
+F_TERRITORY = 'territory'

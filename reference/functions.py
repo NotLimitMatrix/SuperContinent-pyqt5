@@ -62,3 +62,11 @@ def fmt_number(number):
         return f"{round(number / 1000, 2)} K"
     else:
         return str(number)
+
+
+def weight_choice(weights: tuple):
+    temp = random.uniform(0, sum(weights) - 1)
+    for index, value in enumerate(weights):
+        temp -= value
+        if temp < 0:
+            return index
