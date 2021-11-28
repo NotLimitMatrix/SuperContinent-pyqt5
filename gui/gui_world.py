@@ -3,7 +3,7 @@ from abc import ABC
 from PyQt5.QtGui import QPainter, QMouseEvent
 
 from reference.gui import COLOR, NUMBER
-from reference.functions import draw_text
+from reference.functions import draw_text, row_col_to_ident
 from reference.game import BLOCK
 from gui.gui_base import BaseGUI
 
@@ -28,3 +28,8 @@ class WorldGUI(BaseGUI, ABC):
 
     def update(self, data):
         self.world_list = data
+
+    def mouse_choose_item(self, event: QMouseEvent):
+        cx = (event.pos().x() - self.left) // self.size
+        cy = (event.pos().y() - self.top) // self.size
+        return self.world_list[row_col_to_ident(cy, cx, self.n)]

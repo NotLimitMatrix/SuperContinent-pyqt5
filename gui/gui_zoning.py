@@ -23,4 +23,6 @@ class ZoningGUI(BaseGUI, ABC):
             draw_text(rect, f"{zoning.row},{zoning.col}", painter)
 
     def update(self, data):
-        self.zoning_list = data
+        self.n = data['number']
+        self.size = data['size']
+        self.zoning_list = data['data']

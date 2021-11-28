@@ -1,54 +1,19 @@
-from pprint import pprint
-
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtGui import QPainter
-from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QMainWindow
 
-from reference.gui import SIZE, POSITION, GUI_KEY, NUMBER
-from reference import dictionary
-from reference import functions
-from reference import templates
-from gui.gui_world import WorldGUI
-from gui.gui_zoning import ZoningGUI
+from gui.gui_filter import FilterGUI
 from gui.gui_panel import PanelGUI
+from gui.gui_select import SelectGUI
 from gui.gui_technology import TechnologyGUI
 from gui.gui_text_browser import TextBrowserGUI
-from gui.gui_select import SelectGUI
-from gui.gui_filter import FilterGUI
-
+from gui.gui_world import WorldGUI
+from gui.gui_zoning import ZoningGUI
+from reference import functions
+from reference.gui import SIZE, POSITION, GUI_KEY
 from unit.block import Block
-from unit.zoning import Zoning
-
-MAIN_MEMORY = {
-    GUI_KEY.WORLD: [
-        Block(i, *functions.ident_to_row_col(i, NUMBER.WORLD_NUMBER), SIZE.WORLD_WIDTH // NUMBER.WORLD_NUMBER)
-        for i in range(NUMBER.WORLD_NUMBER * NUMBER.WORLD_NUMBER)
-    ],
-    GUI_KEY.ZONING: [
-        Zoning(i, *functions.ident_to_row_col(i, NUMBER.ZONING_NUMBER), SIZE.ZONING_WIDTH // NUMBER.ZONING_NUMBER)
-        for i in range(NUMBER.ZONING_NUMBER * NUMBER.ZONING_NUMBER)
-    ],
-    GUI_KEY.PANEL: {
-        dictionary.FOOD: (0, 10),
-        dictionary.MINERAL: (0, 10),
-        dictionary.ENERGY: (0, 10),
-        dictionary.COMMODITY: (0, 10),
-        dictionary.ALLOY: (0, 10),
-        dictionary.POPULATION: 10,
-        dictionary.ECONOMY: 10,
-        dictionary.MILITARY: 10,
-        dictionary.TECHNOLOGY: 10
-    },
-    GUI_KEY.TECHNOLOGY: {
-        dictionary.ECONOMY: ('矿产探测', 2301, 5689),
-        dictionary.MILITARY: ('蓝色激光', 36987, 4321),
-        dictionary.BEYOND: ('进化破译', 9568, 10248),
-        'more_point': 0
-    },
-    GUI_KEY.SELECT: [i for i in range(6)],
-    GUI_KEY.TEXT_BROWSER: ''
-}
+from unit.memory import MAIN_MEMORY, Memory
 
 
 class MainGameGUI(QMainWindow):
@@ -72,7 +37,8 @@ class MainGameGUI(QMainWindow):
                                       width=SIZE.FILTER_WIDTH, height=SIZE.FILTER_HEIGHT)
         }
 
-        self.memory = MAIN_MEMORY
+        # self.memory = MAIN_MEMORY
+        self.memory = Memory()
         self.update_data()
 
         self.resize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
@@ -83,7 +49,7 @@ class MainGameGUI(QMainWindow):
 
     def update_data(self):
         # 根据memory更新界面
-        for key, value in self.memory.items():
+        for key, value in self.memory.dump().items():
             self.components[key].update(value)
 
         self.update()
@@ -113,9 +79,14 @@ class MainGameGUI(QMainWindow):
         click = event.buttons()
 
         if click == Qt.LeftButton:
-            self.memory[GUI_KEY.TEXT_BROWSER] = f"左键:\n{event.pos().x()}, {event.pos().y()}"
+            msg = f"左键:\n{event.pos().x()}, {event.pos().y()}\n"
+            if c_name == GUI_KEY.WORLD:
+                block: Block = component.mouse_choose_item(event)
+                msg += block.display()
+                self.memory.update_block(block.ident)
+
+            self.memory.msg = msg
 
         if click == Qt.RightButton:
-            self.memory[GUI_KEY.TEXT_BROWSER] = f"右键:\n{event.pos().x()}, {event.pos().y()}"
-
+            self.memory.msg = f"右键:\n{event.pos().x()}, {event.pos().y()}\n"
         self.update_data()
