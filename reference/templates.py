@@ -13,3 +13,6 @@ TEMPLATE_ZONING = """区划: {ident}
 
 TEMPLATE_SELECT_ITEM = """备选项: {ident}
 """
+
+TEMPLATE_FILTER = """滤镜: {filter_type}
+"""

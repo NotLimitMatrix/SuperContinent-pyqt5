@@ -92,6 +92,9 @@ class MainGameGUI(QMainWindow):
             if c_name == GUI_KEY.SELECT:
                 select_item  = component.mouse_choose_item(event)
                 msg = select_item.display()
+            if c_name == GUI_KEY.FILTER:
+                filter_type = component.mouse_choose_item(event)
+                msg = filter_type.display()
 
             self.memory.msg = msg
 

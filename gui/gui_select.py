@@ -46,4 +46,8 @@ class SelectGUI(BaseGUI, ABC):
             item.draw(str(index), painter)
 
     def mouse_choose_item(self, event: QMouseEvent):
-        return self.options[(event.pos().y() - self.top) // SIZE.SELECT_LINE_HEIGHT]
+        index = (event.pos().y() - self.top) // SIZE.SELECT_LINE_HEIGHT
+        if index >= len(self.options):
+            index = -1
+
+        return self.options[index]
