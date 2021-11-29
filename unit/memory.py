@@ -45,17 +45,17 @@ class Memory:
                 'size': self.zoning_width // self.zoning_number,
                 'data': self.zoning_display
             },
-            GUI_KEY.PANEL: {
-                dictionary.FOOD: (0, 10),
-                dictionary.MINERAL: (0, 10),
-                dictionary.ENERGY: (0, 10),
-                dictionary.COMMODITY: (0, 10),
-                dictionary.ALLOY: (0, 10),
-                dictionary.POPULATION: 10,
-                dictionary.CIVIL: 10,
-                dictionary.MILITARY: 10,
-                dictionary.TECHNOLOGY: 10
-            },
+            GUI_KEY.PANEL: [
+                (0, 10),  # dictionary.FOOD:
+                (0, 10),  # dictionary.MINERAL:
+                (0, 10),  # dictionary.ENERGY:
+                (0, 10),  # dictionary.COMMODITY:
+                (0, 10),  # dictionary.ALLOY:
+                10,  # dictionary.POPULATION:
+                10,  # dictionary.CIVIL:
+                10,  # dictionary.MILITARY:
+                10  # dictionary.TECHNOLOGY:
+            ],
             GUI_KEY.TECHNOLOGY: {
                 dictionary.CIVIL: ('矿产探测', 2301, 5689),
                 dictionary.MILITARY: ('蓝色激光', 36987, 4321),

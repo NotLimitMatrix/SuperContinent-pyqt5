@@ -18,4 +18,4 @@ ENV_2 = 'env_2'
 
 F_DEFAULT = 'filter_default'
 F_DISCOVERY = 'filter_discovery'
-F_TERRITORY = 'territory'
+F_TERRITORY = 'filter_territory'

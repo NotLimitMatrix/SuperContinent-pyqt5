@@ -6,7 +6,7 @@
   "commodity": "物资",
   "alloy": "合金",
   "technology": "科技",
-  "economy": "经济",
+  "civil": "经济",
   "military": "军事",
   "population": "人口",
   "hyper": "超越",
@@ -19,5 +19,5 @@
 
   "filter_default": "默认",
   "filter_discovery": "探索",
-  "territory": "领地"
+  "filter_territory": "领地"
 }
