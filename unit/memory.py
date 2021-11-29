@@ -56,14 +56,17 @@ class Memory:
                 10,  # dictionary.MILITARY:
                 10  # dictionary.TECHNOLOGY:
             ],
-            GUI_KEY.TECHNOLOGY: {
-                dictionary.CIVIL: ('矿产探测', 2301, 5689),
-                dictionary.MILITARY: ('蓝色激光', 36987, 4321),
-                dictionary.HYPER: ('进化破译', 9568, 10248),
-                'more_point': 0
-            },
+            GUI_KEY.TECHNOLOGY: [
+                ('矿产探测', 2301, 5689),  # dictionary.CIVIL:
+                ('蓝色激光', 36987, 4321),  # dictionary.MILITARY:
+                ('进化破译', 9568, 10248),  # dictionary.HYPER:
+
+            ],
             GUI_KEY.SELECT: [i for i in range(6)],
-            GUI_KEY.TEXT_BROWSER: self.msg
+            GUI_KEY.TEXT_BROWSER: self.msg,
+            GUI_KEY.OTHER: {
+                'more_point': 0
+            }
         }
 
 

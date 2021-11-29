@@ -52,6 +52,9 @@ class MainGameGUI(QMainWindow):
     def update_data(self):
         # 根据memory更新界面
         for key, value in self.memory.dump().items():
+            if key == GUI_KEY.OTHER:
+                continue
+
             self.components[key].update(value)
 
         self.update()
@@ -86,18 +89,11 @@ class MainGameGUI(QMainWindow):
                 block: Block = component.mouse_choose_item(event)
                 msg = block.display()
                 self.memory.update_block(block.ident)
-            if c_name == GUI_KEY.ZONING:
-                zoning: Zoning = component.mouse_choose_item(event)
-                msg = zoning.display()
-            if c_name == GUI_KEY.SELECT:
-                select_item  = component.mouse_choose_item(event)
-                msg = select_item.display()
-            if c_name == GUI_KEY.FILTER:
-                filter_type = component.mouse_choose_item(event)
-                msg = filter_type.display()
-            if c_name == GUI_KEY.PANEL:
-                panel = component.mouse_choose_item(event)
-                msg = panel.display()
+            elif c_name == GUI_KEY.TEXT_BROWSER:
+                msg = 'In TextBrowser'
+            else:
+                gui_item = component.mouse_choose_item(event)
+                msg = gui_item.display()
 
             self.memory.msg = msg
 

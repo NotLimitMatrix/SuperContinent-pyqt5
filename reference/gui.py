@@ -10,6 +10,7 @@ class GUI_KEY:
     TECHNOLOGY = 'technology'
     TEXT_BROWSER = 'text_browser'
     FILTER = 'filter'
+    OTHER = 'other'
 
 
 # 数据常数

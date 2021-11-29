@@ -32,3 +32,7 @@ TEMPLATE_RESOURCE = """{resource}: {storage} {daily}
 TEMPLATE_POWER = """{power}: {power_number}
 人口: 10
 """
+
+TEMPLATE_TECHNOLOGY = """科技领域: {area} 
+{technology}: {schedule} / {total}
+"""

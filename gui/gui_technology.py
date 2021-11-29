@@ -1,10 +1,11 @@
 from abc import ABC
 
-from PyQt5.QtGui import QPainter
+from PyQt5.QtGui import QPainter, QMouseEvent
 from PyQt5.QtCore import QRect
 
 from reference.gui import COLOR, SIZE
-from reference.functions import draw_text
+from reference.functions import draw_text, tr
+from reference.templates import TEMPLATE_TECHNOLOGY
 from reference import dictionary
 from gui.gui_base import BaseGUI
 
@@ -16,9 +17,11 @@ TECH_AREA_USING_COLOR = {
 
 
 class TechnologyUnitGUI(BaseGUI, ABC):
-    def __init__(self, color, *args, **kwargs):
+    def __init__(self, area, *args, **kwargs):
         super(TechnologyUnitGUI, self).__init__(*args, **kwargs)
-        self.color = color
+        self.name = None
+        self.area = area
+        self.color = TECH_AREA_USING_COLOR[area]
         self.name = None
         self.schedule = 0
         self.total = 1
@@ -58,39 +61,45 @@ class TechnologyUnitGUI(BaseGUI, ABC):
         else:
             return True, self.schedule - self.total
 
+    def display(self):
+        return TEMPLATE_TECHNOLOGY.format(
+            area=tr(self.area),
+            technology=self.name,
+            schedule=self.schedule,
+            total=self.total
+        )
+
 
 class TechnologyGUI(BaseGUI, ABC):
     def __init__(self, *args, **kwargs):
         super(TechnologyGUI, self).__init__(*args, **kwargs)
 
-        self.tech_list = {
+        self.tech_list = [
             # 经济科技
-            dictionary.CIVIL: TechnologyUnitGUI(
-                color=TECH_AREA_USING_COLOR[dictionary.CIVIL],
-                top=self.top, left=self.left,
-                width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
-            ),
+            TechnologyUnitGUI(area=dictionary.CIVIL,
+                              top=self.top, left=self.left,
+                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT),
             # 军事科技
-            dictionary.MILITARY: TechnologyUnitGUI(
-                color=TECH_AREA_USING_COLOR[dictionary.MILITARY],
-                top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT, left=self.left,
-                width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
-            ),
+            TechnologyUnitGUI(area=dictionary.MILITARY,
+                              top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT, left=self.left,
+                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT),
             # 超越科技
-            dictionary.HYPER: TechnologyUnitGUI(
-                color=TECH_AREA_USING_COLOR[dictionary.HYPER],
-                top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT * 2, left=self.left,
-                width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT
-            )
-        }
-        self.memory = {
-
-        }
+            TechnologyUnitGUI(area=dictionary.HYPER,
+                              top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT * 2, left=self.left,
+                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT)
+        ]
 
     def update(self, data):
-        for area in TECH_AREA_USING_COLOR:
-            self.tech_list[area].update(*data[area])
+        for component, d in zip(self.tech_list, data):
+            component.update(*d)
 
     def draw(self, painter: QPainter):
-        for tech, component in self.tech_list.items():
+        for component in self.tech_list:
             component.draw(painter)
+
+    def mouse_choose_item(self, event: QMouseEvent):
+        index = (event.pos().y() - self.top) // SIZE.PANEL_LEVEL_HEIGHT
+        if index >= len(self.tech_list):
+            index = -1
+
+        return self.tech_list[index]
