@@ -81,14 +81,17 @@ class MainGameGUI(QMainWindow):
         click = event.buttons()
 
         if click == Qt.LeftButton:
-            msg = f"左键:\n{event.pos().x()}, {event.pos().y()}\n"
+            msg = ''
             if c_name == GUI_KEY.WORLD:
                 block: Block = component.mouse_choose_item(event)
-                msg += block.display()
+                msg = block.display()
                 self.memory.update_block(block.ident)
             if c_name == GUI_KEY.ZONING:
                 zoning: Zoning = component.mouse_choose_item(event)
-                msg += zoning.display()
+                msg = zoning.display()
+            if c_name == GUI_KEY.SELECT:
+                select_item  = component.mouse_choose_item(event)
+                msg = select_item.display()
 
             self.memory.msg = msg
 

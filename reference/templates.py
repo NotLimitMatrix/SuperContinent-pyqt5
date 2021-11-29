@@ -10,3 +10,6 @@ TEMPLATE_ZONING = """区划: {ident}
 所属: {block_id}
 建筑: {building}
 """
+
+TEMPLATE_SELECT_ITEM = """备选项: {ident}
+"""

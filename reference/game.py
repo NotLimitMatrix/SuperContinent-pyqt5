@@ -1,5 +1,3 @@
-from collections.abc import Iterable
-
 from reference import dictionary as dt
 from reference.functions import tr
 from reference.gui import COLOR
