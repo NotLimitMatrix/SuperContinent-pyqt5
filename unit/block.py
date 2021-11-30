@@ -14,11 +14,12 @@ class Attribute:
 
 
 class Block:
-    def __init__(self, ident, row, col, size):
+    def __init__(self, ident, row, col, size, player=None):
         self.ident = ident
         self.row = row
         self.col = col
         self.size = size
+        self.player = player
 
         self.attribute = Attribute(status=weight_choice(BLOCK.ENV_WEIGHT), display=True)
 
