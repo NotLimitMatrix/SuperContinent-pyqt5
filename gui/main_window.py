@@ -39,7 +39,6 @@ class MainGameGUI(QMainWindow):
                                       width=SIZE.FILTER_WIDTH, height=SIZE.FILTER_HEIGHT)
         }
 
-        # self.memory = MAIN_MEMORY
         self.memory = Memory()
         self.update_data()
 
