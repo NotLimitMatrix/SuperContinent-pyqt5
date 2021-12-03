@@ -18,7 +18,7 @@ class NUMBER:
     # 初始世界宽度
     WORLD_NUMBER = 30
     # 初始区划数量
-    ZONING_NUMBER = 6
+    ZONING_NUMBER = 1
     # 面板层数：食物、矿物、能源、物资、合金、人口、经济、军事、科技
     PANEL_NUMBER = 9
     # 面板名称宽度比例
