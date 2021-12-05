@@ -10,7 +10,7 @@ def calculate_weight(*weights):
 
 class BLOCK:
     # 地块环境
-    ENVIRONMENT = [-2, -1, 0, 1, 2]
+    ENVIRONMENT = [0, 1, 2, 3, 4]
     # 环境权重
     ENV_WEIGHT = calculate_weight(6, 20, 51, 15, 4)
     # 环境名词

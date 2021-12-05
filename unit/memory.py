@@ -21,6 +21,7 @@ class Memory:
         self.init_zoning()
 
         self.msg = ''
+        self.filter_type = dictionary.F_DEFAULT
 
     def init_zoning(self):
         n = 0
@@ -34,38 +35,41 @@ class Memory:
 
     def update_block(self, block_id):
         block = self.world_data[block_id]
-        self.zoning_number = block.z_num
-        self.zoning_display = block.z_set
+        if block.attribute.display:
+            self.zoning_number = block.z_num
+            self.zoning_display = block.z_set
 
     def dump(self):
         return {
-            GUI_KEY.WORLD: self.world_data,
-            GUI_KEY.ZONING: {
-                'number': self.zoning_number,
-                'size': self.zoning_width // self.zoning_number,
-                'data': self.zoning_display
-            },
-            GUI_KEY.PANEL: [
-                (0, 10),  # dictionary.FOOD:
-                (0, 10),  # dictionary.MINERAL:
-                (0, 10),  # dictionary.ENERGY:
-                (0, 10),  # dictionary.COMMODITY:
-                (0, 10),  # dictionary.ALLOY:
-                10,  # dictionary.POPULATION:
-                10,  # dictionary.CIVIL:
-                10,  # dictionary.MILITARY:
-                10  # dictionary.TECHNOLOGY:
-            ],
-            GUI_KEY.TECHNOLOGY: [
-                ('矿产探测', 2301, 5689),  # dictionary.CIVIL:
-                ('蓝色激光', 36987, 4321),  # dictionary.MILITARY:
-                ('进化破译', 9568, 10248),  # dictionary.HYPER:
+            'GUI': {
+                GUI_KEY.WORLD: self.world_data,
+                GUI_KEY.ZONING: {
+                    'number': self.zoning_number,
+                    'size': self.zoning_width // self.zoning_number,
+                    'data': self.zoning_display
+                },
+                GUI_KEY.PANEL: [
+                    (0, 10),  # dictionary.FOOD:
+                    (0, 10),  # dictionary.MINERAL:
+                    (0, 10),  # dictionary.ENERGY:
+                    (0, 10),  # dictionary.COMMODITY:
+                    (0, 10),  # dictionary.ALLOY:
+                    10,  # dictionary.POPULATION:
+                    10,  # dictionary.CIVIL:
+                    10,  # dictionary.MILITARY:
+                    10  # dictionary.TECHNOLOGY:
+                ],
+                GUI_KEY.TECHNOLOGY: [
+                    ('矿产探测', 2301, 5689),  # dictionary.CIVIL:
+                    ('蓝色激光', 36987, 4321),  # dictionary.MILITARY:
+                    ('进化破译', 9568, 10248),  # dictionary.HYPER:
 
-            ],
-            GUI_KEY.SELECT: [i for i in range(6)],
-            GUI_KEY.TEXT_BROWSER: self.msg,
-            GUI_KEY.OTHER: {
-                'more_point': 0
+                ],
+                GUI_KEY.SELECT: [i for i in range(6)],
+                GUI_KEY.TEXT_BROWSER: self.msg,
+                GUI_KEY.OTHER: {
+                    'more_point': 0
+                }
             }
         }
 

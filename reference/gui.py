@@ -36,7 +36,7 @@ class NUMBER:
     # 列表框元素数量
     SELECT_OPTIONS = 9
     # 滤镜数量
-    FILTER_OPTIONS = 3
+    FILTER_OPTIONS = 2
 
 
 # 尺寸常数

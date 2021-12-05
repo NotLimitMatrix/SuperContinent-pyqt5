@@ -39,11 +39,11 @@ class FilterGUI(BaseGUI, ABC):
             FilterUnitGUI(dictionary.F_DEFAULT, top=self.top, left=self.left,
                           width=SIZE.FILTER_ITEM_WIDTH, height=SIZE.FILTER_HEIGHT),
             # 探索滤镜
-            FilterUnitGUI(dictionary.F_DISCOVERY, top=self.top, left=self.left + SIZE.FILTER_ITEM_WIDTH,
+            FilterUnitGUI(dictionary.F_TERRITORY, top=self.top, left=self.left + SIZE.FILTER_ITEM_WIDTH,
                           width=SIZE.FILTER_ITEM_WIDTH, height=SIZE.FILTER_HEIGHT),
-            # 领地滤镜
-            FilterUnitGUI(dictionary.F_TERRITORY, top=self.top, left=self.left + SIZE.FILTER_ITEM_WIDTH * 2,
-                          width=SIZE.FILTER_ITEM_WIDTH, height=SIZE.FILTER_HEIGHT)
+            # # 领地滤镜
+            # FilterUnitGUI(dictionary.F_TERRITORY, top=self.top, left=self.left + SIZE.FILTER_ITEM_WIDTH * 2,
+            #               width=SIZE.FILTER_ITEM_WIDTH, height=SIZE.FILTER_HEIGHT)
         ]
 
     def update(self, *args, **kwargs):

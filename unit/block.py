@@ -9,8 +9,13 @@ from reference.functions import weight_choice
 
 class Attribute:
     def __init__(self, **kwargs):
-        self.status = kwargs.get('status', 0)
+        self.status = kwargs.get('status', 2)
         self.display = kwargs.get('display', False)
+        self.can_move = kwargs.get('can_move', False)
+
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
 
 class Block:
@@ -21,7 +26,7 @@ class Block:
         self.size = size
         self.player = player
 
-        self.attribute = Attribute(status=weight_choice(BLOCK.ENV_WEIGHT), display=True)
+        self.attribute = Attribute(status=weight_choice(BLOCK.ENV_WEIGHT), display=False)
 
         self.z_num = ZONING.ZONING_NUMBER[weight_choice(ZONING.ZONING_WEIGHT)]
         self.z_set = list()
@@ -39,12 +44,15 @@ class Block:
 
     def display(self):
         modifier = 100 * BLOCK.MODIFIER[self.attribute.status]
-        return TEMPLATE_BLOCK.format(
-            ident=self.ident,
-            row=self.row,
-            col=self.col,
-            env_desc=BLOCK.WORD[self.attribute.status],
-            env_modifier=modifier,
-            product_modifier=modifier,
-            upkeep_modifier=-modifier
-        )
+        if self.attribute.display:
+            return TEMPLATE_BLOCK.format(
+                ident=self.ident,
+                row=self.row,
+                col=self.col,
+                env_desc=BLOCK.WORD[self.attribute.status],
+                env_modifier=modifier,
+                product_modifier=modifier,
+                upkeep_modifier=-modifier
+            )
+        else:
+            return "该地块不可见"

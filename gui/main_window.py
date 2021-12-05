@@ -1,3 +1,5 @@
+import random
+
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter
@@ -10,16 +12,17 @@ from gui.gui_technology import TechnologyGUI
 from gui.gui_text_browser import TextBrowserGUI
 from gui.gui_world import WorldGUI
 from gui.gui_zoning import ZoningGUI
+from player.player import Player
 from reference import functions
 from reference.gui import SIZE, POSITION, GUI_KEY
-
 from unit.block import Block
-from unit.zoning import Zoning
 from unit.memory import Memory
 
 
 class MainGameGUI(QMainWindow):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, player: Player, *args, **kwargs):
+        self.player = player
+
         super(MainGameGUI, self).__init__(*args, **kwargs)
 
         self.components = {
@@ -42,6 +45,8 @@ class MainGameGUI(QMainWindow):
         self.memory = Memory()
         self.update_data()
 
+        self.player.init_player(self.components[GUI_KEY.WORLD].world_list)
+
         self.resize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
         self.setFixedSize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
         self.setWindowTitle(f'Super Continent [{functions.game_time_to_date(0)}]')
@@ -50,7 +55,7 @@ class MainGameGUI(QMainWindow):
 
     def update_data(self):
         # 根据memory更新界面
-        for key, value in self.memory.dump().items():
+        for key, value in self.memory.dump()['GUI'].items():
             if key == GUI_KEY.OTHER:
                 continue
 
@@ -60,8 +65,16 @@ class MainGameGUI(QMainWindow):
 
     # 绘制界面
     def draw_window(self, painter: QPainter):
-        for component in self.components.values():
-            component.draw(painter)
+        self.components[GUI_KEY.WORLD].draw(painter, self.memory.filter_type, self.player.color)
+        self.components[GUI_KEY.ZONING].draw(painter)
+        self.components[GUI_KEY.PANEL].draw(painter)
+        self.components[GUI_KEY.TECHNOLOGY].draw(painter)
+        self.components[GUI_KEY.TEXT_BROWSER].draw(painter)
+        self.components[GUI_KEY.SELECT].draw(painter)
+        self.components[GUI_KEY.FILTER].draw(painter)
+
+        # for component in self.components.values():
+        #     component.draw(painter)
 
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         p = QPainter()
@@ -83,18 +96,21 @@ class MainGameGUI(QMainWindow):
         click = event.buttons()
 
         if click == Qt.LeftButton:
-            msg = ''
             if c_name == GUI_KEY.WORLD:
                 block: Block = component.mouse_choose_item(event)
-                msg = block.display()
-                self.memory.update_block(block.ident)
-            elif c_name == GUI_KEY.TEXT_BROWSER:
-                msg = 'In TextBrowser'
-            else:
-                gui_item = component.mouse_choose_item(event)
-                msg = gui_item.display()
+                if block.attribute.display:
+                    self.memory.update_block(block.ident)
+                    self.memory.msg = block.display()
+                else:
+                    self.memory.msg =  "该地块不可见"
 
-            self.memory.msg = msg
+            if c_name == GUI_KEY.TEXT_BROWSER:
+                self.memory.msg = 'In TextBrowser'
+
+            if c_name == GUI_KEY.FILTER:
+                filter_item = component.mouse_choose_item(event)
+                self.memory.filter_type = filter_item.name
+                self.memory.msg = filter_item.display()
 
         if click == Qt.RightButton:
             self.memory.msg = f"右键:\n{event.pos().x()}, {event.pos().y()}\n"

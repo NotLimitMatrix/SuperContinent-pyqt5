@@ -5,6 +5,7 @@ from PyQt5.QtGui import QPainter, QMouseEvent
 from reference.gui import COLOR, NUMBER
 from reference.functions import draw_text, row_col_to_ident
 from reference.game import BLOCK
+from reference import dictionary
 from gui.gui_base import BaseGUI
 
 
@@ -15,12 +16,19 @@ class WorldGUI(BaseGUI, ABC):
         self.size = self.width // NUMBER.WORLD_NUMBER
         self.world_list = None
 
-    def draw(self, painter: QPainter):
+    def draw(self, painter: QPainter, filter=dictionary.F_DEFAULT, player_color=None):
         for block in self.world_list:
-            if block.attribute.display:
-                painter.setBrush(BLOCK.COLOR[block.attribute.status])
-            else:
-                painter.setBrush(COLOR.WHITE)
+            color = COLOR.WHITE
+            if filter == dictionary.F_TERRITORY:
+                color = player_color if block.attribute.display and player_color is not None else COLOR.WHITE
+            if filter == dictionary.F_DEFAULT:
+                color = BLOCK.COLOR[block.attribute.status] if block.attribute.display else COLOR.WHITE
+
+            painter.setBrush(color)
+            # if block.attribute.display:
+            #     painter.setBrush(BLOCK.COLOR[block.attribute.status])
+            # else:
+            #     painter.setBrush(COLOR.WHITE)
 
             rect = block.real_position(self.top, self.left)
             painter.drawRect(rect)
