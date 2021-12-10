@@ -77,3 +77,10 @@ def weight_choice(weights: tuple):
         temp -= value
         if temp < 0:
             return index
+
+
+def set_color(color, display):
+    if color is None or not display:
+        return COLOR.WHITE
+    else:
+        return color
