@@ -25,7 +25,7 @@ class ConsoleItemGUI(BaseGUI, ABC):
         draw_text(rect, tr(self.name), painter)
 
     def display(self):
-        return ''
+        return tr(self.name)
 
 
 class ConsoleGUI(BaseGUI, ABC):
@@ -46,4 +46,7 @@ class ConsoleGUI(BaseGUI, ABC):
             component.draw(painter)
 
     def mouse_choose_item(self, event: QMouseEvent):
-        return self.console_list[(event.pos().x() - self.left) // SIZE.TOOL_ITEM_WIDTH]
+        try:
+            return self.console_list[(event.pos().x() - self.left) // SIZE.TOOL_ITEM_WIDTH]
+        except Exception as e:
+            return None

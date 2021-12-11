@@ -1,7 +1,12 @@
-from PyQt5.QtWidgets import QWidget, QTextBrowser, QLineEdit, QVBoxLayout
+from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QTextBrowser, QLineEdit, QVBoxLayout, QDialog
+from PyQt5.QtCore import pyqtSignal
 
 
-class ConsoleWidget(QWidget):
+class ConsoleWidget(QDialog):
+    _close_single = pyqtSignal()
+    _send_command = pyqtSignal(str)
+
     def __init__(self, *args, **kwargs):
         super(ConsoleWidget, self).__init__(*args, **kwargs)
 
@@ -16,6 +21,9 @@ class ConsoleWidget(QWidget):
         self.init()
         self.show()
 
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self._close_single.emit()
+
     def init(self):
         layout = QVBoxLayout(self)
         layout.addWidget(self.text_browser)
@@ -28,8 +36,11 @@ class ConsoleWidget(QWidget):
         match cmd:
             case 'clear':
                 self.text_browser.clear()
+            case 'close':
+                self.close()
             case _:
                 self.text_browser.append(cmd)
+                self._send_command.emit(cmd)
 
 
 if __name__ == '__main__':

@@ -15,7 +15,7 @@ from gui.gui_zoning import ZoningGUI
 from gui.gui_console import ConsoleGUI
 from gui.console import ConsoleWidget
 from player.player import Player
-from reference import functions
+from reference import functions, dictionary as dt
 from reference.gui import SIZE, POSITION, GUI_KEY
 from unit.block import Block
 from unit.memory import Memory
@@ -80,8 +80,6 @@ class MainGameGUI(QMainWindow):
         self.components[GUI_KEY.SELECT].draw(painter)
         self.components[GUI_KEY.FILTER].draw(painter)
         self.components[GUI_KEY.TOOL].draw(painter)
-        # for component in self.components.values():
-        #     component.draw(painter)
 
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         p = QPainter()
@@ -103,21 +101,43 @@ class MainGameGUI(QMainWindow):
         click = event.buttons()
 
         if click == Qt.LeftButton:
-            match c_name:
-                case GUI_KEY.WORLD:
-                    block: Block = component.mouse_choose_item(event)
-                    if block.attribute.display:
-                        self.memory.update_block(block.ident)
-                        self.memory.msg = block.display()
-                    else:
-                        self.memory.msg = "该地块不可见"
-                case GUI_KEY.TEXT_BROWSER:
-                    self.memory.msg = 'In TextBrowser'
-                case GUI_KEY.FILTER:
-                    filter_item = component.mouse_choose_item(event)
-                    self.memory.filter_type = filter_item.name
-                    self.memory.msg = filter_item.display()
+            self.operating(c_name, component, event)
 
         if click == Qt.RightButton:
             self.memory.msg = f"右键:\n{event.pos().x()}, {event.pos().y()}\n"
+
         self.update_data()
+
+    def close_console_dialog(self):
+        self.console = None
+
+    def print_command(self, cmd):
+        print(cmd)
+
+    def operating(self, c_name, component, event):
+        match c_name:
+            case GUI_KEY.WORLD:
+                block: Block = component.mouse_choose_item(event)
+                if block.attribute.display:
+                    self.memory.update_block(block.ident)
+                    self.memory.msg = block.display()
+                else:
+                    self.memory.msg = "该地块不可见"
+            case GUI_KEY.TEXT_BROWSER:
+                self.memory.msg = 'In TextBrowser'
+            case GUI_KEY.FILTER:
+                filter_item = component.mouse_choose_item(event)
+                self.memory.filter_type = filter_item.name
+                self.memory.msg = filter_item.display()
+            case GUI_KEY.TOOL:
+                tool_item = component.mouse_choose_item(event)
+                if tool_item:
+                    if tool_item.name == dt.CONSOLE:
+                        if self.console is None:
+                            self.console = ConsoleWidget(parent=self)
+                            self.console._close_single.connect(self.close_console_dialog)
+                            self.console._send_command.connect(self.print_command)
+
+                self.memory.msg = '没有选择工具' if tool_item is None else tool_item.display()
+            case _:
+                self.memory.msg = '没有动作'
