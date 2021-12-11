@@ -33,5 +33,12 @@ class TECH:
     RESEARCHER_RATES = (3, 3, 4)
 
 
+class OPTIONS:
+    # 工具栏选项
+    TOOLS = (dt.CONSOLE,)
+    # 过滤选项
+    FILTERS = (dt.F_DEFAULT, dt.F_TERRITORY)
+
+
 if __name__ == '__main__':
     print(BLOCK.ENV_WEIGHT)

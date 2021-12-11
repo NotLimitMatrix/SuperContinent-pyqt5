@@ -4,8 +4,8 @@ from PyQt5.QtGui import QPainter, QMouseEvent
 from PyQt5.QtCore import QRect
 
 from reference.gui import COLOR, SIZE
+from reference.game import OPTIONS
 from reference.functions import draw_text, tr
-from reference import dictionary
 from reference.templates import TEMPLATE_FILTER
 from gui.gui_base import BaseGUI
 
@@ -34,16 +34,11 @@ class FilterGUI(BaseGUI, ABC):
     def __init__(self, *args, **kwargs):
         super(FilterGUI, self).__init__(*args, **kwargs)
 
+        self.item_width = SIZE.FILTER_WIDTH // len(OPTIONS.FILTERS)
         self.filter_list = [
-            # 默认滤镜
-            FilterUnitGUI(dictionary.F_DEFAULT, top=self.top, left=self.left,
-                          width=SIZE.FILTER_ITEM_WIDTH, height=SIZE.FILTER_HEIGHT),
-            # 探索滤镜
-            FilterUnitGUI(dictionary.F_TERRITORY, top=self.top, left=self.left + SIZE.FILTER_ITEM_WIDTH,
-                          width=SIZE.FILTER_ITEM_WIDTH, height=SIZE.FILTER_HEIGHT),
-            # # 领地滤镜
-            # FilterUnitGUI(dictionary.F_TERRITORY, top=self.top, left=self.left + SIZE.FILTER_ITEM_WIDTH * 2,
-            #               width=SIZE.FILTER_ITEM_WIDTH, height=SIZE.FILTER_HEIGHT)
+            FilterUnitGUI(item, top=self.top, left=self.left + index * self.item_width,
+                          width=self.item_width, height=SIZE.FILTER_HEIGHT, parent=self.parent)
+            for index, item in enumerate(OPTIONS.FILTERS)
         ]
 
     def update(self, *args, **kwargs):
@@ -54,4 +49,4 @@ class FilterGUI(BaseGUI, ABC):
             component.draw(painter)
 
     def mouse_choose_item(self, event: QMouseEvent):
-        return self.filter_list[(event.pos().x() - self.left) // SIZE.FILTER_ITEM_WIDTH]
+        return self.filter_list[(event.pos().x() - self.left) // self.item_width]

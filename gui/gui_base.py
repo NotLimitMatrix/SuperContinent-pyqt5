@@ -4,11 +4,12 @@ from PyQt5.QtGui import QMouseEvent
 
 
 class BaseGUI(ABC):
-    def __init__(self, top, left, width, height):
+    def __init__(self, top, left, width, height, parent):
         self.top = top
         self.left = left
         self.width = width
         self.height = height
+        self.parent = parent
 
     @abstractmethod
     def update(self, *args, **kwargs):

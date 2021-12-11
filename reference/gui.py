@@ -11,6 +11,7 @@ class GUI_KEY:
     TEXT_BROWSER = 'text_browser'
     FILTER = 'filter'
     OTHER = 'other'
+    TOOL = 'tool'
 
 
 # 数据常数
@@ -35,8 +36,6 @@ class NUMBER:
     TEXT_LINE = 30
     # 列表框元素数量
     SELECT_OPTIONS = 9
-    # 滤镜数量
-    FILTER_OPTIONS = 2
 
 
 # 尺寸常数
@@ -79,8 +78,6 @@ class SIZE:
     FILTER_WIDTH = ZONING_WIDTH
     # 滤镜框高度
     FILTER_HEIGHT = 30
-    # 滤镜框列宽
-    FILTER_ITEM_WIDTH = FILTER_WIDTH // NUMBER.FILTER_OPTIONS
 
     # 备选区宽度
     SELECT_WIDTH = ZONING_WIDTH
@@ -89,16 +86,34 @@ class SIZE:
     # 备选区行高
     SELECT_LINE_HEIGHT = SELECT_HEIGHT // NUMBER.SELECT_OPTIONS
 
+    # 工具栏宽度
+    TOOL_BAR_WIDTH = WORLD_WIDTH + ZONING_WIDTH + PANEL_WIDTH + DX * 6
+    # 工具栏高度
+    TOOL_BAR_HEIGHT = 20
+    # 工具栏项宽度
+    TOOL_ITEM_WIDTH = 60
+    # 工具栏项高度
+    TOOL_ITEM_HEIGHT = TOOL_BAR_HEIGHT
+
     # 窗口宽度
-    WINDOW_WIDTH = WORLD_WIDTH + ZONING_WIDTH + PANEL_WIDTH + DX * 6
+    WINDOW_WIDTH = TOOL_BAR_WIDTH
     # 窗口高度
-    WINDOW_HEIGHT = WORLD_WIDTH + DX * 2
+    WINDOW_HEIGHT = WORLD_WIDTH + TOOL_BAR_HEIGHT + DX * 3
 
 
 # 坐标常数
 class POSITION:
+    # 工具栏顶部坐标
+    TOOL_BAR_TOP = SIZE.DX
+    # 工具栏底部坐标
+    TOOL_BAR_BOTTOM = TOOL_BAR_TOP + SIZE.TOOL_BAR_HEIGHT
+    # 工具栏左边坐标
+    TOOL_BAR_LEFT = SIZE.DX
+    # 工具栏右边坐标
+    TOOL_BAR_RIGHT = TOOL_BAR_LEFT + SIZE.TOOL_BAR_WIDTH
+
     # 世界顶部坐标
-    WORLD_TOP = SIZE.DX
+    WORLD_TOP = SIZE.DX + TOOL_BAR_BOTTOM
     # 世界底部坐标
     WORLD_BOTTOM = WORLD_TOP + SIZE.WORLD_HEIGHT
     # 世界左边坐标

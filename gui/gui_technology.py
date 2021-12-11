@@ -75,18 +75,9 @@ class TechnologyGUI(BaseGUI, ABC):
         super(TechnologyGUI, self).__init__(*args, **kwargs)
 
         self.tech_list = [
-            # 经济科技
-            TechnologyUnitGUI(area=dictionary.CIVIL,
-                              top=self.top, left=self.left,
-                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT),
-            # 军事科技
-            TechnologyUnitGUI(area=dictionary.MILITARY,
-                              top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT, left=self.left,
-                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT),
-            # 超越科技
-            TechnologyUnitGUI(area=dictionary.HYPER,
-                              top=self.top + SIZE.TECHNOLOGY_LEVEL_HEIGHT * 2, left=self.left,
-                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT)
+            TechnologyUnitGUI(area=area, top=self.top + index * SIZE.TECHNOLOGY_LEVEL_HEIGHT, left=self.left,
+                              width=self.width, height=SIZE.TECHNOLOGY_LEVEL_HEIGHT, parent=self.parent)
+            for index, area in enumerate((dictionary.CIVIL, dictionary.MILITARY, dictionary.HYPER))
         ]
 
     def update(self, data):

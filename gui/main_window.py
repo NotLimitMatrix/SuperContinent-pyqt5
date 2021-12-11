@@ -3,7 +3,7 @@ import random
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QAction, qApp
 
 from gui.gui_filter import FilterGUI
 from gui.gui_panel import PanelGUI
@@ -12,7 +12,8 @@ from gui.gui_technology import TechnologyGUI
 from gui.gui_text_browser import TextBrowserGUI
 from gui.gui_world import WorldGUI
 from gui.gui_zoning import ZoningGUI
-from gui.gui_console import ConsoleWidget
+from gui.gui_console import ConsoleGUI
+from gui.console import ConsoleWidget
 from player.player import Player
 from reference import functions
 from reference.gui import SIZE, POSITION, GUI_KEY
@@ -26,23 +27,26 @@ class MainGameGUI(QMainWindow):
 
         super(MainGameGUI, self).__init__(*args, **kwargs)
 
-        # self.console = ConsoleWidget(parent=self)
+        self.console = None
 
         self.components = {
             GUI_KEY.WORLD: WorldGUI(top=POSITION.WORLD_TOP, left=POSITION.WORLD_LEFT,
-                                    width=SIZE.WORLD_WIDTH, height=SIZE.WORLD_HEIGHT),
+                                    width=SIZE.WORLD_WIDTH, height=SIZE.WORLD_HEIGHT, parent=self),
             GUI_KEY.ZONING: ZoningGUI(top=POSITION.ZONING_TOP, left=POSITION.ZONING_LEFT,
-                                      width=SIZE.ZONING_WIDTH, height=SIZE.ZONING_HEIGHT),
+                                      width=SIZE.ZONING_WIDTH, height=SIZE.ZONING_HEIGHT, parent=self),
             GUI_KEY.PANEL: PanelGUI(top=POSITION.PANEL_TOP, left=POSITION.PANEL_LEFT,
-                                    width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_HEIGHT),
+                                    width=SIZE.PANEL_WIDTH, height=SIZE.PANEL_HEIGHT, parent=self),
             GUI_KEY.TECHNOLOGY: TechnologyGUI(top=POSITION.TECHNOLOGY_TOP, left=POSITION.TECHNOLOGY_LEFT,
-                                              width=SIZE.TECHNOLOGY_WIDTH, height=SIZE.TECHNOLOGY_HEIGHT),
+                                              width=SIZE.TECHNOLOGY_WIDTH, height=SIZE.TECHNOLOGY_HEIGHT, parent=self),
             GUI_KEY.TEXT_BROWSER: TextBrowserGUI(top=POSITION.TEXT_BROWSER_TOP, left=POSITION.TEXT_BROWSER_LEFT,
-                                                 width=SIZE.TEXT_BROWSER_WIDTH, height=SIZE.TEXT_BROWSER_HEIGHT),
+                                                 width=SIZE.TEXT_BROWSER_WIDTH, height=SIZE.TEXT_BROWSER_HEIGHT,
+                                                 parent=self),
             GUI_KEY.SELECT: SelectGUI(top=POSITION.SELECT_TOP, left=POSITION.SELECT_LEFT,
-                                      width=SIZE.SELECT_WIDTH, height=SIZE.SELECT_HEIGHT),
+                                      width=SIZE.SELECT_WIDTH, height=SIZE.SELECT_HEIGHT, parent=self),
             GUI_KEY.FILTER: FilterGUI(top=POSITION.FILTER_TOP, left=POSITION.FILTER_LEFT,
-                                      width=SIZE.FILTER_WIDTH, height=SIZE.FILTER_HEIGHT)
+                                      width=SIZE.FILTER_WIDTH, height=SIZE.FILTER_HEIGHT, parent=self),
+            GUI_KEY.TOOL: ConsoleGUI(top=POSITION.TOOL_BAR_TOP, left=POSITION.TOOL_BAR_LEFT,
+                                     width=SIZE.TOOL_BAR_WIDTH, height=SIZE.TOOL_BAR_HEIGHT, parent=self)
         }
 
         self.memory = Memory()
@@ -75,7 +79,7 @@ class MainGameGUI(QMainWindow):
         self.components[GUI_KEY.TEXT_BROWSER].draw(painter)
         self.components[GUI_KEY.SELECT].draw(painter)
         self.components[GUI_KEY.FILTER].draw(painter)
-
+        self.components[GUI_KEY.TOOL].draw(painter)
         # for component in self.components.values():
         #     component.draw(painter)
 
@@ -99,21 +103,20 @@ class MainGameGUI(QMainWindow):
         click = event.buttons()
 
         if click == Qt.LeftButton:
-            if c_name == GUI_KEY.WORLD:
-                block: Block = component.mouse_choose_item(event)
-                if block.attribute.display:
-                    self.memory.update_block(block.ident)
-                    self.memory.msg = block.display()
-                else:
-                    self.memory.msg = "该地块不可见"
-
-            if c_name == GUI_KEY.TEXT_BROWSER:
-                self.memory.msg = 'In TextBrowser'
-
-            if c_name == GUI_KEY.FILTER:
-                filter_item = component.mouse_choose_item(event)
-                self.memory.filter_type = filter_item.name
-                self.memory.msg = filter_item.display()
+            match c_name:
+                case GUI_KEY.WORLD:
+                    block: Block = component.mouse_choose_item(event)
+                    if block.attribute.display:
+                        self.memory.update_block(block.ident)
+                        self.memory.msg = block.display()
+                    else:
+                        self.memory.msg = "该地块不可见"
+                case GUI_KEY.TEXT_BROWSER:
+                    self.memory.msg = 'In TextBrowser'
+                case GUI_KEY.FILTER:
+                    filter_item = component.mouse_choose_item(event)
+                    self.memory.filter_type = filter_item.name
+                    self.memory.msg = filter_item.display()
 
         if click == Qt.RightButton:
             self.memory.msg = f"右键:\n{event.pos().x()}, {event.pos().y()}\n"

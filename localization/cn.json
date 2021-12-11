@@ -18,5 +18,7 @@
   "env_2": "理想",
 
   "filter_default": "默认",
-  "filter_territory": "领地"
+  "filter_territory": "领地",
+
+  "console": "控制台"
 }

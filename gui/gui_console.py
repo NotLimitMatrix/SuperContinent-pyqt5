@@ -1,43 +1,49 @@
-from PyQt5.QtWidgets import QWidget, QTextBrowser, QLineEdit, QVBoxLayout
+from abc import ABC
+
+from PyQt5.QtGui import QPainter, QMouseEvent
+from PyQt5.QtCore import QRect
+
+from reference.gui import COLOR, SIZE
+from reference.game import OPTIONS
+from reference.functions import draw_text, tr
+from gui.gui_base import BaseGUI
 
 
-class ConsoleWidget(QWidget):
+class ConsoleItemGUI(BaseGUI, ABC):
+    def __init__(self, name, using, *args, **kwargs):
+        super(ConsoleItemGUI, self).__init__(*args, **kwargs)
+        self.name = name
+        self.using = using
+
+    def update(self):
+        pass
+
+    def draw(self, painter: QPainter):
+        painter.setBrush(COLOR.WHITE)
+        rect = QRect(self.left, self.top, self.width, self.height)
+        painter.drawRect(rect)
+        draw_text(rect, tr(self.name), painter)
+
+    def display(self):
+        return ''
+
+
+class ConsoleGUI(BaseGUI, ABC):
     def __init__(self, *args, **kwargs):
-        super(ConsoleWidget, self).__init__(*args, **kwargs)
+        super(ConsoleGUI, self).__init__(*args, **kwargs)
 
-        self.resize(900, 700)
-        self.setFixedSize(900, 700)
-        self.setWindowTitle('Super Continent Console')
+        self.console_list = [
+            ConsoleItemGUI(item, True, top=self.left, left=self.left + index * SIZE.TOOL_ITEM_WIDTH,
+                           width=SIZE.TOOL_ITEM_WIDTH, height=SIZE.TOOL_ITEM_HEIGHT, parent=self.parent)
+            for index, item in enumerate(OPTIONS.TOOLS)
+        ]
 
-        self.text_browser = QTextBrowser(parent=self)
-        self.line_edit = QLineEdit(parent=self)
-        self.line_edit.returnPressed.connect(self.command)
+    def update(self, *args, **kwargs):
+        pass
 
-        self.init()
-        self.show()
+    def draw(self, painter: QPainter):
+        for component in self.console_list:
+            component.draw(painter)
 
-    def init(self):
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.text_browser)
-        layout.addWidget(self.line_edit)
-        self.setLayout(layout)
-
-    def command(self):
-        cmd = self.line_edit.text()
-        self.line_edit.clear()
-        match cmd:
-            case 'clear':
-                self.text_browser.clear()
-            case _:
-                self.text_browser.append(cmd)
-
-
-if __name__ == '__main__':
-    import sys
-    from PyQt5.QtWidgets import QApplication
-
-    app = QApplication(sys.argv)
-
-    gui = ConsoleWidget()
-
-    sys.exit(app.exec_())
+    def mouse_choose_item(self, event: QMouseEvent):
+        return self.console_list[(event.pos().x() - self.left) // SIZE.TOOL_ITEM_WIDTH]

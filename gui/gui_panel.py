@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Iterable
 
 from PyQt5.QtGui import QPainter, QMouseEvent
 from PyQt5.QtCore import QRect
@@ -73,39 +74,21 @@ class PanelPowerGUI(BaseGUI, ABC):
         )
 
 
+def gen_panel_item(iter: Iterable, _class, parent, start=0):
+    for index, it in enumerate(iter):
+        yield _class(name=it, top=parent.top + SIZE.PANEL_LEVEL_HEIGHT * (start + index), left=parent.left,
+                     width=parent.width, height=SIZE.PANEL_LEVEL_HEIGHT, parent=parent.parent)
+
+
 class PanelGUI(BaseGUI, ABC):
     def __init__(self, *args, **kwargs):
         super(PanelGUI, self).__init__(*args, **kwargs)
 
-        self.panels = [
-            # 食物
-            PanelResourceGUI(name=dictionary.FOOD, top=self.top, left=self.left,
-                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
-            # 矿物
-            PanelResourceGUI(name=dictionary.MINERAL, top=self.top + SIZE.PANEL_LEVEL_HEIGHT, left=self.left,
-                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
-            # 能源
-            PanelResourceGUI(name=dictionary.ENERGY, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 2, left=self.left,
-                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
-            # 物资
-            PanelResourceGUI(name=dictionary.COMMODITY, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 3, left=self.left,
-                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
-            # 合金
-            PanelResourceGUI(name=dictionary.ALLOY, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 4, left=self.left,
-                             width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
-            # 人口
-            PanelPowerGUI(name=dictionary.POPULATION, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 5, left=self.left,
-                          width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
-            # 经济
-            PanelPowerGUI(name=dictionary.CIVIL, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 6, left=self.left,
-                          width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
-            # 军力
-            PanelPowerGUI(name=dictionary.MILITARY, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 7, left=self.left,
-                          width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT),
-            # 科技
-            PanelPowerGUI(name=dictionary.TECHNOLOGY, top=self.top + SIZE.PANEL_LEVEL_HEIGHT * 8, left=self.left,
-                          width=self.width, height=SIZE.PANEL_LEVEL_HEIGHT)
-        ]
+        self.p_res = (dictionary.FOOD, dictionary.MINERAL, dictionary.ENERGY, dictionary.COMMODITY, dictionary.ALLOY)
+        self.p_pow = (dictionary.POPULATION, dictionary.CIVIL, dictionary.MILITARY, dictionary.TECHNOLOGY)
+
+        self.panels = list(gen_panel_item(self.p_res, PanelResourceGUI, self))
+        self.panels.extend(gen_panel_item(self.p_pow, PanelPowerGUI, self, len(self.p_res)))
 
     def draw(self, painter: QPainter):
         painter.setBrush(COLOR.WHITE)
@@ -125,4 +108,3 @@ class PanelGUI(BaseGUI, ABC):
             index = -1
 
         return self.panels[index]
-

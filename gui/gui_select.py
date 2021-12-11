@@ -33,7 +33,7 @@ class SelectGUI(BaseGUI, ABC):
         super(SelectGUI, self).__init__(*args, **kwargs)
         self.options = [
             SelectItemGUI(ident=i, left=self.left, top=self.top + i * SIZE.SELECT_LINE_HEIGHT,
-                          width=self.width, height=SIZE.SELECT_LINE_HEIGHT)
+                          width=self.width, height=SIZE.SELECT_LINE_HEIGHT, parent=self.parent)
             for i in range(NUMBER.SELECT_OPTIONS)
         ]
 
