@@ -12,6 +12,7 @@ from gui.gui_technology import TechnologyGUI
 from gui.gui_text_browser import TextBrowserGUI
 from gui.gui_world import WorldGUI
 from gui.gui_zoning import ZoningGUI
+from gui.gui_console import ConsoleWidget
 from player.player import Player
 from reference import functions
 from reference.gui import SIZE, POSITION, GUI_KEY
@@ -24,6 +25,8 @@ class MainGameGUI(QMainWindow):
         self.player = player
 
         super(MainGameGUI, self).__init__(*args, **kwargs)
+
+        # self.console = ConsoleWidget(parent=self)
 
         self.components = {
             GUI_KEY.WORLD: WorldGUI(top=POSITION.WORLD_TOP, left=POSITION.WORLD_LEFT,
@@ -102,7 +105,7 @@ class MainGameGUI(QMainWindow):
                     self.memory.update_block(block.ident)
                     self.memory.msg = block.display()
                 else:
-                    self.memory.msg =  "该地块不可见"
+                    self.memory.msg = "该地块不可见"
 
             if c_name == GUI_KEY.TEXT_BROWSER:
                 self.memory.msg = 'In TextBrowser'
