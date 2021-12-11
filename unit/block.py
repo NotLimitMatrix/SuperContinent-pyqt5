@@ -4,7 +4,8 @@ from PyQt5.QtCore import QRect
 
 from reference.templates import TEMPLATE_BLOCK
 from reference.game import BLOCK, ZONING
-from reference.functions import weight_choice
+from reference.functions import weight_choice, tr
+from reference import dictionary
 
 
 class Attribute:
@@ -46,6 +47,7 @@ class Block:
         modifier = 100 * BLOCK.MODIFIER[self.attribute.status]
         if self.attribute.display:
             return TEMPLATE_BLOCK.format(
+                player=tr(dictionary.NO_PYALER) if self.player is None else self.player.name,
                 ident=self.ident,
                 row=self.row,
                 col=self.col,

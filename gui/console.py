@@ -10,8 +10,9 @@ class ConsoleWidget(QDialog):
     def __init__(self, *args, **kwargs):
         super(ConsoleWidget, self).__init__(*args, **kwargs)
 
-        self.resize(900, 700)
-        self.setFixedSize(900, 700)
+        self.width_height = 300, 700
+        self.resize(*self.width_height)
+        self.setFixedSize(*self.width_height)
         self.setWindowTitle('Super Continent Console')
 
         self.text_browser = QTextBrowser(parent=self)
@@ -19,6 +20,7 @@ class ConsoleWidget(QDialog):
         self.line_edit.returnPressed.connect(self.command)
 
         self.init()
+        self.connect_slot()
         self.show()
 
     def closeEvent(self, a0: QCloseEvent) -> None:
@@ -29,6 +31,11 @@ class ConsoleWidget(QDialog):
         layout.addWidget(self.text_browser)
         layout.addWidget(self.line_edit)
         self.setLayout(layout)
+
+    def connect_slot(self):
+        parent = self.parent()
+        self._close_single.connect(parent.close_console_dialog)
+        self._send_command.connect(parent.print_command)
 
     def command(self):
         cmd = self.line_edit.text()

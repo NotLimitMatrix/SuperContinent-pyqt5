@@ -5,13 +5,16 @@ from unit.zoning import Zoning
 
 
 class Memory:
-    def __init__(self):
+    def __init__(self, player):
         self.world_number = NUMBER.WORLD_NUMBER
         self.world_size = SIZE.WORLD_WIDTH // NUMBER.WORLD_NUMBER
         self.world_data = [
             Block(i, *functions.ident_to_row_col(i, self.world_number), self.world_size)
             for i in range(self.world_number * self.world_number)
         ]
+
+        self.player = player
+        self.is_observing = False
 
         self.zoning_number = NUMBER.ZONING_NUMBER
         self.zoning_width = SIZE.ZONING_WIDTH
@@ -38,6 +41,11 @@ class Memory:
         if block.attribute.display:
             self.zoning_number = block.z_num
             self.zoning_display = block.z_set
+
+    def command_observing(self):
+        print(self.is_observing)
+        for block in self.world_data:
+            block.attribute.display = True if self.is_observing or block.player == self.player else False
 
     def dump(self):
         return {

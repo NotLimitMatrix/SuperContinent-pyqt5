@@ -21,3 +21,5 @@ F_DISCOVERY = 'filter_discovery'
 F_TERRITORY = 'filter_territory'
 
 CONSOLE = 'console'
+
+NO_PYALER = 'no_player'

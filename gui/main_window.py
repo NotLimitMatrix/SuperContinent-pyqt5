@@ -23,12 +23,13 @@ from unit.memory import Memory
 
 class MainGameGUI(QMainWindow):
     def __init__(self, player: Player, *args, **kwargs):
-        self.player = player
-
         super(MainGameGUI, self).__init__(*args, **kwargs)
+        self.resize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
+        self.setFixedSize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
+        self.setWindowTitle(f'Super Continent [{functions.game_time_to_date(0)}]')
 
         self.console = None
-
+        self.player = player
         self.components = {
             GUI_KEY.WORLD: WorldGUI(top=POSITION.WORLD_TOP, left=POSITION.WORLD_LEFT,
                                     width=SIZE.WORLD_WIDTH, height=SIZE.WORLD_HEIGHT, parent=self),
@@ -49,25 +50,17 @@ class MainGameGUI(QMainWindow):
                                      width=SIZE.TOOL_BAR_WIDTH, height=SIZE.TOOL_BAR_HEIGHT, parent=self)
         }
 
-        self.memory = Memory()
+        self.memory = Memory(self.player)
         self.update_data()
-
         self.player.init_player(self.components[GUI_KEY.WORLD].world_list)
-
-        self.resize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
-        self.setFixedSize(SIZE.WINDOW_WIDTH + 1, SIZE.WINDOW_HEIGHT + 1)
-        self.setWindowTitle(f'Super Continent [{functions.game_time_to_date(0)}]')
 
         self.show()
 
     def update_data(self):
         # 根据memory更新界面
         for key, value in self.memory.dump()['GUI'].items():
-            if key == GUI_KEY.OTHER:
-                continue
-
-            self.components[key].update(value)
-
+            if key != GUI_KEY.OTHER:
+                self.components[key].update(value)
         self.update()
 
     # 绘制界面
@@ -112,7 +105,13 @@ class MainGameGUI(QMainWindow):
         self.console = None
 
     def print_command(self, cmd):
-        print(cmd)
+        match cmd:
+            case 'observe':
+                self.memory.is_observing = not self.memory.is_observing
+                self.memory.command_observing()
+            case _:
+                print(cmd)
+        self.update_data()
 
     def operating(self, c_name, component, event):
         match c_name:
@@ -135,8 +134,6 @@ class MainGameGUI(QMainWindow):
                     if tool_item.name == dt.CONSOLE:
                         if self.console is None:
                             self.console = ConsoleWidget(parent=self)
-                            self.console._close_single.connect(self.close_console_dialog)
-                            self.console._send_command.connect(self.print_command)
 
                 self.memory.msg = '没有选择工具' if tool_item is None else tool_item.display()
             case _:

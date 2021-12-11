@@ -1,4 +1,5 @@
 TEMPLATE_BLOCK = """地块: {ident}
+所属: {player}
 坐标: Row:{row}, Col:{col}
 环境: {env_desc} {env_modifier}%
 生产修正: {product_modifier}

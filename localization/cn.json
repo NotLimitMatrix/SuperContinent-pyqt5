@@ -20,5 +20,7 @@
   "filter_default": "默认",
   "filter_territory": "领地",
 
-  "console": "控制台"
+  "console": "控制台",
+
+  "no_player": "无主之地"
 }

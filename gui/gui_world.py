@@ -20,7 +20,7 @@ class WorldGUI(BaseGUI, ABC):
         for block in self.world_list:
             match filter:
                 case dictionary.F_TERRITORY:
-                    painter.setBrush(set_color(player_color, block.attribute.display))
+                    painter.setBrush(set_color(player_color, block.player == self.parent.player))
                 case dictionary.F_DEFAULT:
                     painter.setBrush(set_color(BLOCK.COLOR[block.attribute.status], block.attribute.display))
                 case _:
