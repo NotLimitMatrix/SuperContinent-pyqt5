@@ -1,6 +1,7 @@
 import random, math
 
 from player.block_manager import BlockManager
+from player.panel_manager import PanelManager
 from reference.functions import check_neighbour_has_player
 
 
@@ -11,6 +12,7 @@ class Player:
         self.ident = ident
 
         self.block_manager = BlockManager(self)
+        self.panel_manaber = PanelManager(self)
 
     def select_position(self, world_list):
         while block := random.choice([b for b in world_list if b.attribute.status == 2]):
