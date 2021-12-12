@@ -19,10 +19,5 @@ class Player:
                 self.block_manager.add_block(block)
                 break
 
-    # def init_player(self, world_list):
-        # selected_block = random.choice([b for b in world_list if b.attribute.status == 2])
-        # self.block_manager.add_block(selected_block)
-        # selected_block.attribute.update(display=True)
-
     def __eq__(self, other):
         return other and self.ident == other.ident

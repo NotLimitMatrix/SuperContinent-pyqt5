@@ -5,7 +5,7 @@ from unit.zoning import Zoning
 
 
 class Memory:
-    def __init__(self, players, world_number):
+    def __init__(self, player, world_number):
         self.world_number = world_number
         self.world_size = SIZE.WORLD_WIDTH // world_number
         self.world_data = [
@@ -13,8 +13,7 @@ class Memory:
             for i in range(world_number * world_number)
         ]
 
-        self.players = players
-        self.current_player = None
+        self.player = player
         self.is_observing = False
 
         self.zoning_number = NUMBER.ZONING_NUMBER
@@ -54,7 +53,6 @@ class Memory:
                 GUI_KEY.WORLD: self.world_data,
                 GUI_KEY.ZONING: {
                     'number': self.zoning_number,
-                    'size': self.zoning_width // self.zoning_number,
                     'data': self.zoning_display
                 },
                 GUI_KEY.PANEL: [

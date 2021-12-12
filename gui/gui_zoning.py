@@ -24,7 +24,7 @@ class ZoningGUI(BaseGUI, ABC):
 
     def update(self, data):
         self.n = data['number']
-        self.size = data['size']
+        self.size = self.width // data['number']
         self.zoning_list = data['data']
 
     def mouse_choose_item(self, event: QMouseEvent):
