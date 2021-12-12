@@ -16,7 +16,7 @@ from gui.gui_console import ConsoleGUI
 from gui.console import ConsoleWidget
 from player.player import Player
 from reference import functions, dictionary as dt
-from reference.gui import SIZE, POSITION, GUI_KEY
+from reference.gui import SIZE, POSITION, GUI_KEY, NUMBER
 from unit.block import Block
 from unit.memory import Memory
 
@@ -50,9 +50,9 @@ class MainGameGUI(QMainWindow):
                                      width=SIZE.TOOL_BAR_WIDTH, height=SIZE.TOOL_BAR_HEIGHT, parent=self)
         }
 
-        self.memory = Memory(self.player)
+        self.memory = Memory(self.player, NUMBER.WORLD_NUMBER)
         self.update_data()
-        self.player.init_player(self.components[GUI_KEY.WORLD].world_list)
+        self.player.select_position(self.components[GUI_KEY.WORLD].world_list)
 
         self.show()
 

@@ -5,15 +5,16 @@ from unit.zoning import Zoning
 
 
 class Memory:
-    def __init__(self, player):
-        self.world_number = NUMBER.WORLD_NUMBER
-        self.world_size = SIZE.WORLD_WIDTH // NUMBER.WORLD_NUMBER
+    def __init__(self, players, world_number):
+        self.world_number = world_number
+        self.world_size = SIZE.WORLD_WIDTH // world_number
         self.world_data = [
-            Block(i, *functions.ident_to_row_col(i, self.world_number), self.world_size)
-            for i in range(self.world_number * self.world_number)
+            Block(i, *functions.ident_to_row_col(i, world_number), self.world_size, world_number)
+            for i in range(world_number * world_number)
         ]
 
-        self.player = player
+        self.players = players
+        self.current_player = None
         self.is_observing = False
 
         self.zoning_number = NUMBER.ZONING_NUMBER

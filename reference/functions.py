@@ -84,3 +84,10 @@ def set_color(color, display):
         return COLOR.WHITE
     else:
         return color
+
+
+def check_neighbour_has_player(block, world_list):
+    for neighbour_ident in block.neighbours():
+        if world_list[neighbour_ident].player:
+            return True
+    return False
