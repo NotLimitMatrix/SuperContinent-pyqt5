@@ -1,3 +1,5 @@
+> 国内地址: https://gitee.com/h2magic/SuperContinent-pyqt5
+
 > This project using Python3.10
 
 # Quick Start
